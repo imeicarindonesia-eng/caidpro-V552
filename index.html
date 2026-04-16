@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>⚡CSID.PRO⚡ - Supreme Auto-Pilot V562</title>
+    <title>⚡CSID.PRO⚡ - Supreme Ergonomic V564</title>
     
     <!-- Library Inti -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -27,7 +27,7 @@
             --neon-cyan-dim: rgba(0, 229, 255, 0.3);
             --deep-black: #000000;
             --soft-black: #0a0a0a;
-            --kb-height: 16px; 
+            --kb-height: 18px; /* Slightly taller keys */
             --wa-green: #25D366;
             --pure-white: #ffffff;
         }
@@ -62,24 +62,27 @@
             padding: 22px; width: 100%; font-size: 14px; text-transform: uppercase; 
             margin-bottom: 15px; cursor: pointer; transition: 0.2s; box-shadow: 0 0 25px var(--neon-cyan-dim); 
         }
-        .btn-main-cyan:active { transform: scale(0.96); filter: brightness(0.8); }
 
         .form-daftar-container { background-color: rgba(0, 229, 255, 0.05); border: 2.5px dashed var(--neon-cyan); border-radius: 30px; padding: 30px 20px; margin-top: 25px; position: relative; z-index: 5000; }
         .judul-daftar { font-size: 11.5px; color: var(--neon-cyan); margin-bottom: 15px; text-align: center; text-transform: uppercase; line-height: 1.6; }
         .tombol-wa-daftar { display: flex; align-items: center; justify-content: center; gap: 12px; background-color: var(--wa-green); color: white; padding: 22px; border: none; border-radius: 18px; font-size: 14px; width: 100%; box-sizing: border-box; text-transform: uppercase; box-shadow: 0 5px 0 #1e7e34; transition: 0.1s; cursor: pointer; }
 
-        /* --- HALAMAN 2: SEARCH ENGINE (AUTO-PILOT ENABLED) --- */
-        .search-bar-container { background: #000; border: 4.5px solid var(--neon-cyan); border-radius: 25px; margin: 15px; padding: 25px 14px; display: flex; align-items: center; box-shadow: 0 0 30px var(--neon-cyan-dim); min-height: 105px; position: relative; overflow: hidden; cursor: pointer; }
+        /* --- HALAMAN 2: SEARCH ENGINE --- */
+        .search-bar-container { background: #000; border: 4.5px solid var(--neon-cyan); border-radius: 25px; margin: 15px; padding: 25px 14px; display: flex; align-items: center; box-shadow: 0 0 30px var(--neon-cyan-dim); min-height: 110px; position: relative; overflow: hidden; cursor: pointer; }
+        
+        /* ✅ MARQUEE HINT BIGGER (V564) */
         .marquee-hint { position: absolute; left: 0; right: 0; width: 100%; pointer-events: none; display: flex; align-items: center; z-index: 1; }
-        .marquee-text { white-space: nowrap; color: rgba(0, 229, 255, 0.4); font-size: 18px; text-transform: uppercase; animation: marquee-anim 12s linear infinite; letter-spacing: 1.5px; }
+        .marquee-text { white-space: nowrap; color: rgba(0, 229, 255, 0.45); font-size: 20px; text-transform: uppercase; animation: marquee-anim 12s linear infinite; letter-spacing: 2px; }
         @keyframes marquee-anim { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         
+        /* ✅ PLATE DISPLAY PERFECT VISIBILITY (V564) */
         #plateDisplay { 
             flex: 1; background: transparent; border: none; color: var(--neon-cyan); 
-            font-size: 1.9rem; text-align: center; outline: none; letter-spacing: 2px; 
+            font-size: 2.2rem; text-align: center; outline: none; letter-spacing: 3px; 
             text-transform: uppercase; position: relative; z-index: 5; height: 100%; 
-            display: flex; align-items: center; justify-content: center; text-shadow: 0 0 15px var(--neon-cyan);
+            display: flex; align-items: center; justify-content: center; text-shadow: 0 0 20px var(--neon-cyan);
             caret-color: var(--neon-cyan);
+            user-select: text !important;
         }
         
         #pastePopup { 
@@ -104,7 +107,7 @@
         .btn-icon-supreme { background: #3b82f6; color: white; width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; border: 3px solid #000; cursor: pointer; }
         .btn-red-supreme { background: #ef4444; color: white; width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; border: 3px solid #000; cursor: pointer; }
 
-        /* --- HALAMAN 4: RESULT (DYNAMIC CYBER DARK MODE V562) --- */
+        /* --- HALAMAN 4: RESULT (DYNAMIC CYBER DARK MODE) --- */
         #pageResult { background-color: #000; }
         .result-page-container { background: #000; flex: 1; overflow-y: auto; width: 100%; display: flex; flex-direction: column; }
         .official-card-full { width: 100%; flex: 1; padding: 30px 20px 120px 20px; text-align: left; color: var(--neon-cyan); }
@@ -127,16 +130,23 @@
         .btn-green-wa-large { background-color: var(--wa-green); color: white; padding: 25px; border-radius: 25px; font-size: 16px; width: 100%; box-shadow: 0 8px 0 #1e7e34; display: flex; align-items: center; justify-content: center; gap: 15px; border: 3px solid #000; text-transform: uppercase; cursor: pointer; }
         .btn-copy-white { background-color: #fff; color: #000; padding: 22px; border-radius: 20px; font-size: 12px; text-transform: uppercase; border: 3px solid #000; }
 
-        /* KEYBOARD (DARKEST NEON) */
-        .kb-container { background: #000; padding: 10px 10px 40px 10px; display: flex; flex-direction: column; gap: 5px; border-top: 4px solid var(--neon-cyan); position: relative; z-index: 110; }
-        .kb-row { display: flex; justify-content: center; gap: 4px; width: 100%; }
+        /* ✅ ERGONOMIC KEYBOARD (PUSHED UP V564) */
+        .kb-container { 
+            background: #000; 
+            padding: 10px 10px 85px 10px; /* ✅ INCREASED BOTTOM PADDING TO PUSH UP */
+            display: flex; flex-direction: column; gap: 6px; 
+            border-top: 4px solid var(--neon-cyan); 
+            position: relative; z-index: 110; 
+            box-shadow: 0 -10px 30px rgba(0, 229, 255, 0.1);
+        }
+        .kb-row { display: flex; justify-content: center; gap: 5px; width: 100%; }
         .kb-btn { 
-            background: var(--neon-cyan); border: 2.5px solid #000; border-radius: 10px; 
+            background: var(--neon-cyan); border: 2.5px solid #000; border-radius: 12px; 
             padding: var(--kb-height) 0; flex: 1; color: #000; 
-            font-size: 19px; box-shadow: 0 4px 0 #000; text-align: center; cursor: pointer; 
+            font-size: 20px; box-shadow: 0 5px 0 #000; text-align: center; cursor: pointer; 
             transition: 0.05s;
         }
-        .kb-btn:active { transform: scale(0.9) translateY(4px); background: #fff; box-shadow: 0 1px 0 #000; }
+        .kb-btn:active { transform: scale(0.9) translateY(5px); background: #fff; box-shadow: 0 1px 0 #000; }
 
         /* LOADER */
         #global-loader { position: absolute; inset: 0; background: #000; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
@@ -201,14 +211,14 @@
                     <button id="camBtn" class="btn-cyan-square"><i data-lucide="camera"></i></button>
                     <input type="file" id="camInput" accept="image/*" capture="environment" class="hidden">
                     <button id="pasteBtn" class="btn-cyan-square"><i data-lucide="clipboard-list"></i></button>
-                    <button id="adminNavBtn" class="hidden btn-cyan-square"><i data-lucide="shield-check"></i></button>
+                    <button id="adminNavBtn" class="hidden btn-cyan-square"><i data-lucide="shield-check" style="color:var(--neon-cyan)"></i></button>
                     <button id="logoutBtn" class="btn-cyan-square"><i data-lucide="power" size="22" class="text-red-600"></i></button>
                     <button id="searchBtn" class="btn-search-black"><i data-lucide="search" size="24"></i></button>
                 </div>
                 <div class="kb-container" id="kbBox"></div>
             </div>
 
-            <!-- PAGE RESULT (DARK NEON IDENTITY) -->
+            <!-- PAGE RESULT -->
             <div id="pageResult" class="page">
                 <div class="bg-[#000] p-6 border-b-4 border-[var(--neon-cyan)] flex items-center text-white"><button id="backSearchBtn"><i data-lucide="arrow-left"></i></button>
                     <span class="flex-1 text-center uppercase text-[14px] tracking-[0.4em] font-black">⚡CSID. PRO⚡</span>
@@ -222,7 +232,7 @@
 
             <!-- PAGE ADMIN -->
             <div id="pageAdmin" class="page bg-[#000]">
-                <div class="bg-[#111] p-6 border-b-4 border-[var(--neon-cyan)] flex items-center justify-between text-white">
+                <div class="bg-[#111] p-6 border-b-4 border-black flex items-center justify-between text-white">
                     <div class="flex items-center gap-3"><button id="refreshAdminBtn"><i data-lucide="refresh-cw" size="20" style="color:var(--neon-cyan)"></i></button><h2 class="text-[13px] uppercase">ADMIN PANEL CSID.PRO</h2></div>
                     <button id="closeAdminBtn"><i data-lucide="x"></i></button>
                 </div>
@@ -234,7 +244,7 @@
                             <div class="text-[9px] text-slate-500 uppercase">Total Agent</div>
                         </div>
                         <div class="bg-[#111] border-2 border-white/10 rounded-2xl p-5 text-center">
-                            <div id="statActive" class="text-3xl text-[var(--neon-cyan)]">0</div>
+                            <div id="statActive" class="text-3xl text-green-600">0</div>
                             <div class="text-[9px] text-slate-400 uppercase">Aktif</div>
                         </div>
                     </div>
@@ -265,7 +275,7 @@
         </div>
     </div>
 
-    <!-- ✅ THE SUPREME AUTO-PILOT ENGINE (V562) -->
+    <!-- ✅ THE SUPREME ERGONOMIC ENGINE (V564) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -278,7 +288,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // ✅ 1. SARAF GLOBAL (AUTO-PILOT MODE)
+        // ✅ 1. SARAF GLOBAL (AUTO-PILOT & VISUAL FIX)
         const sealTheSystem = () => {
             window.localCache = {};
             window.titanState = { isAdmin: false, currentReportData: null, allAgents: [], renewTargetId: null, countdownTimer: null, registrationCode: null };
@@ -296,7 +306,7 @@
                 if(el && hint) hint.style.display = el.value.length > 0 ? 'none' : 'flex';
             };
 
-            // ✅ RENDER (DARK NEON V562)
+            // ✅ RENDER (DARK NEON V564)
             window.renderResult = (v, sP) => {
                 window.titanState.currentReportData = v;
                 let fnP = ((v.plate_region || "") + (v.plate_number || "") + (v.plate_series || "")).toUpperCase() || sP;
@@ -346,7 +356,6 @@
                 return `SUMBER APLIKASI CSID.PRO\n\nDATA KEPEMILIKAN 👥\n${f("NO.PLAT", fnP)}\n${f("PEMILIK", v.owner_name)}\n${f("ALAMAT", (v.owner_address || "").replace('- //','').trim())}\n${f("NIK", v.nik)}\n${f("PEKERJAAN", v.owner_job)}\n\nDATA KENDARAAN 🚘\n${f("MEREK", v.brand)}\n${f("TIPE", v.vehicle_type)}\n${f("TAHUN", v.manufacture_year)}\n${f("WARNA", v.color)}\n${f("SILINDER", (v.engine_capacity_cc || "") + " cc")}\n${f("RODA", v.wheel_count || "4")}\n${f("NO.RANGKA", v.chassis_number)}\n${f("NO.MESIN", v.engine_number)}\n\nDOKUMEN KEPEMILIKAN 📒\n${f("NO.BPKB", v.bpkb_number)}\n${f("NO.STNK", v.stnk_number)}\n${f("TGL.DAFTAR", v.registration_date)}\n\nNOTE :\nAPLIKASI INI DI BUAT UNTUK MENGAKSES IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB RESMI PADA KENDARAAN.\n\nCP Link : https://wa.me/628136900872`;
             };
 
-            // SEARCH (HYPER FAST)
             window.doSearch = async () => {
                 const el = document.getElementById('plateDisplay');
                 let pInput = el.value.trim().toUpperCase().replace(/[^A-Z0-9]/gi, ''); 
@@ -370,11 +379,7 @@
                     if(diff <= 0) {
                         el.innerText = "TIME : EXPIRED";
                         clearInterval(window.titanState.countdownTimer);
-                        if(!window.titanState.isAdmin) {
-                            showM("EXPIRED", "Masa aktif habis. Hubungi Admin.");
-                            localStorage.removeItem('saved_pin');
-                            signOut(auth).then(() => safeSwitch('pageLogin'));
-                        }
+                        if(!window.titanState.isAdmin) { showM("EXPIRED", "Masa aktif habis. Hubungi Admin."); localStorage.removeItem('saved_pin'); signOut(auth).then(() => safeSwitch('pageLogin')); }
                         return;
                     }
                     const d = Math.floor(diff / 86400000); const h = Math.floor((diff % 86400000) / 3600000); const m = Math.floor((diff % 3600000) / 60000); const s = Math.floor((diff % 60000) / 1000);
@@ -383,10 +388,11 @@
                 update(); window.titanState.countdownTimer = setInterval(update, 1000);
             };
 
-            window.adjustKB = (val, e) => { if(e) { e.preventDefault(); e.stopPropagation(); } let current = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--kb-height')) || 16; let newVal = current + val; if (newVal < 5) newVal = 5; if (newVal > 40) newVal = 40; document.documentElement.style.setProperty('--kb-height', newVal + 'px'); if(navigator.vibrate) navigator.vibrate(10); };
+            // ✅ KB LOGIC PERFECT INJECTION (V564)
             window.kAdd = (v, e) => { if(e) { e.preventDefault(); e.stopPropagation(); } const el = document.getElementById('plateDisplay'); if(el) { el.value += v; window.updateHint(); if(navigator.vibrate) navigator.vibrate(10); } };
             window.kDel = (e) => { if(e) { e.preventDefault(); e.stopPropagation(); } const el = document.getElementById('plateDisplay'); if(el && el.value.length > 0) { el.value = el.value.slice(0, -1); window.updateHint(); if(navigator.vibrate) navigator.vibrate(5); } };
             window.kClear = (e) => { if(e) { e.preventDefault(); e.stopPropagation(); } const el = document.getElementById('plateDisplay'); if(el) { el.value = ''; window.updateHint(); if(navigator.vibrate) navigator.vibrate([10, 50, 10]); } };
+            window.adjustKB = (val, e) => { if(e) { e.preventDefault(); e.stopPropagation(); } let current = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--kb-height')) || 16; let newVal = current + val; if (newVal < 5) newVal = 5; if (newVal > 40) newVal = 40; document.documentElement.style.setProperty('--kb-height', newVal + 'px'); if(navigator.vibrate) navigator.vibrate(10); };
 
             window.showPastePopup = (e) => {
                 if(e) { e.preventDefault(); e.stopPropagation(); }
@@ -450,7 +456,11 @@
                         const userCred = await signInAnonymously(auth);
                         if(v === "280189") { 
                             localStorage.setItem('saved_pin', v);
-                            window.titanState.isAdmin = true; window.safeSwitch('pageSearch'); document.getElementById('uName').innerText = "PIN : ADMIN"; document.getElementById('uExp').innerText = "STATUS: MASTER ADMIN"; document.getElementById('adminNavBtn').classList.remove('hidden'); window.showToast("MASTER VERIFIED!"); lucide.createIcons(); window.hideL(); return; 
+                            window.titanState.isAdmin = true; 
+                            document.getElementById('adminNavBtn').classList.remove('hidden'); 
+                            window.safeSwitch('pageSearch'); 
+                            document.getElementById('uName').innerText = "PIN : ADMIN"; document.getElementById('uExp').innerText = "STATUS: MASTER ADMIN";
+                            window.showToast("MASTER VERIFIED!"); lucide.createIcons(); window.hideL(); return; 
                         }
                         const snap = await getDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', v));
                         if(snap.exists()){
@@ -467,8 +477,7 @@
                 }
             });
 
-            // ✅ NATIVE PASTE
-            pDisplay.onpaste = (e) => { setTimeout(() => { pDisplay.value = pDisplay.value.trim().toUpperCase().replace(/[^A-Z0-9]/g, ''); window.updateHint(); window.showToast("DITEMPEL!"); }, 10); };
+            pDisplay.onpaste = (e) => { setTimeout(() => { pDisplay.value = pDisplay.value.trim().toUpperCase().replace(/[^A-Z0-9]/g, ''); window.updateHint(); window.showToast("DITEMPEL!"); window.doSearch(); }, 10); };
             let pressTimer; const lpArea = document.getElementById('longPressArea');
             lpArea.addEventListener('pointerdown', (e) => { pressTimer = setTimeout(() => window.showPastePopup(e), 800); });
             lpArea.addEventListener('pointerup', () => clearTimeout(pressTimer)); lpArea.addEventListener('pointerleave', () => clearTimeout(pressTimer));
@@ -504,7 +513,7 @@
             document.getElementById('cancelRenewBtn').onclick = () => document.getElementById('modalRenewPin').style.display='none';
             document.getElementById('cancelLogoutBtn').onclick = () => document.getElementById('modalLogout').style.display='none';
 
-            // ✅ AI CAMERA INTELLIGENCE (V562)
+            // ✅ AI CAMERA (PINTAR & VALID)
             const apiKey = ""; // API KEY PRO BOS
             document.getElementById('camInput').onchange = async (e) => {
                 const file = e.target.files[0]; if (!file) return; window.showL("AI ANALYZING...");
@@ -515,23 +524,10 @@
                         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, { 
                             method: 'POST', 
                             headers: { 'Content-Type': 'application/json' }, 
-                            body: JSON.stringify({ 
-                                contents: [{ 
-                                    role: "user", 
-                                    parts: [
-                                        { text: "Berperan sebagai agen intelijen kendaraan profesional. Ekstrak data TNKB (Plat), Nomor Rangka, atau Nomor Mesin dari gambar ini. Berikan hanya kode alfanumerik tunggal yang paling relevan untuk pencarian data samsat. Tanpa teks tambahan." }, 
-                                        { inlineData: { mimeType: "image/png", data: b64 } }
-                                    ] 
-                                }] 
-                            }) 
+                            body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: "Ekstrak Plat Nomor, No Rangka, atau No Mesin dari gambar ini secara valid. Berikan hanya kodenya saja." }, { inlineData: { mimeType: "image/png", data: b64 } }] }] }) 
                         });
-                        const r = await res.json(); 
-                        const ext = r.candidates?.[0]?.content?.parts?.[0]?.text?.replace(/[^A-Z0-9]/gi, '').toUpperCase();
-                        if (ext && ext.length > 3) { 
-                            document.getElementById('plateDisplay').value = ext; 
-                            window.updateHint(); 
-                            window.doSearch(); 
-                        } else window.showM("AI GAGAL", "AI tidak dapat menemukan kode valid. Pastikan foto fokus.");
+                        const r = await res.json(); const ext = r.candidates?.[0]?.content?.parts?.[0]?.text?.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+                        if (ext && ext.length > 3) { document.getElementById('plateDisplay').value = ext; window.updateHint(); window.doSearch(); } else window.showM("AI GAGAL", "AI tidak menemukan kode valid.");
                     } catch(e) {} window.hideL();
                 };
             };
@@ -547,7 +543,7 @@
                 }); kbBox.appendChild(dr);
             });
 
-            // ✅ AUTO-LOGIN INITIALIZER
+            // ✅ AUTO-LOGIN (ONE-TIME PIN)
             onAuthStateChanged(auth, async (user) => {
                 const savedPin = localStorage.getItem('saved_pin');
                 if (user) {
@@ -557,13 +553,19 @@
                             const d = s.data();
                             if (d.firebaseUid === user.uid && d.deviceId === dev && d.status !== 'blocked') { 
                                 document.getElementById('uName').innerText = "PIN : " + s.id; 
-                                if(d.role === 'admin') { window.titanState.isAdmin = true; document.getElementById('adminNavBtn').classList.remove('hidden'); document.getElementById('uExp').innerText = "STATUS: MASTER ADMIN"; } else { window.startCountdown(d.expiry); }
+                                if(d.role === 'admin' || s.id === "280189") { 
+                                    window.titanState.isAdmin = true; 
+                                    document.getElementById('adminNavBtn').classList.remove('hidden'); 
+                                    document.getElementById('uExp').innerText = "STATUS: MASTER ADMIN"; 
+                                } else { 
+                                    document.getElementById('adminNavBtn').classList.add('hidden'); 
+                                    window.startCountdown(d.expiry); 
+                                }
                                 if(document.getElementById('pageLogin').classList.contains('active')) window.safeSwitch('pageSearch');
                             }
                         });
                     });
                 } else if(savedPin && savedPin !== "280189") {
-                   // Force re-auth logic if pin saved but session lost
                    pi.value = savedPin; pi.dispatchEvent(new Event('input'));
                 }
             }); lucide.createIcons();
