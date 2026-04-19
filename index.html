@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CSID.PRO - Master V646</title>
+    <title>CSID.PRO - Master V655</title>
     
     <!-- Library Inti -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -38,58 +38,61 @@
         .page { position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; z-index: 100; overflow: hidden; background-color: #000; }
         .page.active { display: flex !important; }
 
-        /* --- HALAMAN 1: LOGIN --- */
+        /* --- STYLING INFO BAR (DIBAWAH KEYBOARD) --- */
+        .info-container-bottom {
+            padding: 10px 15px 30px 15px;
+            background: #000;
+            text-align: left;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            flex-shrink: 0;
+        }
+        .info-pin-text { font-size: 13px; color: #fff; text-transform: uppercase; margin-bottom: 2px; }
+        .info-time-text { font-size: 13px; color: var(--neon-cyan); text-transform: uppercase; }
+
+        /* --- LOGIN UI --- */
         #pageLogin { background-image: radial-gradient(circle at center, #111 0%, #000 100%); }
         .login-card { background: #000; border-radius: 40px; padding: 50px 25px; width: 100%; max-width: 330px; text-align: center; border: 3.5px solid var(--neon-cyan); position: relative; box-shadow: 0 0 40px var(--neon-cyan-dim); cursor: pointer; }
-        .login-card h1 { color: #fff; font-size: 34px; text-shadow: 0 0 10px rgba(255,255,255,0.3); margin-bottom: 5px; }
+        .login-card h1 { color: #fff; font-size: 34px; margin-bottom: 5px; }
         .subtitle-access { color: #666; font-size: 11px; text-transform: uppercase; letter-spacing: 2.5px; margin-bottom: 35px; }
         .dots-container { position: relative; width: 100%; height: 50px; margin-bottom: 35px; display: flex; justify-content: center; align-items: center; gap: 12px; }
         .dot { width: 18px; height: 18px; border-radius: 50%; background: #111; border: 2px solid rgba(0, 229, 255, 0.2); }
         .dot.active { background: var(--neon-cyan); transform: scale(1.3); box-shadow: 0 0 20px var(--neon-cyan); border: 2.5px solid #fff; }
         #pinInput { position: absolute; opacity: 0; left: -9999px; width: 1px; height: 1px; z-index: -1; }
+        .btn-wa-reg { display:flex; align-items:center; justify-content:center; gap:12px; background:var(--wa-green); color:#fff; padding:22px; border-radius:18px; width:100%; text-transform:uppercase; cursor: pointer !important; box-shadow: 0 5px 0 #1e7e34; }
 
-        .btn-wa-reg { display:flex; align-items:center; justify-content:center; gap:12px; background:var(--wa-green); color:#fff; padding:22px; border-radius:18px; width:100%; text-transform:uppercase; cursor: pointer !important; box-shadow: 0 5px 0 #1e7e34; position: relative; z-index: 1001; }
-
-        /* --- HALAMAN 2: SEARCH --- */
+        /* --- SEARCH ENGINE --- */
         .search-bar-container { background: #000; border: 4.5px solid var(--neon-cyan); border-radius: 35px; margin: 15px; padding: 15px; display: flex; align-items: center; box-shadow: 0 0 35px var(--neon-cyan-dim); min-height: 110px; position: relative; overflow: hidden; }
         .marquee-hint { position: absolute; inset: 0; width: 100%; pointer-events: none; display: flex; align-items: center; justify-content: center; z-index: 1; overflow: hidden; }
         .marquee-text { white-space: nowrap; color: rgba(0, 229, 255, 0.45); font-size: 15px; text-transform: uppercase; animation: marquee-anim 15s linear infinite; letter-spacing: 2px; }
         @keyframes marquee-anim { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        #plateDisplay { width: 100%; background: transparent; border: none; color: var(--neon-cyan); font-size: 2.2rem; text-align: center; outline: none; letter-spacing: 3px; text-transform: uppercase; position: relative; z-index: 5; height: 100%; text-shadow: 0 0 20px var(--neon-cyan); transition: font-size 0.2s ease; }
+        #plateDisplay { width: 100%; background: transparent; border: none; color: var(--neon-cyan); font-size: 2.2rem; text-align: center; outline: none; letter-spacing: 3px; text-transform: uppercase; position: relative; z-index: 5; height: 100%; }
         
         .action-bar-hybrid { display: flex; align-items: center; justify-content: center; padding: 5px 12px; gap: 6px; width: 100%; }
         .btn-cyan-square { background-color: var(--neon-cyan); border: 2.5px solid #000; border-radius: 12px; flex: 1; height: 50px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 0 #000; color: #000; cursor: pointer; }
 
         /* --- KEYBOARD --- */
-        .kb-container { background: #000; padding: 10px 10px 75px 10px; display: flex; flex-direction: column; gap: 6px; border-top: 3px solid var(--neon-cyan); position: relative; z-index: 110; }
+        .kb-container { background: #000; padding: 10px 10px 5px 10px; display: flex; flex-direction: column; gap: 6px; border-top: 3px solid var(--neon-cyan); position: relative; z-index: 110; }
         .kb-row { display: flex; justify-content: center; gap: 5px; width: 100%; }
-        .kb-btn { background: var(--neon-cyan); border: 2.5px solid #000; border-radius: 12px; padding: var(--kb-height) 0; flex: 1; color: #000; font-size: 20px; font-weight: 900; box-shadow: 0 4px 0 #000; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .kb-btn { background: var(--neon-cyan); border: 2.5px solid #000; border-radius: 12px; padding: var(--kb-height) 0; flex: 1; color: #000; font-size: 22px; font-weight: 900; box-shadow: 0 4px 0 #000; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        /* --- HALAMAN 3: ADMIN --- */
+        /* --- ADMIN PANEL --- */
         #pageAdmin { color: var(--neon-white); background-color: #000; height: 100%; display: none; flex-direction: column; }
         .admin-header { background: #111; border-bottom: 4px solid var(--neon-white); padding: 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-        .btn-nav-back { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; position: relative; z-index: 200; }
-        
+        .btn-nav-back { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; }
         .stat-grid-horizontal { display: flex; gap: 10px; padding: 15px 15px; width: 100%; flex-shrink: 0; }
         .stat-box-horizon { flex: 1; background: #111; border: 2.5px solid var(--neon-white); border-radius: 20px; padding: 12px 5px; text-align: center; position: relative; }
         .stat-num { font-size: 18px; font-weight: 900; }
         .stat-label { font-size: 7px; text-transform: uppercase; opacity: 0.7; }
-        .stat-alert-dot { position: absolute; top: -5px; right: -5px; width: 12px; height: 12px; background: var(--neon-red); border-radius: 50%; display: none; animation: pulse-red 1s infinite; }
-
-        .agent-list-scrollable { flex: 1; overflow-y: auto; padding: 0 0 100px 0; -webkit-overflow-scrolling: touch; }
-        .agent-card-supreme { background: #111; border: 3.5px solid var(--neon-white); border-radius: 30px; padding: 22px; margin: 0 20px 20px 20px; position: relative; overflow: hidden; }
-        .violation-badge { position: absolute; left: 0; top: 0; background: var(--neon-red); color: #fff; font-size: 9px; padding: 4px 15px; transform: rotate(-45deg) translate(-25px, -5px); width: 100px; text-align: center; }
-        
-        /* ✅ TAMPILAN 5 TOMBOL PANEL ADMIN SESUAI GAMBAR */
+        .agent-card-supreme { background: #111; border: 3.5px solid var(--neon-white); border-radius: 30px; padding: 22px; margin: 0 20px 20px 20px; position: relative; }
         .action-row-supreme { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 25px; }
-        .btn-sekat-supreme { flex: 1.8; background: #fff; color: #000; padding: 16px; border-radius: 22px; font-size: 11px; text-transform: uppercase; border: 3px solid #000; cursor: pointer; text-align: center; font-weight: 900 !important; }
-        .btn-admin-icon-box { width: 55px; height: 55px; border-radius: 22px; display: flex; align-items: center; justify-content: center; border: 3px solid #000; cursor: pointer; transition: 0.1s; }
-        .btn-admin-icon-box:active { transform: scale(0.9); }
+        .btn-sekat-supreme { flex: 1.8; background: #fff; color: #000; padding: 16px; border-radius: 22px; font-size: 11px; text-transform: uppercase; border: 3px solid #000; cursor: pointer; font-weight: 900 !important; }
+        .btn-admin-icon-box { width: 55px; height: 55px; border-radius: 22px; display: flex; align-items: center; justify-content: center; border: 3px solid #000; cursor: pointer; }
 
-        /* --- HALAMAN 4: RESULT --- */
+        /* --- RESULT PAGE --- */
         .result-page-container { background: #000; flex: 1; overflow-y: auto; width: 100%; }
         .official-card-full { width: 100%; padding: 30px 20px 120px 20px; text-align: left; }
         .header-label-master { font-size: 17px; color: var(--neon-cyan); margin: 35px 0 15px 0; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        /* ✅ PEMBATAS PUTIH TEBAL */
         .white-divider { width: 100%; height: 3.5px; background-color: #fff; margin: 10px 0 25px 0; box-shadow: 0 0 15px rgba(255,255,255,0.4); }
         .row-master { display: flex; align-items: flex-start; margin-bottom: 12px; font-size: 14px; }
         .label-master { width: 120px; flex-shrink: 0; text-transform: uppercase; color: var(--neon-cyan); display: flex; justify-content: space-between; }
@@ -99,8 +102,7 @@
         /* LOADER & MODALS */
         #global-loader { position: absolute; inset: 0; background: rgba(0,0,0,0.98); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
         .turbo-text { color: var(--neon-cyan); font-size: 14px; letter-spacing: 2px; text-transform: uppercase; animation: blink 0.2s infinite; }
-        @keyframes pulse-red { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 49, 49, 0.7); } 70% { transform: scale(1.2); box-shadow: 0 0 0 10px rgba(255, 49, 49, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 49, 49, 0); } }
-
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.98); z-index: 9000; display: none; align-items: center; justify-content: center; padding: 25px; }
         .modal-card { background: #111; border-radius: 30px; padding: 40px; width: 100%; max-width: 350px; text-align: center; border: 4px solid var(--neon-cyan); color: #fff; }
         .modal-card-red { border: 4px solid var(--neon-red) !important; }
@@ -110,9 +112,9 @@
 
     <div class="app-container">
         <div class="mobile-frame">
-            <div id="pastePopup" style="display:none; position:absolute; z-index:2000; background:var(--neon-cyan); color:#000; padding:15px 25px; border-radius:15px; border:3px solid #000; text-transform:uppercase; font-size:12px;">TEMPEL DATA</div>
+            <div id="pastePopup" onclick="window.handleNativePasteBackup ? window.handleNativePasteBackup(event) : null">TEMPEL DATA</div>
 
-            <!-- HALAMAN 1 -->
+            <!-- PAGE 1: LOGIN -->
             <div id="pageLogin" class="page active">
                 <div class="flex flex-col items-center justify-center h-full px-5 text-center">
                     <div class="mb-10 w-full px-4"><h1 class="uppercase text-[22px] tracking-tight text-white leading-tight">SELAMAT DATANG DI APLIKASI<br>CEK SAMSAT INDONESIA</h1></div>
@@ -124,25 +126,18 @@
                             <div class="dot"></div><div class="dot"></div><div class="dot"></div>
                         </div>
                         <button type="button" id="loginBtn" style="background:var(--neon-cyan); color:#000; border-radius:20px; padding:22px; width:100%; text-transform:uppercase;">MASUK APLIKASI</button>
-                        
-                        <div style="background-color: rgba(0, 229, 255, 0.05); border: 2.5px dashed var(--neon-cyan); border-radius: 30px; padding: 25px 20px; margin-top: 25px; position: relative; z-index: 1000;">
-                            <button type="button" id="waRegBtn" class="btn-wa-reg">
-                                <i data-lucide="message-circle"></i> DAFTAR VIA WHATSAPP
-                            </button>
+                        <div style="background-color: rgba(0, 229, 255, 0.05); border: 2.5px dashed var(--neon-cyan); border-radius: 30px; padding: 25px 20px; margin-top: 25px;">
+                            <button type="button" id="waRegBtn" class="btn-wa-reg"><i data-lucide="message-circle"></i> DAFTAR VIA WHATSAPP</button>
                         </div>
                     </div>
                 </div>
                 <input type="number" id="pinInput" maxlength="6" inputmode="numeric">
             </div>
 
-            <!-- HALAMAN 2 -->
+            <!-- PAGE 2: SEARCH -->
             <div id="pageSearch" class="page">
-                <div class="app-header-nav bg-[#000] p-4 border-b-4 border-[var(--neon-cyan)] text-white flex items-center justify-between">
+                <div class="app-header-nav bg-[#000] p-6 border-b-4 border-[var(--neon-cyan)] text-white flex items-center justify-between">
                     <div class="flex items-center gap-2"><i data-lucide="shield-alert" size="16" style="color:var(--neon-cyan)"></i><h2 class="text-[9px] uppercase tracking-wider text-white">CSID.PRO</h2></div>
-                    <div class="text-right">
-                        <p id="uName" class="text-[8px]">PIN : -</p>
-                        <p id="uExp" class="text-[8px] tracking-tighter" style="color:var(--neon-cyan)">SISA: --:--:--</p>
-                    </div>
                 </div>
                 <div class="search-bar-container" id="longPressArea">
                     <div class="marquee-hint" id="marqueeHint"><div class="marquee-text">KETIK DISINI NO. PLAT NO. RANGKA DAN NO. MESIN ...</div></div>
@@ -160,29 +155,40 @@
                     <button id="searchBtn" class="btn-cyan-square" style="background:var(--wa-green); border-color:#000; flex:1.2"><i data-lucide="search" size="24" style="color:#fff"></i></button>
                 </div>
                 <div class="kb-container" id="kbBox"></div>
+                <!-- INFO DI BAWAH KEYBOARD -->
+                <div class="info-container-bottom">
+                    <p class="info-pin-text user-pin-display">PIN : -</p>
+                    <p class="info-time-text user-time-display">SISA: --:--:--</p>
+                </div>
             </div>
 
-            <!-- HALAMAN 3 -->
+            <!-- PAGE 3: ADMIN -->
             <div id="pageAdmin" class="page">
                 <div class="admin-header">
-                    <div class="flex items-center gap-3"><button id="refreshAdminBtn" class="p-2"><i data-lucide="refresh-cw" size="18" style="color:#fff"></i></button><h2 class="uppercase tracking-widest text-white">ADMIN PANEL CSID.PRO</h2></div>
-                    <button id="closeAdminBtn" class="btn-nav-back"><i data-lucide="x" size="28"></i></button>
+                    <div class="flex items-center gap-3"><button id="refreshAdminBtn" class="p-2"><i data-lucide="refresh-cw" size="18" style="color:#fff"></i></button><h2 class="uppercase tracking-widest text-white">ADMIN PANEL</h2></div>
+                    <button id="closeAdminBtn" class="btn-nav-back"><i data-lucide="x" size="32"></i></button>
                 </div>
-                <div class="px-4 pt-6 flex-shrink-0"><button id="addNewPinBtn" class="w-full bg-white border-4 border-black p-5 rounded-2xl text-black text-sm mb-2 uppercase">AKTIFKAN PIN BARU</button></div>
-                <div class="stat-grid-horizontal">
-                    <div class="stat-box-horizon"><div id="statTotal" class="stat-num text-white">0</div><div class="stat-label">TOTAL</div></div>
-                    <div class="stat-box-horizon"><div id="statActive" class="stat-num text-green-500">0</div><div class="stat-label">AKTIF</div></div>
-                    <div class="stat-box-horizon" style="border-color: var(--neon-red);"><div id="statAlertCount" class="stat-num text-red-500">0</div><div class="stat-label">PELANGGARAN</div><div id="radarDot" class="stat-alert-dot"></div></div>
+                <div class="px-4 pt-6 flex-1 overflow-y-auto">
+                    <button id="addNewPinBtn" class="w-full bg-white border-4 border-black p-5 rounded-2xl text-black text-sm mb-6 uppercase">AKTIFKAN PIN BARU</button>
+                    <div class="stat-grid-horizontal">
+                        <div class="stat-box-horizon"><div id="statTotal" class="stat-num text-white">0</div><div class="stat-label">TOTAL</div></div>
+                        <div class="stat-box-horizon"><div id="statActive" class="stat-num text-green-500">0</div><div class="stat-label">AKTIF</div></div>
+                        <div class="stat-box-horizon" style="border-color: var(--neon-red);"><div id="statAlertCount" class="stat-num text-red-500">0</div><div class="stat-label">PELANGGARAN</div></div>
+                    </div>
+                    <input type="number" id="adminSearchInput" placeholder="Cari PIN Agent..." class="w-full p-4 bg-[#111] border-2 border-white/10 rounded-2xl text-white mb-6">
+                    <div id="agList" class="pb-16"></div>
                 </div>
-                <div class="px-4 mb-4 flex-shrink-0"><input type="number" id="adminSearchInput" placeholder="Cari PIN Agent..." class="w-full p-4 bg-[#111] border-2 border-white/10 rounded-2xl text-white text-lg"></div>
-                <div id="agList" class="agent-list-scrollable"></div>
+                <div class="info-container-bottom">
+                    <p class="info-pin-text" style="color:#facc15">PIN : 280189</p>
+                    <p class="info-time-text" style="color:#facc15">MASTER ADMIN ACCESS</p>
+                </div>
             </div>
 
-            <!-- HALAMAN 4 -->
+            <!-- PAGE 4: RESULT -->
             <div id="pageResult" class="page">
                 <div class="bg-[#000] p-4 border-b-4 border-[var(--neon-cyan)] flex items-center text-white">
-                    <button id="backSearchBtn" class="btn-nav-back"><i data-lucide="arrow-left" size="32"></i></button>
-                    <span class="flex-1 text-center uppercase text-[14px] tracking-[0.4em] font-black text-white">CSID.PRO</span>
+                    <button id="backSearchBtn" class="btn-nav-back"><i data-lucide="arrow-left" size="36"></i></button>
+                    <span class="flex-1 text-center uppercase text-[10px] tracking-[0.2em] font-black text-white">LAPORAN HASIL</span>
                 </div>
                 <div id="resultArea" class="result-page-container overflow-y-auto"></div>
                 <div class="p-5 bg-[#000] border-t-2 border-white/10 flex flex-col">
@@ -192,17 +198,46 @@
             </div>
 
             <!-- MODALS -->
-            <div id="global-loader"><div class="flex flex-col items-center"><div class="relative w-24 h-24 flex items-center justify-center"><div class="absolute inset-0 border-[6px] border-t-[var(--neon-cyan)] border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div><i data-lucide="zap" class="text-[var(--neon-cyan)] fill-[var(--neon-cyan)] animate-pulse" size="40"></i></div><p class="turbo-text">VERIFIKASI DATA...</p></div></div>
+            <div id="global-loader"><div class="flex flex-col items-center"><div class="relative w-24 h-24 flex items-center justify-center"><div class="absolute inset-0 border-[6px] border-t-[var(--neon-cyan)] border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div><i data-lucide="zap" class="text-[var(--neon-cyan)] fill-[var(--neon-cyan)] animate-pulse" size="40"></i></div><p class="turbo-text">SEARCHING...</p></div></div>
             <div id="modalAlert" class="modal-overlay"><div class="modal-card"><h3 id="alertTitle" class="uppercase text-xl text-[var(--neon-cyan)]"></h3><p id="alertBody" class="my-6 text-slate-400 text-sm"></p><button type="button" class="w-full bg-white text-black py-4 rounded-xl uppercase text-[10px]" id="closeAlertBtn">OKE</button></div></div>
-            <div id="modalLogout" class="modal-overlay"><div class="modal-card"><div class="text-red-500 mb-6 flex justify-center"><i data-lucide="log-out" size="56"></i></div><h3 class="uppercase text-xl mb-2 text-center text-white">KONFIRMASI KELUAR</h3><p class="text-[12px] text-slate-500 mb-10 uppercase tracking-widest text-center">Keluar dari aplikasi?</p><div class="flex gap-4 px-2"><button id="cancelLogoutBtn" class="flex-1 bg-[#222] py-5 rounded-2xl text-xs text-white">TIDAK</button><button id="confirmLogoutBtn" class="flex-1 bg-red-600 py-5 rounded-2xl text-xs text-white">YA, KELUAR</button></div></div></div>
+            
+            <!-- ✅ MODAL RENEW: PILIHAN LENGKAP -->
             <div id="modalRenewPin" class="modal-overlay"><div class="modal-card" style="border-color: #fff"><h3 class="mb-2 uppercase text-white">PERPANJANG PIN</h3><p id="renewPinLabel" class="text-white text-xs mb-6">ID: ----</p>
-                <select id="renewExpiryChoice" class="w-full p-4 bg-[#000] border-2 border-white/20 rounded-xl mb-6 text-white text-xs"><option value="1">1 HARI</option><option value="7">7 HARI</option><option value="15">15 HARI</option><option value="30" selected>30 HARI</option><option value="365">1 TAHUN</option><option value="36500">NOLIMIT (PERMANEN)</option></select>
-                <div class="flex gap-3"><button id="cancelRenewBtn" class="flex-1 bg-[#222] py-4 rounded-xl text-[10px] text-white">BATAL</button><button id="confirmRenewBtn" class="flex-1 bg-blue-600 py-4 rounded-xl text-[10px] text-white">PERPANJANG</button></div>
+                <select id="renewExpiryChoice" class="w-full p-4 bg-[#000] border-2 border-white/20 rounded-xl mb-6 text-white text-xs">
+                    <option value="0.0417">1 JAM (TRIAL)</option>
+                    <option value="1">1 HARI</option>
+                    <option value="2">2 HARI</option>
+                    <option value="5">5 HARI</option>
+                    <option value="7">7 HARI</option>
+                    <option value="15">15 HARI</option>
+                    <option value="30" selected>30 HARI</option>
+                    <option value="90">3 BULAN</option>
+                    <option value="180">6 BULAN</option>
+                    <option value="365">1 TAHUN</option>
+                    <option value="36500">NOLIMIT (PERMANEN)</option>
+                </select>
+                <div class="flex gap-3"><button id="cancelRenewBtn" class="flex-1 bg-[#222] py-4 rounded-xl text-xs">BATAL</button><button id="confirmRenewBtn" class="flex-1 bg-blue-600 py-4 rounded-xl text-xs">PERPANJANG</button></div>
             </div></div>
+
+            <!-- ✅ MODAL ADD PIN: PILIHAN LENGKAP -->
             <div id="modalAddPin" class="modal-overlay"><div class="modal-card" style="border-color: #fff"><h3 class="mb-4 uppercase text-white">AKTIFKAN PIN BARU</h3><input type="number" id="newPinVal" placeholder="6 ANGKA PIN" class="w-full p-4 bg-[#000] border-2 border-white/20 rounded-xl mb-5 text-center text-xl text-white">
-                <select id="expiryChoice" class="w-full p-4 bg-[#000] border-2 border-white/20 rounded-xl mb-6 text-white text-xs"><option value="1">1 HARI</option><option value="7">7 HARI</option><option value="15">15 HARI</option><option value="30" selected>30 HARI</option><option value="365">1 TAHUN</option><option value="36500">NOLIMIT (PERMANEN)</option></select>
-                <div class="flex gap-3"><button id="cancelAddBtn" class="flex-1 bg-[#222] py-4 rounded-xl text-[10px] text-white">BATAL</button><button id="confirmAddBtn" class="flex-1 bg-blue-600 py-4 rounded-xl text-[10px] text-white">KONFIRMASI</button></div>
+                <select id="expiryChoice" class="w-full p-4 bg-[#000] border-2 border-white/20 rounded-xl mb-6 text-white text-xs">
+                    <option value="0.0417">1 JAM (TRIAL)</option>
+                    <option value="1">1 HARI</option>
+                    <option value="2">2 HARI</option>
+                    <option value="5">5 HARI</option>
+                    <option value="7">7 HARI</option>
+                    <option value="15">15 HARI</option>
+                    <option value="30" selected>30 HARI</option>
+                    <option value="90">3 BULAN</option>
+                    <option value="180">6 BULAN</option>
+                    <option value="365">1 TAHUN</option>
+                    <option value="36500">NOLIMIT (PERMANEN)</option>
+                </select>
+                <div class="flex gap-3"><button id="cancelAddBtn" class="flex-1 bg-[#222] py-4 rounded-xl text-xs">BATAL</button><button id="confirmAddBtn" class="flex-1 bg-blue-600 py-4 rounded-xl text-xs">KONFIRMASI</button></div>
             </div></div>
+            
+            <div id="modalLogout" class="modal-overlay"><div class="modal-card"><div class="text-red-500 mb-6 flex justify-center"><i data-lucide="log-out" size="56"></i></div><h3 class="uppercase text-xl mb-2 text-center text-white">KONFIRMASI KELUAR</h3><p class="text-[12px] text-slate-500 mb-10 uppercase tracking-widest text-center">Keluar?</p><div class="flex gap-4 px-2"><button id="cancelLogoutBtn" class="flex-1 bg-[#222] py-5 rounded-2xl text-xs text-white">TIDAK</button><button id="confirmLogoutBtn" class="flex-1 bg-red-600 py-5 rounded-2xl text-xs text-white">YA</button></div></div></div>
         </div>
     </div>
 
@@ -219,53 +254,57 @@
         const apiKeyGemini = "AIzaSyAg-OhP0B0bFivaa2ryUjTVdTGjBLFGd5E";
 
         const getDevID = () => btoa(navigator.userAgent + (navigator.language || 'id') + screen.width + screen.height).slice(0, 48);
-        window.titanState = { isAdmin: false, currentReportData: null, allAgents: [], currentAgentPin: null, renewTargetId: null, countdownTimer: null, lastSearchedPlate: "" };
+        window.titanState = { isAdmin: false, currentReportData: null, allAgents: [], currentAgentPin: null, renewTargetId: null, countdownTimer: null, lastIdSearched: "" };
 
-        // ✅ 1. DEFINISI FUNGSI GLOBAL ADMIN (WAJIB ADA UNTUK TOMBOL)
+        // ✅ KEYBOARD FUNCTIONS (GLOBAL)
+        window.kAdd = (v) => { const el = document.getElementById('plateDisplay'); if(el) { el.value += v; window.adjustInputFontSize(el); } };
+        window.kDel = () => { const el = document.getElementById('plateDisplay'); if(el) { el.value = el.value.slice(0, -1); window.adjustInputFontSize(el); } };
+        window.kClear = () => { const el = document.getElementById('plateDisplay'); if(el) { el.value = ''; window.adjustInputFontSize(el); } };
+
+        window.setupKB = () => {
+            const kbBox = document.getElementById('kbBox'); if(!kbBox) return;
+            kbBox.innerHTML = "";
+            const r1 = document.createElement('div'); r1.className="kb-row mb-1 flex gap-1";
+            ["1","2","3","DEL","CLR"].forEach(k => {
+                const b = document.createElement('button'); b.className="kb-btn";
+                if(k==="DEL") { b.style.background="#fff"; b.innerHTML=`<i data-lucide="delete"></i>`; b.onclick=()=>window.kDel(); }
+                else if(k==="CLR") { b.style.background="#ffff00"; b.innerText="CLR"; b.onclick=()=>window.kClear(); }
+                else { b.innerText=k; b.onclick=()=>window.kAdd(k); } r1.appendChild(b);
+            }); kbBox.appendChild(r1);
+            const others = [["4","5","6","0"], ["7","8","9"], ["Q","W","E","R","T","Y","U","I","O","P"], ["A","S","D","F","G","H","J","K","L"], ["Z","X","C","V","B","N","M"]];
+            others.forEach(row => {
+                const dr = document.createElement('div'); dr.className="kb-row mb-1 flex gap-1";
+                row.forEach(k => { const b = document.createElement('button'); b.className="kb-btn"; b.innerText=k; b.onclick=()=>window.kAdd(k); dr.appendChild(b); });
+                kbBox.appendChild(dr);
+            });
+            lucide.createIcons();
+        };
+
+        // ✅ GLOBAL HELPERS
         window.closeAlert = () => { document.getElementById('modalAlert').style.display = 'none'; };
-        window.hidePastePopup = () => { document.getElementById('pastePopup').style.display = 'none'; };
-        window.showL = (m) => { const txt = document.querySelector('.turbo-text'); if(txt) txt.innerText = m; document.getElementById('global-loader').style.display = 'flex'; };
+        window.showL = (m) => { document.querySelector('.turbo-text').innerText = m; document.getElementById('global-loader').style.display = 'flex'; };
         window.hideL = () => { document.getElementById('global-loader').style.display = 'none'; };
         window.showM = (t, b) => { 
             const mBox = document.getElementById('modalAlert'); document.getElementById('alertTitle').innerText = t; document.getElementById('alertBody').innerText = b; 
-            if(t === "DEVICE LOCK") mBox.querySelector('.modal-card').classList.add('modal-card-red'); else mBox.querySelector('.modal-card').classList.remove('modal-card-red');
+            if(t === "DEVICE LOCK" || t === "EXPIRED") mBox.querySelector('.modal-card').classList.add('modal-card-red'); else mBox.querySelector('.modal-card').classList.remove('modal-card-red');
             mBox.style.display = 'flex'; 
         };
         window.showToast = (m) => { const t = document.createElement('div'); t.innerText = m; t.className="fixed top-10 left-1/2 -translate-x-1/2 bg-[var(--neon-cyan)] text-black px-6 py-3 rounded-full z-[9999] shadow-2xl uppercase text-[10px]"; document.body.appendChild(t); setTimeout(() => t.remove(), 2500); };
         window.safeSwitch = (id) => { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); const target = document.getElementById(id); if(target) target.classList.add('active'); if(id==='pageAdmin') loadAgentList(); lucide.createIcons(); };
         window.adjustKB = (val) => { let cur = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--kb-height')) || 12; document.documentElement.style.setProperty('--kb-height', (cur + val) + 'px'); };
         
-        // FUNGSI AKSI ADMIN
-        window.toggleBlock = async (id, cur) => { const nS = cur === 'blocked' ? 'active' : 'blocked'; await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { status: nS }); window.showToast(nS==='active'?"AKTIF":"BLOKIR"); };
+        window.toggleBlock = async (id, cur) => { const nS = cur === 'blocked' ? 'active' : 'blocked'; await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { status: nS }); };
         window.openMap = (lat, lng) => { if(lat && lng) window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank'); else window.showToast("GPS MATI"); };
-        window.openRenewPin = (id) => { window.titanState.renewTargetId = id; const label = document.getElementById('renewPinLabel'); if(label) label.innerText = "ID: " + id; document.getElementById('modalRenewPin').style.display = 'flex'; };
-        window.resetDevice = async (id) => { if(confirm(`Buka kunci HP untuk PIN ${id}?`)) { await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { deviceId: "", firebaseUid: "", illegalAttempts: 0 }); window.showToast("DEVICE RESET!"); } };
+        window.openRenewPin = (id) => { window.titanState.renewTargetId = id; document.getElementById('renewPinLabel').innerText = "ID: " + id; document.getElementById('modalRenewPin').style.display = 'flex'; };
+        window.resetDevice = async (id) => { if(confirm(`RELOAD PIN ${id}?`)) { await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { deviceId: "", firebaseUid: "", illegalAttempts: 0 }); window.showToast("DEVICE RESET!"); } };
         window.delAgent = async (id) => { if(confirm(`HAPUS PIN ${id} PERMANEN?`)) { await deleteDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id)); } };
         window.openAddPin = () => { document.getElementById('modalAddPin').style.display = 'flex'; };
 
         window.adjustInputFontSize = (input) => {
             const len = input.value.length;
-            if (len > 18) input.style.fontSize = "1rem"; else if (len > 12) input.style.fontSize = "1.4rem"; else input.style.fontSize = "2.2rem";
+            if (len > 18) input.style.fontSize = "1.2rem"; else if (len > 12) input.style.fontSize = "1.6rem"; else input.style.fontSize = "2.2rem";
             document.getElementById('marqueeHint').style.display = len > 0 ? 'none' : 'flex';
         };
-
-        window.setupKB = () => {
-            const kbBox = document.getElementById('kbBox'); if(!kbBox) return;
-            kbBox.innerHTML = ""; const rows = [["1","2","3","DEL","CLR"], ["4","5","6","0"], ["7","8","9"], ["Q","W","E","R","T","Y","U","I","O","P"], ["A","S","D","F","G","H","J","K","L"], ["Z","X","C","V","B","N","M"]];
-            rows.forEach(r => {
-                const dr = document.createElement('div'); dr.className="kb-row mb-1 flex gap-1";
-                r.forEach(k => {
-                    const b = document.createElement('button'); b.className="kb-btn";
-                    if(k==="DEL") { b.className+=" bg-white text-black"; b.innerHTML=`<i data-lucide="delete"></i>`; b.onclick=()=>window.kDel(); }
-                    else if(k==="CLR") { b.className+=" bg-[#ffff00] text-black text-[12px]"; b.innerText="CLR"; b.onclick=()=>window.kClear(); }
-                    else { b.innerText=k; b.onclick=()=>window.kAdd(k); } dr.appendChild(b);
-                }); kbBox.appendChild(dr);
-            }); lucide.createIcons();
-        };
-
-        window.kAdd = (v) => { const el = document.getElementById('plateDisplay'); if(el) { el.value += v; window.adjustInputFontSize(el); } };
-        window.kDel = () => { const el = document.getElementById('plateDisplay'); if(el) { el.value = el.value.slice(0, -1); window.adjustInputFontSize(el); } };
-        window.kClear = () => { const el = document.getElementById('plateDisplay'); if(el) { el.value = ''; window.adjustInputFontSize(el); } };
 
         const handleLogin = async (pin) => {
             window.showL("VERIFIKASI PIN...");
@@ -276,10 +315,10 @@
                 if(snap.exists()){
                     const d = snap.data(); const isExpired = new Date(d.expiry) <= new Date();
                     if(isExpired) { window.showM("EXPIRED", "MASA AKTIF PIN ANDA TELAH HABIS."); window.hideL(); return; }
-                    if(d.status === 'blocked') { window.showM("LOCK", "AKSES PIN ANDA DISEKAT OLEH ADMIN."); window.hideL(); return; }
+                    if(d.status === 'blocked') { window.showM("LOCK", "AKSES PIN ANDA DISEKAT."); window.hideL(); return; }
                     if(d.deviceId && d.deviceId !== "" && d.deviceId !== dev) {
                         await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { illegalAttempts: increment(1), lastIllegalTime: new Date().toISOString() });
-                        localStorage.clear(); window.showM("DEVICE LOCK", "PIN INI TIDAK SESUAI DENGAN PERANGKAT ANDA, SILAHKAN HUBUNGI ADMIN UNTUK AKTIF PIN BARU ANDA."); window.hideL(); return;
+                        localStorage.clear(); window.showM("DEVICE LOCK", "PIN INI TIDAK SESUAI DENGAN PERANGKAT ANDA."); window.hideL(); return;
                     }
                     localStorage.setItem('saved_pin', pin); window.titanState.currentAgentPin = pin;
                     await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { deviceId: dev, firebaseUid: userCred.user.uid });
@@ -301,8 +340,6 @@
                     if(hasViolation) alertCount++;
                     const diff = new Date(d.expiry).getTime() - now;
                     const sDay = (diff > 86400000 * 3000) ? 'NOLIMIT' : (diff > 0 ? Math.floor(diff/86400000) + ' hari' : 'EXP');
-                    
-                    // ✅ RENDER TOMBOL ADMIN PERSIS SEPERTI GAMBAR
                     list.innerHTML += `<div class="agent-card-supreme" style="border-color:${hasViolation?'var(--neon-red)':'var(--neon-white)'}">
                         ${hasViolation ? `<div class="violation-badge">🚩 ${d.illegalAttempts}x BLOCKED</div>` : ''}
                         <div class="pin-text-white" style="font-size: 22px; color: #fff;">PIN: ${d.id}</div>
@@ -311,7 +348,7 @@
                             <button onclick="window.toggleBlock('${d.id}', '${d.status}')" class="btn-sekat-supreme" style="background:${isB?'var(--neon-red)':'#fff'}; color:${isB?'#fff':'#000'}">SEKAT</button>
                             <button onclick="window.openMap(${d.lastLat}, ${d.lastLong})" class="btn-admin-icon-box bg-green-600"><i data-lucide="map-pin" size="22" color="white"></i></button>
                             <button onclick="window.openRenewPin('${d.id}')" class="btn-admin-icon-box bg-blue-600"><i data-lucide="calendar-plus" size="22" color="white"></i></button>
-                            <button onclick="window.resetDevice('${d.id}')" class="btn-admin-icon-box bg-blue-500"><i data-lucide="refresh-cw" size="22" color="white"></i></button>
+                            <button onclick="window.resetDevice('${d.id}')" class="btn-admin-icon-box bg-blue-400"><i data-lucide="refresh-cw" size="22" color="white"></i></button>
                             <button onclick="window.delAgent('${d.id}')" class="btn-admin-icon-box bg-red-600"><i data-lucide="trash-2" size="22" color="white"></i></button>
                         </div></div>`;
                 });
@@ -323,25 +360,28 @@
         };
 
         window.doSearch = async () => {
-            const val = document.getElementById('plateDisplay').value.trim(); if(!val) return;
-            window.showL("HYPER SEARCHING..."); window.titanState.lastSearchedPlate = val.toUpperCase();
+            const el = document.getElementById('plateDisplay');
+            let pInput = el.value.trim().toUpperCase().replace(/[^A-Z0-9]/gi, ''); 
+            if(!pInput || pInput.length < 3) return;
+            window.showL("HYPER SEARCHING..."); window.titanState.lastIdSearched = pInput;
             try {
-                const res = await fetch(`https://elangninja.space/?key=9611bbce88d6dbd96cdfd83619233efb&s=${encodeURIComponent(val)}`);
-                const data = await res.json();
-                const d = Array.isArray(data) ? data[0] : (data.data ? data.data[0] : data);
-                if(d && (d.owner_name || d.plate_number)) { renderResult(d, val); } else window.showM("TIADA", "Data tidak ditemukan.");
-            } catch(e) {} window.hideL();
+                const res = await fetch(`https://elangninja.space/?key=9611bbce88d6dbd96cdfd83619233efb&s=${encodeURIComponent(pInput)}`, { timeout: 10000 });
+                const resJson = await res.json();
+                let d = Array.isArray(resJson) ? resJson[0] : (resJson.data ? (Array.isArray(resJson.data) ? resJson.data[0] : resJson.data) : resJson);
+                if(d && (d.owner_name || d.plate_number || d.brand)) { renderResult(d, pInput); } else window.showM("TIADA", "Data tidak ditemukan.");
+            } catch(e) { window.showM("SERVER ERROR", "Koneksi terhenti atau server sibuk."); } window.hideL();
         };
 
         const renderResult = (v, sP) => {
             window.titanState.currentReportData = v;
             const area = document.getElementById('resultArea'); if(!area) return;
-            let fnP = ((v.plate_region || "") + (v.plate_number || "") + (v.plate_series || "")).toUpperCase() || sP.toUpperCase();
+            let fnP = ((v.plate_region || "") + (v.plate_number || "") + (v.plate_series || "")).toUpperCase() || sP;
+            const addr = (v.owner_address || "").replace('- //','').trim();
             const rW = (l, val) => `<div class="row-master"><div class="label-master">${l}</div><div class="val-master">${val || "-"}</div></div>`;
             area.innerHTML = `<div class="official-card-full">
-                <div style="font-size:14px; color:var(--neon-cyan); margin-bottom:30px; text-align:center;">SUMBER    : APLIKASI CSID.PRO</div>
+                <div style="font-size:12px; color:var(--neon-cyan); margin-bottom:30px; text-align:center;">SUMBER    : APLIKASI CSID.PRO</div>
                 <div class="header-label-master">IDENTITAS PEMILIK : 👥</div><div class="white-divider"></div>
-                ${rW("No.PLAT", fnP)}${rW("PEMILIK", v.owner_name)}${rW("ALAMAT", v.owner_address)}${rW("NIK", v.nik)}${rW("PEKERJAAN", v.owner_job)}
+                ${rW("No.PLAT", fnP)}${rW("PEMILIK", v.owner_name)}${rW("ALAMAT", addr)}${rW("NIK", v.nik)}${rW("PEKERJAAN", v.owner_job)}
                 <div class="header-label-master">DATA KENDARAAN : 🚘</div><div class="white-divider"></div>
                 ${rW("MEREK", v.brand)}${rW("TIPE", v.vehicle_type)}${rW("TAHUN", v.manufacture_year)}${rW("WARNA", v.color)}${rW("SILINDER", (v.engine_capacity_cc || "") + " cc")}${rW("RODA", v.wheel_count || "0")}
                 <div class="row-master"><div class="label-master">NO. RANGKA</div><div class="val-master" style="color:#3b82f6; font-weight:900;">${v.chassis_number || "-"}</div></div>
@@ -350,27 +390,32 @@
                 ${rW("NO. BPKB", v.bpkb_number)}${rW("NO. STNK", v.stnk_number)}${rW("TGL DAFTAR", v.registration_date)}
                 <div style="margin-top:50px;"><div class="header-label-master">NOTE : ⚠️</div></div>
                 <p style="color:var(--neon-cyan); font-size:13.5px; line-height:1.8; text-transform:uppercase; text-align:justify;">APLIKASI INI DI BUAT UNTUK MENGAKSES IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB RESMI PADA KENDARAAN.</p>
-                <div style="margin-top:40px; border-top:2px solid rgba(0,229,255,0.1); padding-top:20px;"><div style="color:var(--neon-cyan); font-size:14px; margin-bottom:8px;">CP LINK : CSID.PRO 👇</div><a href="https://wa.me/628136900872" style="color:#fff; text-decoration:underline; font-size:15px;">https://wa.me/628136900872</a></div></div>`;
+                <div style="margin-top:40px; border-top:2px solid rgba(0,229,255,0.1); padding-top:20px;">
+                    <div style="color:var(--neon-cyan); font-size:14px; margin-bottom:8px;">CP LINK : CSID.PRO 👇</div>
+                    <a href="https://wa.me/628136900872" style="color:#fff; text-decoration:underline; font-size:15px;">https://wa.me/628136900872</a>
+                </div></div>`;
             window.safeSwitch('pageResult');
         };
 
-        // ✅ 2. PRECISION REPORT BUILDER (TITIK DUA SEJAJAR LURUS)
+        // ✅ PRECISION REPORT BUILDER (TITIK DUA SEJAJAR)
         window.generateCleanReport = (v) => {
-            let fullPlate = ((v.plate_region || "") + (v.plate_number || "") + (v.plate_series || "")).toUpperCase() || window.titanState.lastSearchedPlate;
-            const addrClean = (v.owner_address || "").replace('- //','').trim();
-            // Gunakan padding lebar agar titik dua sejajar di WhatsApp
+            let fnP = ((v.plate_region || "") + (v.plate_number || "") + (v.plate_series || "")).toUpperCase() || window.titanState.lastIdSearched;
+            const addr = (v.owner_address || "").replace('- //','').trim();
             const f = (l, val) => l.padEnd(16, ' ') + " : " + (val || "-");
-            return `SUMBER    : APLIKASI CSID.PRO\n\n*IDENTITAS PEMILIK : 👥*\n--------------------------------\n${f("NO.PLAT", fullPlate)}\n${f("PEMILIK", v.owner_name)}\n${f("ALAMAT", addrClean)}\n${f("NIK", v.nik)}\n${f("PEKERJAAN", v.owner_job)}\n\n*DATA KENDARAAN : 🚘*\n--------------------------------\n${f("MEREK", v.brand)}\n${f("TIPE", v.vehicle_type)}\n${f("TAHUN", v.manufacture_year)}\n${f("WARNA", v.color)}\n${f("SILINDER", (v.engine_capacity_cc || "") + " cc")}\n${f("RODA", v.wheel_count || "0")}\n${f("NO. RANGKA", v.chassis_number)}\n${f("NO. MESIN", v.engine_number)}\n\n*DOKUMEN RESMI : 📔*\n--------------------------------\n${f("NO. BPKB", v.bpkb_number)}\n${f("NO. STNK", v.stnk_number)}\n${f("TGL DAFTAR", v.registration_date)}\n\n*NOTE : ⚠️*\nAPLIKASI INI DI BUAT UNTUK MENGAKSES IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB RESMI PADA KENDARAAN.\n\n*CP LINK : CSID.PRO 👇*\nhttps://wa.me/628136900872`;
+            return `SUMBER    : APLIKASI CSID.PRO\n\n*IDENTITAS PEMILIK : 👥*\n--------------------------------\n${f("NO.PLAT", fnP)}\n${f("PEMILIK", v.owner_name)}\n${f("ALAMAT", addr)}\n${f("NIK", v.nik)}\n${f("PEKERJAAN", v.owner_job)}\n\n*DATA KENDARAAN : 🚘*\n--------------------------------\n${f("MEREK", v.brand)}\n${f("TIPE", v.vehicle_type)}\n${f("TAHUN", v.manufacture_year)}\n${f("WARNA", v.color)}\n${f("SILINDER", (v.engine_capacity_cc || "") + " cc")}\n${f("RODA", v.wheel_count || "0")}\n${f("NO. RANGKA", v.chassis_number)}\n${f("NO. MESIN", v.engine_number)}\n\n*DOKUMEN RESMI : 📔*\n--------------------------------\n${f("NO. BPKB", v.bpkb_number)}\n${f("NO. STNK", v.stnk_number)}\n${f("TGL DAFTAR", v.registration_date)}\n\n*NOTE : ⚠️*\nAPLIKASI INI DI BUAT UNTUK MENGAKSES IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB RESMI PADA KENDARAAN.\n\n*CP LINK : CSID.PRO 👇*\nhttps://wa.me/628136900872`;
         };
 
         window.startCountdown = (expiryISO) => {
             if(window.titanState.countdownTimer) clearInterval(window.titanState.countdownTimer);
-            const el = document.getElementById('uExp'); if(!el) return;
             const update = () => {
                 const diff = new Date(expiryISO).getTime() - Date.now();
-                if(diff <= 0) { el.innerText = "SISA: EXPIRED"; el.style.color = "var(--neon-red)"; if(!window.titanState.isAdmin) { localStorage.clear(); window.showM("EXPIRED", "MASA AKTIF PIN ANDA TELAH HABIS."); setTimeout(() => window.location.reload(), 3000); } return; }
+                const displays = document.querySelectorAll('.user-time-display');
+                if(diff <= 0) { 
+                    displays.forEach(el => { el.innerText = "SISA: EXPIRED"; el.style.color = "var(--neon-red)"; });
+                    if(!window.titanState.isAdmin) { localStorage.clear(); window.showM("EXPIRED", "Masa aktif habis."); setTimeout(() => window.location.reload(), 3000); } return; 
+                }
                 const d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
-                el.innerText = `SISA: ${d}d ${h}:${m}:${s}`;
+                displays.forEach(el => { el.innerText = `SISA: ${d}d ${h}:${m}:${s}`; });
             }; update(); window.titanState.countdownTimer = setInterval(update, 1000);
         };
 
@@ -380,10 +425,10 @@
                 const v = e.target.value; document.querySelectorAll('.dot').forEach((d, i) => i < v.length ? d.classList.add('active') : d.classList.remove('active'));
                 if(v.length === 6) { handleLogin(v); e.target.value = ""; }
             };
-
             document.getElementById('loginBtn').onclick = () => pi.focus();
             document.getElementById('waRegBtn').onclick = () => { 
-                const uCode = Math.floor(100000 + Math.random() * 900000); const msg = `Halo Admin CSID.Pro !!!\nBantu Aktifkan PIN ini : ${uCode} 👈\n\nTerima kasih.`; 
+                const uCode = Math.floor(100000 + Math.random() * 900000); 
+                const msg = `Halo CSID.Pro\nAktifkan PIN : ${uCode}\nProses Pemakaian dan Pembayaran nya bagaimana, mohon di Bantu.`; 
                 window.open("https://wa.me/628136900872?text=" + encodeURIComponent(msg), '_blank'); 
             };
             document.getElementById('searchBtn').onclick = () => window.doSearch();
@@ -397,20 +442,23 @@
             document.getElementById('closeAlertBtn').onclick = () => window.closeAlert();
             document.getElementById('copyBtn').onclick = () => { if(window.titanState.currentReportData) { const t = window.generateCleanReport(window.titanState.currentReportData); const el = document.createElement('textarea'); el.value = t; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); window.showToast("DISALIN RAPI!"); } };
             document.getElementById('waShareBtn').onclick = () => { if(window.titanState.currentReportData) { const t = window.generateCleanReport(window.titanState.currentReportData); window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(t), '_blank'); } };
-
             document.getElementById('confirmLogoutBtn').onclick = async () => { localStorage.clear(); await signOut(auth); window.safeSwitch('pageLogin'); document.getElementById('modalLogout').style.display='none'; };
-            document.getElementById('cancelLogoutBtn').onclick = () => document.getElementById('modalLogout').style.display='none';
             document.getElementById('cancelAddBtn').onclick = () => document.getElementById('modalAddPin').style.display='none';
             document.getElementById('cancelRenewBtn').onclick = () => document.getElementById('modalRenewPin').style.display='none';
+            document.getElementById('cancelLogoutBtn').onclick = () => document.getElementById('modalLogout').style.display='none';
 
+            // ✅ KONFIRMASI TAMBAH PIN (SISTEM FLOAT)
             document.getElementById('confirmAddBtn').onclick = async () => {
-                const pin = document.getElementById('newPinVal').value; const days = parseInt(document.getElementById('expiryChoice').value); if(!pin || pin.length < 4) return;
+                const pin = document.getElementById('newPinVal').value; 
+                const days = parseFloat(document.getElementById('expiryChoice').value); if(!pin || pin.length < 4) return;
                 await setDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { role:'agent', status:'active', expiry: new Date(Date.now() + days * 86400000).toISOString(), createdAt: new Date().toISOString(), deviceId: "", illegalAttempts: 0 });
                 document.getElementById('modalAddPin').style.display = 'none'; window.showToast("PIN AKTIF!");
             };
 
+            // ✅ KONFIRMASI PERPANJANG (SISTEM FLOAT)
             document.getElementById('confirmRenewBtn').onclick = async () => {
-                const id = window.titanState.renewTargetId; const days = parseInt(document.getElementById('renewExpiryChoice').value); if(!id) return;
+                const id = window.titanState.renewTargetId; 
+                const days = parseFloat(document.getElementById('renewExpiryChoice').value);
                 const snap = await getDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id));
                 if(snap.exists()){
                     const cur = new Date(snap.data().expiry).getTime(); const base = cur < Date.now() ? Date.now() : cur;
@@ -419,20 +467,19 @@
                 }
             };
 
-            // AI VISION CAMERA
             document.getElementById('camBtn').onclick = () => document.getElementById('camInput').click();
             document.getElementById('camInput').onchange = async (e) => {
-                const file = e.target.files[0]; if (!file) return; window.showL("AI VISION SCANNING...");
+                const file = e.target.files[0]; if (!file) return; window.showL("AI SCANNING...");
                 const reader = new FileReader(); reader.readAsDataURL(file);
                 reader.onload = async () => {
                     const b64 = reader.result.split(',')[1];
                     try {
                         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKeyGemini}`, { 
                             method: 'POST', headers: { 'Content-Type': 'application/json' }, 
-                            body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: "Ekstrak data kendaraan (Plat Nomor, No Rangka, atau No Mesin). Berikan HANYA kodenya saja." }, { inlineData: { mimeType: "image/png", data: b64 } }] }] }) 
+                            body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: "Ekstrak Plat Nomor, No Rangka, atau No Mesin dari gambar ini secara valid. Berikan kodenya saja." }, { inlineData: { mimeType: "image/png", data: b64 } }] }] }) 
                         });
                         const r = await res.json(); const ext = r.candidates?.[0]?.content?.parts?.[0]?.text?.replace(/[^A-Z0-9]/gi, '').toUpperCase();
-                        if (extractedText && extractedText.length > 3) { document.getElementById('plateDisplay').value = ext; window.adjustInputFontSize(document.getElementById('plateDisplay')); window.doSearch(); } else window.showM("AI GAGAL", "Teks tidak terbaca.");
+                        if (ext && ext.length > 3) { document.getElementById('plateDisplay').value = ext; window.adjustInputFontSize(document.getElementById('plateDisplay')); window.doSearch(); } else window.showM("AI GAGAL", "Teks tidak terbaca.");
                     } catch(e) {} window.hideL();
                 };
             };
@@ -447,10 +494,11 @@
                             const d = snap.data(); const isExpired = new Date(d.expiry) <= new Date();
                             if((d.deviceId === dev || savedPin === "280189") && d.status !== 'blocked' && !isExpired) {
                                 if(savedPin === "280189") { window.titanState.isAdmin = true; document.getElementById('adminNavBtn').classList.remove('hidden'); }
-                                window.titanState.currentAgentPin = savedPin; document.getElementById('uName').innerText = "PIN : " + savedPin;
+                                window.titanState.currentAgentPin = savedPin; 
+                                document.querySelectorAll('.user-pin-display').forEach(el => el.innerText = "PIN : " + savedPin);
                                 if(document.getElementById('pageLogin').classList.contains('active')) window.safeSwitch('pageSearch');
                                 window.startCountdown(d.expiry);
-                            } else { localStorage.clear(); window.showM("DEVICE LOCK", "PIN INI TIDAK SESUAI DENGAN PERANGKAT ANDA."); setTimeout(() => window.location.reload(), 3000); }
+                            } else { localStorage.clear(); window.showM("AKSES DITOLAK", "Masa aktif habis atau HP tidak cocok."); setTimeout(() => { window.location.reload(); }, 3000); }
                         } else { localStorage.removeItem('saved_pin'); window.safeSwitch('pageLogin'); }
                     } catch(e) {}
                 }
