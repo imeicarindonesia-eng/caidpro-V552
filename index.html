@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CSID.PRO - Master V619</title>
+    <title>CSID.PRO - Master V622</title>
     
+    <!-- Library Inti -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -63,7 +64,7 @@
         .kb-row { display: flex; justify-content: center; gap: 5px; width: 100%; }
         .kb-btn { background: var(--neon-cyan); border: 2.5px solid #000; border-radius: 12px; padding: var(--kb-height) 0; flex: 1; color: #000; font-size: 20px; font-weight: 900; box-shadow: 0 4px 0 #000; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        /* --- HALAMAN 3: ADMIN (WHITE THEME) --- */
+        /* --- HALAMAN 3: ADMIN --- */
         #pageAdmin { color: var(--neon-white); background-color: #000; height: 100%; display: none; flex-direction: column; }
         .admin-header { background: #111; border-bottom: 4px solid var(--neon-white); padding: 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
         .stat-grid-horizontal { display: flex; gap: 10px; padding: 15px 20px; width: 100%; flex-shrink: 0; }
@@ -79,11 +80,11 @@
         /* --- HALAMAN 4: RESULT (BLUE NEON CYAN) --- */
         .result-page-container { background: #000; flex: 1; overflow-y: auto; width: 100%; }
         .official-card-full { width: 100%; padding: 30px 20px 120px 20px; text-align: left; }
-        .header-label-v619 { font-size: 17px; color: var(--neon-cyan); margin: 35px 0 15px 0; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        .row-v619 { display: flex; align-items: flex-start; margin-bottom: 12px; font-size: 14px; }
-        .label-v619 { width: 120px; flex-shrink: 0; text-transform: uppercase; color: var(--neon-cyan); display: flex; justify-content: space-between; }
-        .label-v619::after { content: ":"; margin-right: 10px; }
-        .val-v619 { flex: 1; text-transform: uppercase; color: var(--neon-cyan); word-break: break-all; line-height: 1.4; text-shadow: 0 0 8px rgba(0, 229, 255, 0.4); }
+        .header-label-v622 { font-size: 17px; color: var(--neon-cyan); margin: 35px 0 15px 0; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .row-v622 { display: flex; align-items: flex-start; margin-bottom: 12px; font-size: 14px; }
+        .label-v622 { width: 120px; flex-shrink: 0; text-transform: uppercase; color: var(--neon-cyan); display: flex; justify-content: space-between; }
+        .label-v622::after { content: ":"; margin-right: 10px; }
+        .val-v622 { flex: 1; text-transform: uppercase; color: var(--neon-cyan); word-break: break-all; line-height: 1.4; text-shadow: 0 0 8px rgba(0, 229, 255, 0.4); }
 
         /* LOADER PETIR */
         #global-loader { position: absolute; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
@@ -93,10 +94,10 @@
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes super-pulse { from { transform: scale(0.9); opacity: 0.7; } to { transform: scale(1.2); opacity: 1; } }
         .turbo-text { color: var(--neon-cyan); font-size: 14px; letter-spacing: 2px; text-transform: uppercase; animation: blink 0.2s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
         .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.95); z-index: 9000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal-card { background: #111; border-radius: 30px; padding: 30px; width: 100%; max-width: 330px; text-align: center; border: 4px solid var(--neon-cyan); color: #fff; }
+        .modal-card-red { border-color: var(--neon-red); }
     </style>
 </head>
 <body onclick="if(window.hidePastePopup) window.hidePastePopup()">
@@ -105,6 +106,7 @@
         <div class="mobile-frame">
             <div id="pastePopup" style="display:none; position:absolute; z-index:2000; background:var(--neon-cyan); color:#000; padding:15px 25px; border-radius:15px; border:3px solid #000; text-transform:uppercase; font-size:12px;">TEMPEL DATA</div>
 
+            <!-- HALAMAN 1 -->
             <div id="pageLogin" class="page active">
                 <div class="flex flex-col items-center justify-center h-full px-5 text-center">
                     <div class="mb-10 w-full px-4"><h1 class="uppercase text-[22px] tracking-tight text-white leading-tight">SELAMAT DATANG DI APLIKASI<br><span style="color:var(--neon-cyan)">CEK SAMSAT INDONESIA</span></h1></div>
@@ -118,8 +120,7 @@
                         <button type="button" id="loginBtn" style="background:var(--neon-cyan); color:#000; border-radius:20px; padding:22px; width:100%; text-transform:uppercase;">MASUK APLIKASI</button>
                         <div style="background-color: rgba(0, 229, 255, 0.05); border: 2.5px dashed var(--neon-cyan); border-radius: 30px; padding: 25px 20px; margin-top: 25px;">
                             <button type="button" id="waRegBtn" style="display:flex; align-items:center; justify-content:center; gap:12px; background:var(--wa-green); color:#fff; padding:22px; border-radius:18px; width:100%; text-transform:uppercase;">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12.012 2c-5.508 0-9.987 4.479-9.987 9.987 0 1.758.459 3.411 1.263 4.848l-1.341 4.91 5.022-1.319c1.392.76 2.976 1.197 4.656 1.197 5.508 0 9.987-4.479 9.987-9.987 0-5.508-4.479-9.987-9.987-9.987zm4.567 14.757c-.202.568-1.161 1.056-1.59 1.102-.394.045-.882.073-1.44-.108-.344-.111-2.025-.749-3.445-2.012-1.167-1.04-1.954-2.311-2.183-2.7-.23-.389-.024-.599.171-.795.176-.176.389-.456.583-.684.194-.228.258-.389.389-.648.13-.258.065-.485-.032-.684-.097-.199-.875-2.106-1.2-2.885-.316-.76-.641-.659-.875-.671-.227-.011-.486-.013-.746-.013-.258 0-.68.097-1.036.486-.356.389-1.36 1.328-1.36 3.238s1.392 3.751 1.585 4.01c.194.258 2.739 4.183 6.634 5.86.927.4 1.651.639 2.215.818.931.296 1.777.254 2.446.154.747-.111 2.296-.938 2.62-1.846.324-.908.324-1.684.227-1.846-.097-.162-.356-.258-.745-.453z"/></svg>
-                                DAFTAR VIA WHATSAPP
+                                <i data-lucide="message-circle"></i> DAFTAR VIA WHATSAPP
                             </button>
                         </div>
                     </div>
@@ -127,6 +128,7 @@
                 <input type="number" id="pinInput" maxlength="6" inputmode="numeric">
             </div>
 
+            <!-- HALAMAN 2 -->
             <div id="pageSearch" class="page">
                 <div class="app-header-nav bg-[#000] p-4 border-b-4 border-[var(--neon-cyan)] text-white flex items-center justify-between">
                     <div class="flex items-center gap-2"><i data-lucide="shield-alert" size="16" style="color:var(--neon-cyan)"></i><h2 class="text-[9px] uppercase tracking-wider text-white">CSID.PRO</h2></div>
@@ -153,6 +155,7 @@
                 <div class="kb-container" id="kbBox"></div>
             </div>
 
+            <!-- HALAMAN 3: ADMIN -->
             <div id="pageAdmin" class="page">
                 <div class="admin-header">
                     <div class="flex items-center gap-3"><button id="refreshAdminBtn" class="p-2"><i data-lucide="refresh-cw" size="18" style="color:#fff"></i></button><h2 class="uppercase tracking-widest text-white">ADMIN PANEL CSID.PRO</h2></div>
@@ -168,6 +171,7 @@
                 <div id="agList" class="agent-list-scrollable"></div>
             </div>
 
+            <!-- HALAMAN 4: RESULT -->
             <div id="pageResult" class="page">
                 <div class="bg-[#000] p-4 border-b-4 border-[var(--neon-cyan)] flex items-center text-white">
                     <button id="backSearchBtn" class="p-2"><i data-lucide="arrow-left"></i></button>
@@ -176,16 +180,15 @@
                 <div id="resultArea" class="result-page-container overflow-y-auto"></div>
                 <div class="p-5 bg-[#000] border-t-2 border-white/10 flex flex-col">
                     <button id="copyBtn" onclick="window.copyToClipboard()" style="background:#fff; color:#000; padding:20px; border-radius:20px; font-size:14px; width:100%; border:3px solid #000; margin-bottom:15px; display:flex; align-items:center; justify-content:center; gap:12px; text-transform:uppercase;">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                        SALIN DATA LAPORAN
+                        <i data-lucide="copy"></i> SALIN DATA LAPORAN
                     </button>
                     <button id="waShareBtn" onclick="window.shareToWA()" style="background:var(--wa-green); color:#fff; padding:22px; border-radius:22px; font-size:16px; width:100%; box-shadow: 0 8px 0 #1e7e34; display:flex; align-items:center; justify-content:center; gap:15px; border:3px solid #000; text-transform:uppercase;">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12.012 2c-5.508 0-9.987 4.479-9.987 9.987 0 1.758.459 3.411 1.263 4.848l-1.341 4.91 5.022-1.319c1.392.76 2.976 1.197 4.656 1.197 5.508 0 9.987-4.479 9.987-9.987 0-5.508-4.479-9.987-9.987-9.987zm4.567 14.757c-.202.568-1.161 1.056-1.59 1.102-.394.045-.882.073-1.44-.108-.344-.111-2.025-.749-3.445-2.012-1.167-1.04-1.954-2.311-2.183-2.7-.23-.389-.024-.599.171-.795.176-.176.389-.456.583-.684.194-.228.258-.389.389-.648.13-.258.065-.485-.032-.684-.097-.199-.875-2.106-1.2-2.885-.316-.76-.641-.659-.875-.671-.227-.011-.486-.013-.746-.013-.258 0-.68.097-1.036.486-.356.389-1.36 1.328-1.36 3.238s1.392 3.751 1.585 4.01c.194.258 2.739 4.183 6.634 5.86.927.4 1.651.639 2.215.818.931.296 1.777.254 2.446.154.747-.111 2.296-.938 2.62-1.846.324-.908.324-1.684.227-1.846-.097-.162-.356-.258-.745-.453z"/></svg>
-                        KIRIM KE WHATSAPP
+                        <i data-lucide="message-circle"></i> KIRIM KE WHATSAPP
                     </button>
                 </div>
             </div>
 
+            <!-- MODALS -->
             <div id="global-loader">
                 <div class="loader-lightning-box">
                     <div class="lightning-fast-spin"></div>
@@ -196,15 +199,11 @@
             <div id="modalAlert" class="modal-overlay"><div class="modal-card"><h3 id="alertTitle" class="uppercase text-lg text-[var(--neon-cyan)]"></h3><p id="alertBody" class="my-6 text-slate-400 text-xs"></p><button type="button" class="w-full bg-white text-black py-4 rounded-xl uppercase text-[10px]" onclick="window.closeAlert()">OKE</button></div></div>
             <div id="modalLogout" class="modal-overlay"><div class="modal-card"><div class="text-red-500 mb-6 flex justify-center"><i data-lucide="log-out" size="56"></i></div><h3 class="uppercase text-xl mb-2 text-center text-white">KONFIRMASI KELUAR</h3><p class="text-[12px] text-slate-500 mb-10 uppercase tracking-widest text-center">Keluar dari aplikasi?</p><div class="flex gap-4 px-2"><button onclick="document.getElementById('modalLogout').style.display='none'" class="flex-1 bg-[#222] py-5 rounded-2xl text-xs text-white">TIDAK</button><button id="confirmLogoutBtn" class="flex-1 bg-red-600 py-5 rounded-2xl text-xs text-white">YA, KELUAR</button></div></div></div>
             <div id="modalRenewPin" class="modal-overlay"><div class="modal-card" style="border-color: #fff"><h3 class="mb-2 uppercase text-white">PERPANJANG PIN</h3><p id="renewPinLabel" class="text-white text-xs mb-6">ID: ----</p>
-                <select id="renewExpiryChoice" class="w-full p-4 bg-[#000] border-2 border-white/20 rounded-xl mb-6 text-white text-xs">
-                    <option value="1">1 JAM (TRIAL)</option><option value="24">1 HARI</option><option value="120">5 HARI</option><option value="168">1 MINGGU</option><option value="720" selected>1 BULAN</option><option value="1440">2 BULAN</option><option value="2160">3 BULAN</option><option value="4320">6 BULAN</option><option value="8760">1 TAHUN</option>
-                </select>
+                <select id="renewExpiryChoice" class="w-full p-4 bg-[#000] border-2 border-white/20 rounded-xl mb-6 text-white text-xs"><option value="1">1 HARI</option><option value="7">1 MINGGU</option><option value="30" selected>1 BULAN</option><option value="365">1 TAHUN</option></select>
                 <div class="flex gap-3"><button onclick="document.getElementById('modalRenewPin').style.display='none'" class="flex-1 bg-[#222] py-4 rounded-xl text-[10px] text-white">BATAL</button><button id="confirmRenewBtn" class="flex-1 bg-blue-600 py-4 rounded-xl text-[10px] text-white">PERPANJANG</button></div>
             </div></div>
             <div id="modalAddPin" class="modal-overlay"><div class="modal-card" style="border-color: #fff"><h3 class="mb-4 uppercase text-white">AKTIFKAN PIN BARU</h3><input type="number" id="newPinVal" placeholder="6 ANGKA PIN" class="w-full p-4 bg-[#000] border-2 border-white/20 rounded-xl mb-5 text-center text-xl text-white">
-                <select id="expiryChoice" class="w-full p-4 bg-[#000] border-2 border-white/20 rounded-xl mb-6 text-white text-xs">
-                    <option value="1">1 JAM (TRIAL)</option><option value="24">1 HARI</option><option value="120">5 HARI</option><option value="168">1 MINGGU</option><option value="720" selected>1 BULAN</option><option value="1440">2 BULAN</option><option value="2160">3 BULAN</option><option value="4320">6 BULAN</option><option value="8760">1 TAHUN</option>
-                </select>
+                <select id="expiryChoice" class="w-full p-4 bg-[#000] border-2 border-white/20 rounded-xl mb-6 text-white text-xs"><option value="1">1 HARI</option><option value="7">1 MINGGU</option><option value="30" selected>1 BULAN</option><option value="365">1 TAHUN</option></select>
                 <div class="flex gap-3"><button id="cancelAddBtn" class="flex-1 bg-[#222] py-4 rounded-xl text-[10px] text-white">BATAL</button><button id="confirmAddBtn" class="flex-1 bg-blue-600 py-4 rounded-xl text-[10px] text-white">KONFIRMASI</button></div>
             </div></div>
         </div>
@@ -226,7 +225,7 @@
 
         window.titanState = { isAdmin: false, currentReportData: null, allAgents: [], currentAgentPin: null, renewTargetId: null, countdownTimer: null, lastSearchedPlate: "" };
 
-        // HELPERS
+        // ✅ RE-DEF ERROR-FREE HELPERS
         const closeAlert = () => { document.getElementById('modalAlert').style.display = 'none'; };
         const hidePastePopup = () => { document.getElementById('pastePopup').style.display = 'none'; };
         const showL = (m) => { const txt = document.querySelector('.turbo-text'); if(txt) txt.innerText = m; document.getElementById('global-loader').style.display = 'flex'; };
@@ -240,6 +239,7 @@
             document.documentElement.style.setProperty('--kb-height', (cur + val) + 'px'); 
         };
 
+        // ASSIGN GLOBALS
         window.closeAlert = closeAlert;
         window.hidePastePopup = hidePastePopup;
         window.showL = showL;
@@ -247,7 +247,7 @@
         window.showM = showM;
         window.showToast = showToast;
         window.safeSwitch = safeSwitch;
-        window.adjustKB = masterAdjustKB;
+        window.adjustKB = masterAdjustKB; // ✅ FIXED ERROR "is not a function"
 
         window.adjustInputFontSize = (input) => {
             const len = input.value.length;
@@ -266,51 +266,72 @@
                 r.forEach(k => {
                     const b = document.createElement('button'); b.className="kb-btn";
                     if(k==="DEL") { 
-                        b.className+=" bg-white text-black"; b.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="18" y1="9" x2="12" y2="15"></line><line x1="12" y1="9" x2="18" y2="15"></line></svg>`; 
+                        b.className+=" bg-white text-black"; b.innerHTML=`<i data-lucide="delete"></i>`; 
                         b.onclick=()=>window.kDel(); 
                     } else if(k==="CLR") { 
                         b.className+=" bg-[#ffff00] text-black text-[12px]"; b.innerText="CLR"; b.onclick=()=>window.kClear(); 
                     } else { b.innerText=k; b.onclick=()=>window.kAdd(k); } dr.appendChild(b);
                 }); kbBox.appendChild(dr);
             });
+            lucide.createIcons();
         };
 
         window.kAdd = (v) => { const el = document.getElementById('plateDisplay'); if(el) { el.value += v; window.adjustInputFontSize(el); } };
         window.kDel = () => { const el = document.getElementById('plateDisplay'); if(el) { el.value = el.value.slice(0, -1); window.adjustInputFontSize(el); } };
         window.kClear = () => { const el = document.getElementById('plateDisplay'); if(el) { el.value = ''; window.adjustInputFontSize(el); } };
 
+        // ✅ ULTRA STRICT LOGIN + EXPIRY & DEVICE LOCK
         const handleLogin = async (pin) => {
-            window.showL("VERIFIKASI...");
+            window.showL("VERIFIKASI PIN...");
             try {
                 const userCred = await signInAnonymously(auth);
                 const dev = getDevID();
+                
                 if(pin === "280189") {
                     localStorage.setItem('saved_pin', pin); window.titanState.isAdmin = true;
                     document.getElementById('adminNavBtn').classList.remove('hidden');
                     window.safeSwitch('pageSearch'); window.hideL(); return;
                 }
+
                 const snap = await getDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin));
                 if(snap.exists()){
                     const d = snap.data();
-                    if(d.status === 'blocked') {
-                        window.showM("LOCK", "Akses disekat Admin.");
-                    } else if(d.deviceId && d.deviceId !== dev) {
-                        window.showM("DEVICE LOCK", "PIN TERDAFTAR DI HP LAIN.");
-                    } else {
-                        localStorage.setItem('saved_pin', pin); window.titanState.currentAgentPin = pin;
-                        await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { deviceId: dev, firebaseUid: userCred.user.uid });
-                        window.safeSwitch('pageSearch'); 
-                        window.startCountdown(d.expiry);
+                    const now = new Date();
+                    const isExpired = new Date(d.expiry) <= now;
+
+                    // 1. CEK MASA AKTIF 🔐
+                    if(isExpired) {
+                        window.showM("EXPIRED", "MASA AKTIF PIN ANDA TELAH HABIS. SILAHKAN HUBUNGI ADMIN UNTUK PERPANJANG.");
+                        window.hideL(); return;
                     }
-                } else window.showM("RALAT", "PIN tidak terdaftar.");
-            } catch(e) { window.showM("ERROR", "Koneksi gagal."); } window.hideL();
+
+                    // 2. CEK BLOKIR 🔐
+                    if(d.status === 'blocked') {
+                        window.showM("LOCK", "AKSES PIN ANDA DISEKAT OLEH ADMIN.");
+                        window.hideL(); return;
+                    }
+
+                    // 3. CEK DEVICE LOCK 🔐 (Hanya 1 HP)
+                    if(d.deviceId && d.deviceId !== dev) {
+                        window.showM("DEVICE LOCK", "PIN INI SUDAH TERDAFTAR DI HP LAIN. ANDA TIDAK DAPAT MASUK.");
+                        window.hideL(); return;
+                    }
+
+                    // BERHASIL MASUK - KUNCI KE HP INI
+                    localStorage.setItem('saved_pin', pin); 
+                    window.titanState.currentAgentPin = pin;
+                    await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { deviceId: dev, firebaseUid: userCred.user.uid });
+                    window.safeSwitch('pageSearch'); 
+                    window.startCountdown(d.expiry);
+                } else window.showM("RALAT", "PIN TIDAK TERDAFTAR.");
+            } catch(e) { window.showM("ERROR", "GAGAL MENGHUBUNGI DATABASE."); } window.hideL();
         };
 
         // ADMIN LOGIC
         window.toggleBlock = async (id, cur) => { const nS = cur === 'blocked' ? 'active' : 'blocked'; await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { status: nS }); };
-        window.resetDevice = async (id) => { if(confirm(`Reset HP PIN ${id}? Agen bisa login di HP baru.`)) { await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { deviceId: "", firebaseUid: "" }); window.showToast("RESET HP BERHASIL!"); } };
+        window.resetDevice = async (id) => { if(confirm(`Buka kunci HP untuk PIN ${id}?`)) { await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { deviceId: "", firebaseUid: "" }); window.showToast("DEVICE BERHASIL DI-RESET!"); } };
         window.delAgent = async (id) => { if(confirm(`HAPUS PIN ${id} PERMANEN?`)) { await deleteDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id)); } };
-        window.openMap = (lat, lng) => { if(lat && lng) window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank'); else window.showToast("GPS TIADA"); };
+        window.openMap = (lat, lng) => { if(lat && lng) window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank'); else window.showToast("GPS TIDAK AKTIF"); };
         window.openRenewPin = (id) => { window.titanState.renewTargetId = id; const label = document.getElementById('renewPinLabel'); if(label) label.innerText = "ID: " + id; document.getElementById('modalRenewPin').style.display = 'flex'; };
         window.openAddPin = () => document.getElementById('modalAddPin').style.display = 'flex';
 
@@ -327,17 +348,16 @@
                     const isB = d.status === 'blocked', isE = new Date(d.expiry).getTime() < now;
                     if(d.status === 'active' && !isE) act++; else inact++;
                     const isErr = isB || isE;
-                    
                     list.innerHTML += `<div class="agent-card-supreme" style="border-color:${isErr?'var(--neon-red)':'#fff'}">
                         <div class="pin-text-white" style="font-size: 22px; color: #fff;">PIN: ${id}</div>
-                        <div class="text-[10px] uppercase mb-4" style="color:#aaa">SISA: ${isE?'EXP':Math.floor((new Date(d.expiry)-now)/86400000)+' hari'} | LOCK: ${d.deviceId?'LOCKED':'OPEN'}</div>
+                        <div class="text-[10px] uppercase mb-4" style="color:#aaa">SISA: ${isE?'EXP':Math.floor((new Date(d.expiry)-now)/86400000)+' hari'} | LOCK: ${d.deviceId?'LOCKED 🔒':'OPEN 🔓'}</div>
                         <div class="status-badge-white" style="position: absolute; top: 18px; right: 18px; background: ${isErr?'var(--neon-red)':'#fff'}; color: ${isErr?'#fff':'#000'}; padding: 5px 12px; border-radius: 8px; font-size: 10px; text-transform: uppercase;">${isB?'BLOCKED':(isE?'EXP':'ACTIVE')}</div>
                         <div class="action-row-supreme">
                             <button onclick="window.toggleBlock('${id}', '${d.status}')" class="btn-sekat-supreme" style="background:${isB?'var(--neon-red)':'#fff'}; color:${isB?'#fff':'#000'}">${isB ? 'BUKA' : 'SEKAT'}</button>
-                            <button onclick="window.openMap(${d.lastLat}, ${d.lastLong})" class="btn-admin-icon bg-green-600"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></button>
-                            <button onclick="window.openRenewPin('${id}')" class="btn-admin-icon bg-blue-600"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></button>
-                            <button onclick="window.resetDevice('${id}')" class="btn-admin-icon bg-blue-600"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></button>
-                            <button onclick="window.delAgent('${id}')" class="btn-admin-icon bg-red-600"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path></svg></button>
+                            <button onclick="window.openMap(${d.lastLat}, ${d.lastLong})" class="btn-admin-icon bg-green-600"><i data-lucide="map-pin" size="18" color="white"></i></button>
+                            <button onclick="window.openRenewPin('${id}')" class="btn-admin-icon bg-blue-600"><i data-lucide="calendar-plus" size="18" color="white"></i></button>
+                            <button onclick="window.resetDevice('${id}')" class="btn-admin-icon bg-blue-600"><i data-lucide="refresh-cw" size="18" color="white"></i></button>
+                            <button onclick="window.delAgent('${id}')" class="btn-admin-icon bg-red-600"><i data-lucide="trash-2" size="18" color="white"></i></button>
                         </div></div>`;
                 });
                 document.getElementById('statTotal').innerText = window.titanState.allAgents.length;
@@ -358,43 +378,39 @@
             } catch(e) {} window.hideL();
         };
 
-        // RENDER RESULT
         const renderResult = (v, sP) => {
             window.titanState.currentReportData = v;
             const area = document.getElementById('resultArea'); if(!area) return;
             let fullPlate = ((v.plate_region || "") + (v.plate_number || "") + (v.plate_series || "")).toUpperCase() || sP.toUpperCase();
             const addrClean = (v.owner_address || "").replace('- //','').trim();
-            const rW = (l, val) => `<div class="row-v619"><div class="label-v619">${l}</div><div class="val-v619">${val || "-"}</div></div>`;
-
-            area.innerHTML = `
-                <div class="official-card-full">
-                    <div style="font-size:14px; color:var(--neon-cyan); margin-bottom:30px;">SUMBER    : APLIKASI CSID.PRO</div>
-                    <div class="header-label-v619">IDENTITAS PEMILIK : 👥</div>
-                    ${rW("No.PLAT", fullPlate)}
-                    ${rW("PEMILIK", v.owner_name)}
-                    ${rW("ALAMAT", addrClean)}
-                    ${rW("NIK", v.nik)}
-                    ${rW("PEKERJAAN", v.owner_job)}
-                    <div class="header-label-v619">DATA KENDARAAN : 🚘</div>
-                    ${rW("MEREK", v.brand)}
-                    ${rW("TIPE", v.vehicle_type)}
-                    ${rW("TAHUN", v.manufacture_year)}
-                    ${rW("WARNA", v.color)}
-                    ${rW("SILINDER", (v.engine_capacity_cc || "") + " cc")}
-                    ${rW("RODA", v.wheel_count || "0")}
-                    <div class="row-v619"><div class="label-v619">NO. RANGKA</div><div class="val-v619" style="color:#3b82f6; font-weight:900;">${v.chassis_number || "-"}</div></div>
-                    <div class="row-v619"><div class="label-v619">NO. MESIN</div><div class="val-v619" style="color:#3b82f6; font-weight:900;">${v.engine_number || "-"}</div></div>
-                    <div class="header-label-v619">DOKUMEN RESMI : 📔</div>
-                    ${rW("NO. BPKB", v.bpkb_number)}
-                    ${rW("NO. STNK", v.stnk_number)}
-                    ${rW("TANGGAL TERDAFTAR", v.registration_date)}
-                    <div style="margin-top:50px;"><div class="header-label-v619">NOTE : ⚠️</div></div>
-                    <p style="color:var(--neon-cyan); font-size:13.5px; line-height:1.8; text-transform:uppercase;">APLIKASI INI DI BUAT UNTUK MENGAKSES IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB RESMI PADA KENDARAAN.</p>
-                    <div style="margin-top:40px; border-top:2px solid rgba(0,229,255,0.1); padding-top:20px;">
-                        <div style="color:var(--neon-cyan); font-size:14px; margin-bottom:8px;">CP LINK : CSID.PRO 👇</div>
-                        <a href="https://wa.me/628136900872" style="color:#fff; text-decoration:underline; font-size:15px;">https://wa.me/628136900872</a>
-                    </div>
-                </div>`;
+            const rW = (l, val) => `<div class="row-v622"><div class="label-v622">${l}</div><div class="val-v622">${val || "-"}</div></div>`;
+            area.innerHTML = `<div class="official-card-full">
+                <div style="font-size:14px; color:var(--neon-cyan); margin-bottom:30px;">SUMBER    : APLIKASI CSID.PRO</div>
+                <div class="header-label-v622">IDENTITAS PEMILIK : 👥</div>
+                ${rW("No.PLAT", fullPlate)}
+                ${rW("PEMILIK", v.owner_name)}
+                ${rW("ALAMAT", addrClean)}
+                ${rW("NIK", v.nik)}
+                ${rW("PEKERJAAN", v.owner_job)}
+                <div class="header-label-v622">DATA KENDARAAN : 🚘</div>
+                ${rW("MEREK", v.brand)}
+                ${rW("TIPE", v.vehicle_type)}
+                ${rW("TAHUN", v.manufacture_year)}
+                ${rW("WARNA", v.color)}
+                ${rW("SILINDER", (v.engine_capacity_cc || "") + " cc")}
+                ${rW("RODA", v.wheel_count || "0")}
+                <div class="row-v622"><div class="label-v622">NO. RANGKA</div><div class="val-v622" style="color:#3b82f6; font-weight:900;">${v.chassis_number || "-"}</div></div>
+                <div class="row-v622"><div class="label-v622">NO. MESIN</div><div class="val-v622" style="color:#3b82f6; font-weight:900;">${v.engine_number || "-"}</div></div>
+                <div class="header-label-v622">DOKUMEN RESMI : 📔</div>
+                ${rW("NO. BPKB", v.bpkb_number)}
+                ${rW("NO. STNK", v.stnk_number)}
+                ${rW("TANGGAL TERDAFTAR", v.registration_date)}
+                <div style="margin-top:50px;"><div class="header-label-v622">NOTE : ⚠️</div></div>
+                <p style="color:var(--neon-cyan); font-size:13.5px; line-height:1.8; text-transform:uppercase;">APLIKASI INI DI BUAT UNTUK MENGAKSES IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB RESMI PADA KENDARAAN.</p>
+                <div style="margin-top:40px; border-top:2px solid rgba(0,229,255,0.1); padding-top:20px;">
+                    <div style="color:var(--neon-cyan); font-size:14px; margin-bottom:8px;">CP LINK : CSID.PRO 👇</div>
+                    <a href="https://wa.me/628136900872" style="color:#fff; text-decoration:underline; font-size:15px;">https://wa.me/628136900872</a>
+                </div></div>`;
             window.safeSwitch('pageResult');
         };
 
@@ -409,7 +425,7 @@
                    `${bold('DATA KENDARAAN : 🚘')}\n` +
                    `${f("MEREK", v.brand)}\n${f("TIPE", v.vehicle_type)}\n${f("TAHUN", v.manufacture_year)}\n${f("WARNA", v.color)}\n${f("SILINDER", (v.engine_capacity_cc || "") + " cc")}\n${f("RODA", v.wheel_count || "0")}\n${f("NO. RANGKA", v.chassis_number)}\n${f("NO. MESIN", v.engine_number)}\n\n` +
                    `${bold('DOKUMEN RESMI : 📔')}\n` +
-                   `${f("NO. BPKB", v.bpkb_number)}\n${f("NO. STNK", v.stnk_number)}\n${f("TANGGAL TERDAFTAR", v.registration_date)}\n\n` +
+                   `${f("NO. BPKB", v.bpkb_number)}\n${f("NO. STNK", v.stnk_number)}\n${f("TGL DAFTAR", v.registration_date)}\n\n` +
                    `${bold('NOTE : ⚠️')}\n\nAPLIKASI INI DI BUAT UNTUK MENGAKSES IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB RESMI PADA KENDARAAN.\n\n` +
                    `${bold('CP LINK : CSID.PRO 👇')}\nhttps://wa.me/628136900872`;
         };
@@ -422,7 +438,15 @@
             const el = document.getElementById('uExp'); if(!el) return;
             const update = () => {
                 const diff = new Date(expiryISO).getTime() - Date.now();
-                if(diff <= 0) { el.innerText = "SISA: EXPIRED"; el.style.color = "var(--neon-red)"; return; }
+                if(diff <= 0) { 
+                    el.innerText = "SISA: EXPIRED"; el.style.color = "var(--neon-red)"; 
+                    if(!window.titanState.isAdmin) {
+                        localStorage.removeItem('saved_pin');
+                        window.showM("EXPIRED", "MASA AKTIF PIN HABIS. SILAHKAN HUBUNGI ADMIN.");
+                        setTimeout(() => window.safeSwitch('pageLogin'), 3000);
+                    }
+                    return; 
+                }
                 const d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
                 el.innerText = `SISA: ${d}d ${h}:${m}:${s}`;
             };
@@ -443,11 +467,11 @@
             setC('loginBtn', () => pi.focus());
             setC('loginCardArea', () => pi.focus());
             setC('searchBtn', () => window.doSearch());
-            setC('kbMinus', () => window.adjustKB(-2)); 
-            setC('kbPlus', () => window.adjustKB(2));  
-            setC('adminNavBtn', () => window.safeSwitch('pageAdmin'));
-            setC('closeAdminBtn', () => window.safeSwitch('pageSearch'));
-            setC('backSearchBtn', () => window.safeSwitch('pageSearch'));
+            setC('kbMinus', () => masterAdjustKB(-2)); 
+            setC('kbPlus', () => masterAdjustKB(2));  
+            setC('adminNavBtn', () => safeSwitch('pageAdmin'));
+            setC('closeAdminBtn', () => safeSwitch('pageSearch'));
+            setC('backSearchBtn', () => safeSwitch('pageSearch'));
             setC('refreshAdminBtn', () => loadAgentList());
             setC('addNewPinBtn', () => window.openAddPin());
             setC('logoutBtn', () => document.getElementById('modalLogout').style.display='flex');
@@ -463,7 +487,7 @@
             setC('confirmAddBtn', async () => {
                 const pin = document.getElementById('newPinVal').value; const val = parseInt(document.getElementById('expiryChoice').value);
                 if(!pin || pin.length < 4) return;
-                await setDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { role:'agent', status:'active', expiry: new Date(Date.now() + val * 3600000).toISOString(), createdAt: new Date().toISOString(), deviceId: "" });
+                await setDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { role:'agent', status:'active', expiry: new Date(Date.now() + val * 86400000).toISOString(), createdAt: new Date().toISOString(), deviceId: "" });
                 document.getElementById('modalAddPin').style.display = 'none'; window.showToast("PIN AKTIF!");
             });
 
@@ -472,7 +496,7 @@
                 const snap = await getDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id));
                 if(snap.exists()){
                     const cur = new Date(snap.data().expiry).getTime(); const base = cur < Date.now() ? Date.now() : cur;
-                    await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { expiry: new Date(base + val * 3600000).toISOString(), status: 'active' });
+                    await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { expiry: new Date(base + val * 86400000).toISOString(), status: 'active' });
                     document.getElementById('modalRenewPin').style.display = 'none'; window.showToast("DONE!");
                 }
             });
@@ -495,7 +519,6 @@
                 };
             };
 
-            // ✅ AUTO LOGIN & ULTRA DEVICE VERIFICATION
             onAuthStateChanged(auth, async (user) => {
                 const savedPin = localStorage.getItem('saved_pin');
                 if(savedPin) {
@@ -505,16 +528,20 @@
                         const snap = await getDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', savedPin));
                         if(snap.exists()){
                             const d = snap.data();
-                            // ✅ STRICT DEVICE VERIFICATION
-                            if((d.deviceId === dev || savedPin === "280189") && d.status !== 'blocked') {
+                            const isExpired = new Date(d.expiry) <= new Date();
+
+                            // ✅ STRICT VERIFICATION (DEVICE + EXPIRED)
+                            if((d.deviceId === dev || savedPin === "280189") && d.status !== 'blocked' && !isExpired) {
                                 if(savedPin === "280189") { window.titanState.isAdmin = true; document.getElementById('adminNavBtn').classList.remove('hidden'); }
                                 window.titanState.currentAgentPin = savedPin;
                                 document.getElementById('uName').innerText = "PIN : " + savedPin;
-                                if(document.getElementById('pageLogin').classList.contains('active')) window.safeSwitch('pageSearch');
+                                if(document.getElementById('pageLogin').classList.contains('active')) safeSwitch('pageSearch');
                                 window.startCountdown(d.expiry);
                             } else { 
                                 localStorage.removeItem('saved_pin'); 
-                                window.showM("DEVICE LOCK", "PIN INI SUDAH TERKUNCI DI HP LAIN.");
+                                if(isExpired) window.showM("EXPIRED", "MASA AKTIF PIN HABIS. HUBUNGI ADMIN.");
+                                else window.showM("DEVICE LOCK", "PIN INI SUDAH TERDAFTAR DI HP LAIN.");
+                                window.safeSwitch('pageLogin');
                             }
                         } else {
                             localStorage.removeItem('saved_pin');
