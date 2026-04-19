@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CSID.PRO - Master V616</title>
+    <title>CSID.PRO - Master V619</title>
     
-    <!-- Library Inti -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -43,12 +42,13 @@
         #pageLogin { background-image: radial-gradient(circle at center, #111 0%, #000 100%); }
         .login-card { background: #000; border-radius: 40px; padding: 50px 25px; width: 100%; max-width: 330px; text-align: center; border: 3.5px solid var(--neon-cyan); position: relative; box-shadow: 0 0 40px var(--neon-cyan-dim); cursor: pointer; }
         .login-card h1 { color: #fff; font-size: 34px; text-shadow: 0 0 10px rgba(255,255,255,0.3); margin-bottom: 5px; }
+        .subtitle-access { color: #666; font-size: 11px; text-transform: uppercase; letter-spacing: 2.5px; margin-bottom: 35px; }
         .dots-container { position: relative; width: 100%; height: 50px; margin-bottom: 35px; display: flex; justify-content: center; align-items: center; gap: 12px; }
         .dot { width: 18px; height: 18px; border-radius: 50%; background: #111; border: 2px solid rgba(0, 229, 255, 0.2); }
         .dot.active { background: var(--neon-cyan); transform: scale(1.3); box-shadow: 0 0 20px var(--neon-cyan); border: 2.5px solid #fff; }
         #pinInput { position: absolute; opacity: 0; left: -9999px; width: 1px; height: 1px; }
 
-        /* --- HALAMAN 2: SEARCH --- */
+        /* --- HALAMAN 2: SEARCH (MARQUEE) --- */
         .search-bar-container { background: #000; border: 4.5px solid var(--neon-cyan); border-radius: 35px; margin: 15px; padding: 15px; display: flex; align-items: center; box-shadow: 0 0 35px var(--neon-cyan-dim); min-height: 110px; position: relative; overflow: hidden; }
         .marquee-hint { position: absolute; inset: 0; width: 100%; pointer-events: none; display: flex; align-items: center; justify-content: center; z-index: 1; overflow: hidden; }
         .marquee-text { white-space: nowrap; color: rgba(0, 229, 255, 0.45); font-size: 15px; text-transform: uppercase; animation: marquee-anim 15s linear infinite; letter-spacing: 2px; }
@@ -61,10 +61,9 @@
         /* --- KEYBOARD --- */
         .kb-container { background: #000; padding: 10px 10px 75px 10px; display: flex; flex-direction: column; gap: 6px; border-top: 3px solid var(--neon-cyan); position: relative; z-index: 110; }
         .kb-row { display: flex; justify-content: center; gap: 5px; width: 100%; }
-        .kb-btn { background: var(--neon-cyan); border: 2.5px solid #000; border-radius: 12px; padding: var(--kb-height) 0; flex: 1; color: #000; font-size: 18px; font-weight: 900; box-shadow: 0 4px 0 #000; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .kb-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #000; background: #fff; }
+        .kb-btn { background: var(--neon-cyan); border: 2.5px solid #000; border-radius: 12px; padding: var(--kb-height) 0; flex: 1; color: #000; font-size: 20px; font-weight: 900; box-shadow: 0 4px 0 #000; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        /* --- HALAMAN 3: ADMIN (WHITE THEME & FIXED SCROLL) --- */
+        /* --- HALAMAN 3: ADMIN (WHITE THEME) --- */
         #pageAdmin { color: var(--neon-white); background-color: #000; height: 100%; display: none; flex-direction: column; }
         .admin-header { background: #111; border-bottom: 4px solid var(--neon-white); padding: 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
         .stat-grid-horizontal { display: flex; gap: 10px; padding: 15px 20px; width: 100%; flex-shrink: 0; }
@@ -77,15 +76,14 @@
         .btn-sekat-supreme { flex: 2.2; background: #fff; color: #000; padding: 14px; border-radius: 18px; font-size: 10px; text-transform: uppercase; border: 3px solid #000; cursor: pointer; }
         .btn-admin-icon { width: 50px; height: 50px; border-radius: 18px; display: flex; align-items: center; justify-content: center; border: 3px solid #000; cursor: pointer; }
 
-        /* --- HALAMAN 4: RESULT (BLUE NEON CYAN FORMAT) --- */
+        /* --- HALAMAN 4: RESULT (BLUE NEON CYAN) --- */
         .result-page-container { background: #000; flex: 1; overflow-y: auto; width: 100%; }
         .official-card-full { width: 100%; padding: 30px 20px 120px 20px; text-align: left; }
-        .header-label-v616 { font-size: 17px; color: var(--neon-cyan); margin: 35px 0 15px 0; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        .row-v616 { display: flex; align-items: flex-start; margin-bottom: 12px; font-size: 14px; }
-        .label-v616 { width: 125px; flex-shrink: 0; text-transform: uppercase; color: var(--neon-cyan); display: flex; justify-content: space-between; }
-        .label-v616::after { content: ":"; margin-right: 10px; }
-        /* ✅ TULISAN HASIL BLUE NEON CYAN */
-        .val-v616 { flex: 1; text-transform: uppercase; color: var(--neon-cyan); word-break: break-all; line-height: 1.4; text-shadow: 0 0 8px rgba(0, 229, 255, 0.4); }
+        .header-label-v619 { font-size: 17px; color: var(--neon-cyan); margin: 35px 0 15px 0; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .row-v619 { display: flex; align-items: flex-start; margin-bottom: 12px; font-size: 14px; }
+        .label-v619 { width: 120px; flex-shrink: 0; text-transform: uppercase; color: var(--neon-cyan); display: flex; justify-content: space-between; }
+        .label-v619::after { content: ":"; margin-right: 10px; }
+        .val-v619 { flex: 1; text-transform: uppercase; color: var(--neon-cyan); word-break: break-all; line-height: 1.4; text-shadow: 0 0 8px rgba(0, 229, 255, 0.4); }
 
         /* LOADER PETIR */
         #global-loader { position: absolute; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
@@ -107,7 +105,6 @@
         <div class="mobile-frame">
             <div id="pastePopup" style="display:none; position:absolute; z-index:2000; background:var(--neon-cyan); color:#000; padding:15px 25px; border-radius:15px; border:3px solid #000; text-transform:uppercase; font-size:12px;">TEMPEL DATA</div>
 
-            <!-- HALAMAN 1 -->
             <div id="pageLogin" class="page active">
                 <div class="flex flex-col items-center justify-center h-full px-5 text-center">
                     <div class="mb-10 w-full px-4"><h1 class="uppercase text-[22px] tracking-tight text-white leading-tight">SELAMAT DATANG DI APLIKASI<br><span style="color:var(--neon-cyan)">CEK SAMSAT INDONESIA</span></h1></div>
@@ -130,7 +127,6 @@
                 <input type="number" id="pinInput" maxlength="6" inputmode="numeric">
             </div>
 
-            <!-- HALAMAN 2 -->
             <div id="pageSearch" class="page">
                 <div class="app-header-nav bg-[#000] p-4 border-b-4 border-[var(--neon-cyan)] text-white flex items-center justify-between">
                     <div class="flex items-center gap-2"><i data-lucide="shield-alert" size="16" style="color:var(--neon-cyan)"></i><h2 class="text-[9px] uppercase tracking-wider text-white">CSID.PRO</h2></div>
@@ -157,7 +153,6 @@
                 <div class="kb-container" id="kbBox"></div>
             </div>
 
-            <!-- HALAMAN 3: ADMIN -->
             <div id="pageAdmin" class="page">
                 <div class="admin-header">
                     <div class="flex items-center gap-3"><button id="refreshAdminBtn" class="p-2"><i data-lucide="refresh-cw" size="18" style="color:#fff"></i></button><h2 class="uppercase tracking-widest text-white">ADMIN PANEL CSID.PRO</h2></div>
@@ -173,7 +168,6 @@
                 <div id="agList" class="agent-list-scrollable"></div>
             </div>
 
-            <!-- HALAMAN 4: RESULT -->
             <div id="pageResult" class="page">
                 <div class="bg-[#000] p-4 border-b-4 border-[var(--neon-cyan)] flex items-center text-white">
                     <button id="backSearchBtn" class="p-2"><i data-lucide="arrow-left"></i></button>
@@ -192,7 +186,6 @@
                 </div>
             </div>
 
-            <!-- MODALS -->
             <div id="global-loader">
                 <div class="loader-lightning-box">
                     <div class="lightning-fast-spin"></div>
@@ -203,11 +196,15 @@
             <div id="modalAlert" class="modal-overlay"><div class="modal-card"><h3 id="alertTitle" class="uppercase text-lg text-[var(--neon-cyan)]"></h3><p id="alertBody" class="my-6 text-slate-400 text-xs"></p><button type="button" class="w-full bg-white text-black py-4 rounded-xl uppercase text-[10px]" onclick="window.closeAlert()">OKE</button></div></div>
             <div id="modalLogout" class="modal-overlay"><div class="modal-card"><div class="text-red-500 mb-6 flex justify-center"><i data-lucide="log-out" size="56"></i></div><h3 class="uppercase text-xl mb-2 text-center text-white">KONFIRMASI KELUAR</h3><p class="text-[12px] text-slate-500 mb-10 uppercase tracking-widest text-center">Keluar dari aplikasi?</p><div class="flex gap-4 px-2"><button onclick="document.getElementById('modalLogout').style.display='none'" class="flex-1 bg-[#222] py-5 rounded-2xl text-xs text-white">TIDAK</button><button id="confirmLogoutBtn" class="flex-1 bg-red-600 py-5 rounded-2xl text-xs text-white">YA, KELUAR</button></div></div></div>
             <div id="modalRenewPin" class="modal-overlay"><div class="modal-card" style="border-color: #fff"><h3 class="mb-2 uppercase text-white">PERPANJANG PIN</h3><p id="renewPinLabel" class="text-white text-xs mb-6">ID: ----</p>
-                <select id="renewExpiryChoice" class="w-full p-4 bg-[#000] border-2 border-white/20 rounded-xl mb-6 text-white text-xs"><option value="1">1 JAM (TRIAL)</option><option value="24">1 HARI</option><option value="120">5 HARI</option><option value="168">1 MINGGU</option><option value="720" selected>1 BULAN</option><option value="1440">2 BULAN</option><option value="2160">3 BULAN</option><option value="4320">6 BULAN</option><option value="8760">1 TAHUN</option></select>
+                <select id="renewExpiryChoice" class="w-full p-4 bg-[#000] border-2 border-white/20 rounded-xl mb-6 text-white text-xs">
+                    <option value="1">1 JAM (TRIAL)</option><option value="24">1 HARI</option><option value="120">5 HARI</option><option value="168">1 MINGGU</option><option value="720" selected>1 BULAN</option><option value="1440">2 BULAN</option><option value="2160">3 BULAN</option><option value="4320">6 BULAN</option><option value="8760">1 TAHUN</option>
+                </select>
                 <div class="flex gap-3"><button onclick="document.getElementById('modalRenewPin').style.display='none'" class="flex-1 bg-[#222] py-4 rounded-xl text-[10px] text-white">BATAL</button><button id="confirmRenewBtn" class="flex-1 bg-blue-600 py-4 rounded-xl text-[10px] text-white">PERPANJANG</button></div>
             </div></div>
             <div id="modalAddPin" class="modal-overlay"><div class="modal-card" style="border-color: #fff"><h3 class="mb-4 uppercase text-white">AKTIFKAN PIN BARU</h3><input type="number" id="newPinVal" placeholder="6 ANGKA PIN" class="w-full p-4 bg-[#000] border-2 border-white/20 rounded-xl mb-5 text-center text-xl text-white">
-                <select id="expiryChoice" class="w-full p-4 bg-[#000] border-2 border-white/20 rounded-xl mb-6 text-white text-xs"><option value="1">1 JAM (TRIAL)</option><option value="24">1 HARI</option><option value="120">5 HARI</option><option value="168">1 MINGGU</option><option value="720" selected>1 BULAN</option><option value="1440">2 BULAN</option><option value="2160">3 BULAN</option><option value="4320">6 BULAN</option><option value="8760">1 TAHUN</option></select>
+                <select id="expiryChoice" class="w-full p-4 bg-[#000] border-2 border-white/20 rounded-xl mb-6 text-white text-xs">
+                    <option value="1">1 JAM (TRIAL)</option><option value="24">1 HARI</option><option value="120">5 HARI</option><option value="168">1 MINGGU</option><option value="720" selected>1 BULAN</option><option value="1440">2 BULAN</option><option value="2160">3 BULAN</option><option value="4320">6 BULAN</option><option value="8760">1 TAHUN</option>
+                </select>
                 <div class="flex gap-3"><button id="cancelAddBtn" class="flex-1 bg-[#222] py-4 rounded-xl text-[10px] text-white">BATAL</button><button id="confirmAddBtn" class="flex-1 bg-blue-600 py-4 rounded-xl text-[10px] text-white">KONFIRMASI</button></div>
             </div></div>
         </div>
@@ -223,20 +220,20 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        
         const apiKeyGemini = "AIzaSyAg-OhP0B0bFivaa2ryUjTVdTGjBLFGd5E";
 
-        window.titanState = { isAdmin: false, currentReportData: null, allAgents: [], currentAgentPin: null, renewTargetId: null, countdownTimer: null, lastSearchedPlate: "" };
         const getDevID = () => btoa(navigator.userAgent + (navigator.language || 'id') + screen.width + screen.height).slice(0, 48);
 
-        // ✅ DEFINE GLOBAL HELPERS PROPERLY
+        window.titanState = { isAdmin: false, currentReportData: null, allAgents: [], currentAgentPin: null, renewTargetId: null, countdownTimer: null, lastSearchedPlate: "" };
+
+        // HELPERS
         const closeAlert = () => { document.getElementById('modalAlert').style.display = 'none'; };
         const hidePastePopup = () => { document.getElementById('pastePopup').style.display = 'none'; };
         const showL = (m) => { const txt = document.querySelector('.turbo-text'); if(txt) txt.innerText = m; document.getElementById('global-loader').style.display = 'flex'; };
         const hideL = () => { document.getElementById('global-loader').style.display = 'none'; };
         const showM = (t, b) => { document.getElementById('alertTitle').innerText = t; document.getElementById('alertBody').innerText = b; document.getElementById('modalAlert').style.display = 'flex'; };
         const showToast = (m) => { const t = document.createElement('div'); t.innerText = m; t.className="fixed top-10 left-1/2 -translate-x-1/2 bg-[var(--neon-cyan)] text-black px-6 py-3 rounded-full z-[9999] shadow-2xl uppercase text-[10px]"; document.body.appendChild(t); setTimeout(() => t.remove(), 2500); };
-        const safeSwitch = (id) => { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); if(id==='pageAdmin') loadAgentList(); lucide.createIcons(); };
+        const safeSwitch = (id) => { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); const target = document.getElementById(id); if(target) target.classList.add('active'); if(id==='pageAdmin') loadAgentList(); lucide.createIcons(); };
 
         const masterAdjustKB = (val) => { 
             let cur = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--kb-height')) || 12; 
@@ -250,7 +247,7 @@
         window.showM = showM;
         window.showToast = showToast;
         window.safeSwitch = safeSwitch;
-        window.adjustKB = masterAdjustKB; // ✅ FIXING "is not a function"
+        window.adjustKB = masterAdjustKB;
 
         window.adjustInputFontSize = (input) => {
             const len = input.value.length;
@@ -295,21 +292,23 @@
                 const snap = await getDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin));
                 if(snap.exists()){
                     const d = snap.data();
-                    if(d.status === 'blocked') window.showM("LOCK", "Akses disekat Admin.");
-                    else if(d.deviceId && d.deviceId !== dev) window.showM("DEVICE LOCK", "PIN TERDAFTAR DI HP LAIN.");
-                    else {
+                    if(d.status === 'blocked') {
+                        window.showM("LOCK", "Akses disekat Admin.");
+                    } else if(d.deviceId && d.deviceId !== dev) {
+                        window.showM("DEVICE LOCK", "PIN TERDAFTAR DI HP LAIN.");
+                    } else {
                         localStorage.setItem('saved_pin', pin); window.titanState.currentAgentPin = pin;
                         await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { deviceId: dev, firebaseUid: userCred.user.uid });
                         window.safeSwitch('pageSearch'); 
                         window.startCountdown(d.expiry);
                     }
-                } else window.showM("RALAT", "PIN tidak ada.");
+                } else window.showM("RALAT", "PIN tidak terdaftar.");
             } catch(e) { window.showM("ERROR", "Koneksi gagal."); } window.hideL();
         };
 
         // ADMIN LOGIC
         window.toggleBlock = async (id, cur) => { const nS = cur === 'blocked' ? 'active' : 'blocked'; await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { status: nS }); };
-        window.resetDevice = async (id) => { if(confirm(`Reset HP PIN ${id}?`)) { await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { deviceId: "", firebaseUid: "" }); window.showToast("RESET BERHASIL!"); } };
+        window.resetDevice = async (id) => { if(confirm(`Reset HP PIN ${id}? Agen bisa login di HP baru.`)) { await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { deviceId: "", firebaseUid: "" }); window.showToast("RESET HP BERHASIL!"); } };
         window.delAgent = async (id) => { if(confirm(`HAPUS PIN ${id} PERMANEN?`)) { await deleteDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id)); } };
         window.openMap = (lat, lng) => { if(lat && lng) window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank'); else window.showToast("GPS TIADA"); };
         window.openRenewPin = (id) => { window.titanState.renewTargetId = id; const label = document.getElementById('renewPinLabel'); if(label) label.innerText = "ID: " + id; document.getElementById('modalRenewPin').style.display = 'flex'; };
@@ -359,43 +358,38 @@
             } catch(e) {} window.hideL();
         };
 
-        // ✅ FORMAT RESULT BARU (V616 BLUE NEON CYAN)
+        // RENDER RESULT
         const renderResult = (v, sP) => {
             window.titanState.currentReportData = v;
             const area = document.getElementById('resultArea'); if(!area) return;
             let fullPlate = ((v.plate_region || "") + (v.plate_number || "") + (v.plate_series || "")).toUpperCase() || sP.toUpperCase();
             const addrClean = (v.owner_address || "").replace('- //','').trim();
-            const rW = (l, val) => `<div class="row-v616"><div class="label-v616">${l}</div><div class="val-v616">${val || "-"}</div></div>`;
+            const rW = (l, val) => `<div class="row-v619"><div class="label-v619">${l}</div><div class="val-v619">${val || "-"}</div></div>`;
 
             area.innerHTML = `
                 <div class="official-card-full">
                     <div style="font-size:14px; color:var(--neon-cyan); margin-bottom:30px;">SUMBER    : APLIKASI CSID.PRO</div>
-                    
-                    <div class="header-label-v616">IDENTITAS PEMILIK : 👥</div>
+                    <div class="header-label-v619">IDENTITAS PEMILIK : 👥</div>
                     ${rW("No.PLAT", fullPlate)}
                     ${rW("PEMILIK", v.owner_name)}
                     ${rW("ALAMAT", addrClean)}
                     ${rW("NIK", v.nik)}
                     ${rW("PEKERJAAN", v.owner_job)}
-
-                    <div class="header-label-v616">DATA KENDARAAN : 🚘</div>
+                    <div class="header-label-v619">DATA KENDARAAN : 🚘</div>
                     ${rW("MEREK", v.brand)}
                     ${rW("TIPE", v.vehicle_type)}
                     ${rW("TAHUN", v.manufacture_year)}
                     ${rW("WARNA", v.color)}
                     ${rW("SILINDER", (v.engine_capacity_cc || "") + " cc")}
                     ${rW("RODA", v.wheel_count || "0")}
-                    <div class="row-v616"><div class="label-v616">NO. RANGKA</div><div class="val-v616" style="color:#3b82f6; font-weight:900;">${v.chassis_number || "-"}</div></div>
-                    <div class="row-v616"><div class="label-v616">NO. MESIN</div><div class="val-v616" style="color:#3b82f6; font-weight:900;">${v.engine_number || "-"}</div></div>
-
-                    <div class="header-label-v616">DOKUMEN RESMI : 📔</div>
+                    <div class="row-v619"><div class="label-v619">NO. RANGKA</div><div class="val-v619" style="color:#3b82f6; font-weight:900;">${v.chassis_number || "-"}</div></div>
+                    <div class="row-v619"><div class="label-v619">NO. MESIN</div><div class="val-v619" style="color:#3b82f6; font-weight:900;">${v.engine_number || "-"}</div></div>
+                    <div class="header-label-v619">DOKUMEN RESMI : 📔</div>
                     ${rW("NO. BPKB", v.bpkb_number)}
                     ${rW("NO. STNK", v.stnk_number)}
                     ${rW("TANGGAL TERDAFTAR", v.registration_date)}
-
-                    <div style="margin-top:50px;"><div class="header-label-v616">NOTE : ⚠️</div></div>
+                    <div style="margin-top:50px;"><div class="header-label-v619">NOTE : ⚠️</div></div>
                     <p style="color:var(--neon-cyan); font-size:13.5px; line-height:1.8; text-transform:uppercase;">APLIKASI INI DI BUAT UNTUK MENGAKSES IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB RESMI PADA KENDARAAN.</p>
-                    
                     <div style="margin-top:40px; border-top:2px solid rgba(0,229,255,0.1); padding-top:20px;">
                         <div style="color:var(--neon-cyan); font-size:14px; margin-bottom:8px;">CP LINK : CSID.PRO 👇</div>
                         <a href="https://wa.me/628136900872" style="color:#fff; text-decoration:underline; font-size:15px;">https://wa.me/628136900872</a>
@@ -449,17 +443,16 @@
             setC('loginBtn', () => pi.focus());
             setC('loginCardArea', () => pi.focus());
             setC('searchBtn', () => window.doSearch());
-            setC('kbMinus', () => masterAdjustKB(-2)); // ✅ USING masterAdjustKB Directly
-            setC('kbPlus', () => masterAdjustKB(2));  // ✅ USING masterAdjustKB Directly
-            setC('adminNavBtn', () => safeSwitch('pageAdmin'));
-            setC('closeAdminBtn', () => safeSwitch('pageSearch'));
-            setC('backSearchBtn', () => safeSwitch('pageSearch'));
+            setC('kbMinus', () => window.adjustKB(-2)); 
+            setC('kbPlus', () => window.adjustKB(2));  
+            setC('adminNavBtn', () => window.safeSwitch('pageAdmin'));
+            setC('closeAdminBtn', () => window.safeSwitch('pageSearch'));
+            setC('backSearchBtn', () => window.safeSwitch('pageSearch'));
             setC('refreshAdminBtn', () => loadAgentList());
             setC('addNewPinBtn', () => window.openAddPin());
             setC('logoutBtn', () => document.getElementById('modalLogout').style.display='flex');
             setC('cancelLogoutBtn', () => document.getElementById('modalLogout').style.display='none');
-            setC('confirmLogoutBtn', async () => { localStorage.removeItem('saved_pin'); await signOut(auth); safeSwitch('pageLogin'); document.getElementById('modalLogout').style.display='none'; });
-            setC('closeAlertBtn', () => window.closeAlert());
+            setC('confirmLogoutBtn', async () => { localStorage.removeItem('saved_pin'); await signOut(auth); window.safeSwitch('pageLogin'); document.getElementById('modalLogout').style.display='none'; });
             
             setC('waRegBtn', () => { 
                 const uCode = Math.floor(100000 + Math.random() * 900000);
@@ -484,10 +477,9 @@
                 }
             });
 
-            // CAMERA AI HANDLER
             setC('camBtn', () => document.getElementById('camInput').click());
             document.getElementById('camInput').onchange = async (e) => {
-                const file = e.target.files[0]; if (!file) return; showL("SEDANG MENGAMBIL DATA...");
+                const file = e.target.files[0]; if (!file) return; window.showL("AI ANALYZING...");
                 const reader = new FileReader(); reader.readAsDataURL(file);
                 reader.onload = async () => {
                     const b64 = reader.result.split(',')[1];
@@ -498,25 +490,37 @@
                             body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: "Ekstrak Plat Nomor, No Rangka, atau No Mesin dari gambar ini secara valid. Berikan kodenya saja." }, { inlineData: { mimeType: "image/png", data: b64 } }] }] }) 
                         });
                         const r = await res.json(); const ext = r.candidates?.[0]?.content?.parts?.[0]?.text?.replace(/[^A-Z0-9]/gi, '').toUpperCase();
-                        if (ext && ext.length > 3) { document.getElementById('plateDisplay').value = ext; window.adjustInputFontSize(document.getElementById('plateDisplay')); window.doSearch(); } else showM("AI GAGAL", "Gagal membaca teks.");
-                    } catch(e) {} hideL();
+                        if (ext && ext.length > 3) { document.getElementById('plateDisplay').value = ext; window.adjustInputFontSize(document.getElementById('plateDisplay')); window.doSearch(); } else window.showM("AI GAGAL", "Gagal membaca teks.");
+                    } catch(e) {} window.hideL();
                 };
             };
 
+            // ✅ AUTO LOGIN & ULTRA DEVICE VERIFICATION
             onAuthStateChanged(auth, async (user) => {
-                const saved = localStorage.getItem('saved_pin');
-                if(saved) {
+                const savedPin = localStorage.getItem('saved_pin');
+                if(savedPin) {
                     const dev = getDevID();
-                    const snap = await getDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', saved));
-                    if(snap.exists()){
-                        const d = snap.data();
-                        if(d.deviceId === dev || saved === "280189") {
-                            if(saved === "280189") { window.titanState.isAdmin = true; document.getElementById('adminNavBtn').classList.remove('hidden'); }
-                            window.titanState.currentAgentPin = saved;
-                            if(document.getElementById('pageLogin').classList.contains('active')) safeSwitch('pageSearch');
-                            window.startCountdown(d.expiry);
-                        } else { localStorage.removeItem('saved_pin'); }
-                    }
+                    window.showL("VERIFIKASI OTOMATIS...");
+                    try {
+                        const snap = await getDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', savedPin));
+                        if(snap.exists()){
+                            const d = snap.data();
+                            // ✅ STRICT DEVICE VERIFICATION
+                            if((d.deviceId === dev || savedPin === "280189") && d.status !== 'blocked') {
+                                if(savedPin === "280189") { window.titanState.isAdmin = true; document.getElementById('adminNavBtn').classList.remove('hidden'); }
+                                window.titanState.currentAgentPin = savedPin;
+                                document.getElementById('uName').innerText = "PIN : " + savedPin;
+                                if(document.getElementById('pageLogin').classList.contains('active')) window.safeSwitch('pageSearch');
+                                window.startCountdown(d.expiry);
+                            } else { 
+                                localStorage.removeItem('saved_pin'); 
+                                window.showM("DEVICE LOCK", "PIN INI SUDAH TERKUNCI DI HP LAIN.");
+                            }
+                        } else {
+                            localStorage.removeItem('saved_pin');
+                        }
+                    } catch(e) {}
+                    window.hideL();
                 }
             });
             document.getElementById('adminSearchInput').oninput = () => loadAgentList();
