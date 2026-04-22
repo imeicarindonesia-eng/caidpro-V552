@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CSID.PRO - Master V788 Seamless</title>
+    <title>CSID.PRO - Master V790 Intelligence</title>
     
     <!-- Library Inti -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -43,7 +43,7 @@
         .page { position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; z-index: 100; background-color: #000; overflow: hidden; }
         .page.active { display: flex !important; }
 
-        /* --- HEADER --- */
+        /* --- HEADER MEWAH --- */
         .lux-header { 
             background: #000; padding: 15px 16px; 
             border-top: 4px solid var(--neon-cyan); border-bottom: 4px solid var(--neon-cyan); 
@@ -61,25 +61,19 @@
         }
         .critical-timer { animation: blink-red 0.5s infinite; color: var(--neon-red) !important; }
 
-        /* --- BROADCAST MARQUEE (FIXED ANIMATION) --- */
+        /* --- BROADCAST MARQUEE --- */
         #broadcast-area { 
             background: rgba(0, 229, 255, 0.12); border-bottom: 1.5px solid var(--neon-cyan); 
             padding: 10px 0; display: none; overflow: hidden; white-space: nowrap; flex-shrink: 0;
             position: relative;
         }
         .bc-text { 
-            display: inline-block; 
-            white-space: nowrap;
-            will-change: transform;
+            display: inline-block; white-space: nowrap; will-change: transform;
             animation: marquee-scroll 18s linear infinite; 
             color: #ffffff !important; font-size: 11px; text-transform: uppercase; 
-            text-shadow: 0 0 8px var(--neon-cyan);
-            letter-spacing: 1.5px;
+            text-shadow: 0 0 8px var(--neon-cyan); letter-spacing: 1.5px;
         }
-        @keyframes marquee-scroll { 
-            0% { transform: translateX(100vw); } 
-            100% { transform: translateX(-100%); } 
-        }
+        @keyframes marquee-scroll { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
 
         /* --- LOGIN UI --- */
         .login-card-v788 { 
@@ -90,37 +84,19 @@
         .dots-v788 { display: flex; justify-content: center; gap: 12px; margin-bottom: 35px; min-height: 25px; }
         .dot-v788 { width: 18px; height: 18px; border-radius: 50%; background: #111; border: 2px solid rgba(0, 229, 255, 0.2); transition: 0.15s; }
         .dot-v788.active { background: var(--neon-cyan); box-shadow: 0 0 20px var(--neon-cyan); border-color: #fff; transform: scale(1.3); }
-        
         .btn-buka-akses { background: var(--neon-cyan); color: #000; padding: 22px; border-radius: 20px; width: 100%; text-transform: uppercase; font-weight: 900; margin-bottom: 20px; border: none; cursor: pointer; }
         .btn-daftar-wa-lux { background: transparent; color: var(--neon-white); padding: 20px; border-radius: 20px; width: 100%; text-transform: uppercase; border: 2.5px dashed var(--neon-cyan); font-size: 13px; cursor: pointer; display: block; }
         #pinInput { position: absolute; opacity: 0; pointer-events: none; left: -9999px; width: 1px; height: 1px; }
 
-        /* --- SEARCH UI & HINT (FIXED ANIMATION) --- */
+        /* --- SEARCH UI --- */
         .search-outer { background: #000; border: 4px solid var(--neon-cyan); border-radius: 30px; margin: 15px; padding: 15px; min-height: 100px; display: flex; align-items: center; position: relative; overflow: hidden; cursor: text; }
-        #plateDisplay { width: 100%; background: transparent; border: none; color: var(--neon-cyan); font-size: 2.2rem; text-align: center; outline: none; letter-spacing: 4px; text-transform: uppercase; z-index: 5; inputmode: none; pointer-events: auto !important; user-select: text !important; -webkit-user-select: text !important; transition: transform 0.05s ease; }
-        
+        #plateDisplay { width: 100%; background: transparent; border: none; color: var(--neon-cyan); font-size: 2.2rem; text-align: center; outline: none; letter-spacing: 4px; text-transform: uppercase; z-index: 5; inputmode: none; pointer-events: auto !important; -webkit-user-select: text !important; user-select: text !important; transition: transform 0.05s ease; }
         .marquee-hint { position: absolute; inset: 0; width: 100%; pointer-events: none; display: flex; align-items: center; justify-content: center; z-index: 1; overflow: hidden; white-space: nowrap; }
-        .marquee-text { 
-            display: inline-block;
-            white-space: nowrap;
-            color: rgba(0, 229, 255, 0.4); 
-            font-size: 14px; 
-            text-transform: uppercase; 
-            animation: marquee-hint-anim 12s linear infinite; 
-            font-weight: 900; 
-            letter-spacing: 1px; 
-        }
-        @keyframes marquee-hint-anim { 
-            0% { transform: translateX(100%); } 
-            100% { transform: translateX(-150%); } 
-        }
+        .marquee-text { display: inline-block; white-space: nowrap; color: rgba(0, 229, 255, 0.4); font-size: 14px; text-transform: uppercase; animation: marquee-hint-anim 12s linear infinite; font-weight: 900; letter-spacing: 1px; }
+        @keyframes marquee-hint-anim { 0% { transform: translateX(100%); } 100% { transform: translateX(-150%); } }
 
-        /* KEYBOARD TAP ANIMATION */
-        @keyframes key-tap-flash {
-            0% { background-color: var(--neon-cyan); transform: scale(1); }
-            50% { background-color: #ffffff; transform: scale(0.92); }
-            100% { background-color: var(--neon-cyan); transform: scale(1); }
-        }
+        /* KEYBOARD TAP & INPUT */
+        @keyframes key-tap-flash { 0% { background-color: var(--neon-cyan); transform: scale(1); } 50% { background-color: #ffffff; transform: scale(0.92); } 100% { background-color: var(--neon-cyan); transform: scale(1); } }
         .kb-tap-active { animation: key-tap-flash 0.1s ease-out; }
         .input-pulse { transform: scale(1.05); text-shadow: 0 0 15px var(--neon-cyan); }
 
@@ -140,20 +116,8 @@
         #pageAdmin .lux-header { background: #ffffff !important; border-top: 4.5px solid #000; border-bottom: 4.5px solid #000; color: #000000 !important; }
         #pageAdmin .lux-header h2, #pageAdmin .lux-header i { color: #000 !important; font-weight: 900; }
         
-        /* ✅ FIX BROADCAST AREA */
         .bc-admin-wrapper { position: relative; z-index: 999; pointer-events: auto !important; }
-        #bcInput { 
-            pointer-events: auto !important; 
-            -webkit-user-select: text !important; 
-            user-select: text !important; 
-            border: 2px solid #ddd; 
-            padding: 15px; 
-            border-radius: 15px; 
-            font-size: 14px; 
-            width: 100%; 
-            background: #fdfdfd;
-            color: #000;
-        }
+        #bcInput { pointer-events: auto !important; -webkit-user-select: text !important; user-select: text !important; border: 2px solid #ddd; padding: 15px; border-radius: 15px; font-size: 14px; width: 100%; background: #fdfdfd; color: #000; }
 
         .stat-grid-lux { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 20px 15px; }
         .stat-box-lux { background: #fff; border: 3px solid #000; border-radius: 20px; padding: 18px 5px; text-align: center; box-shadow: 0 8px 15px rgba(0,0,0,0.08); }
@@ -190,7 +154,7 @@
 
     <div class="app-container">
         <!-- SPLASH -->
-        <div id="splash-screen" style="position: absolute; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center;"><div class="splash-logo" style="font-size: 45px; color: #fff; letter-spacing: 8px; text-shadow: 0 0 20px var(--neon-cyan);">CSID.PRO</div><div class="text-[9px] tracking-[4px] text-zinc-600 mt-3 uppercase">Master V788 Ultimate Seamless</div></div>
+        <div id="splash-screen" style="position: absolute; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center;"><div class="splash-logo" style="font-size: 45px; color: #fff; letter-spacing: 8px; text-shadow: 0 0 20px var(--neon-cyan);">CSID.PRO</div><div class="text-[9px] tracking-[4px] text-zinc-600 mt-3 uppercase">Master V790 Intelligence Final</div></div>
 
         <!-- MASTER TAKEDOWN -->
         <div id="modalTakedown">
@@ -254,7 +218,6 @@
                         <button id="searchBtn" class="btn-action-v788 bg-green-600 flex-[1.4]"><i data-lucide="search" class="text-white"></i></button>
                     </div>
 
-                    <!-- KEYBOARD -->
                     <div class="kb-container" id="kbBox"></div>
                 </div>
                 <input type="file" id="camInput" accept="image/*" capture="environment" class="hidden">
@@ -263,7 +226,7 @@
             <!-- PAGE: ADMIN -->
             <div id="pageAdmin" class="page">
                 <div class="lux-header">
-                    <div class="flex items-center gap-2"><i data-lucide="refresh-cw" size="18" onclick="window.loadAgentList()"></i><h2 class="uppercase text-[12px]">ADMIN PANEL MASTER</h2></div>
+                    <div class="flex items-center gap-2"><i data-lucide="refresh-cw" size="18" onclick="window.initAdminSync()"></i><h2 class="uppercase text-[12px]">ADMIN PANEL MASTER</h2></div>
                     <button onclick="window.safeSwitch('pageSearch')"><i data-lucide="x" size="28"></i></button>
                 </div>
                 <div class="flex-1 overflow-y-auto">
@@ -284,7 +247,8 @@
                         <div class="stat-box-lux"><div id="statActive" class="stat-num-lux text-green-600">0</div><div class="stat-label-lux text-[8px] uppercase">Aktif</div></div>
                         <div class="stat-box-lux"><div id="statInactive" class="stat-num-lux text-red-600">0</div><div class="stat-label-lux text-[8px] uppercase">Mati</div></div>
                     </div>
-                    <div class="px-4 mb-4"><input type="number" id="adminSearchInput" oninput="window.loadAgentList()" placeholder="Cari Agen..." class="w-full p-5 bg-gray-100 border-2 border-black rounded-2xl text-black text-lg"></div>
+                    <!-- ✅ ADMIN SEARCH INPUT -->
+                    <div class="px-4 mb-4"><input type="number" id="adminSearchInput" oninput="window.filterAgents()" placeholder="Cari PIN Agen..." class="w-full p-5 bg-gray-100 border-2 border-black rounded-2xl text-black text-lg"></div>
                     <div id="agList" class="pb-20"></div>
                 </div>
             </div>
@@ -342,7 +306,7 @@
 
         const getDevID = () => btoa(navigator.userAgent + (navigator.language || 'id') + screen.width + screen.height).slice(0, 48);
 
-        window.titanState = { isAdmin: false, currentReport: null, currentPin: null, renewTargetId: null, countdownTimer: null, lastIdSearched: "", registrationCode: Math.floor(100000 + Math.random() * 900000) };
+        window.titanState = { isAdmin: false, currentReport: null, currentPin: null, renewTargetId: null, countdownTimer: null, lastIdSearched: "", registrationCode: Math.floor(100000 + Math.random() * 900000), cachedAgents: [] };
 
         window.hidePastePopup = () => { const p = document.getElementById('pastePopup'); if(p) p.style.display = 'none'; };
         window.closeAlert = () => { const m = document.getElementById('modalAlert'); if(m) m.style.display = 'none'; };
@@ -386,7 +350,7 @@
         window.safeSwitch = (id) => { 
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
             document.getElementById(id).classList.add('active'); 
-            if(id === 'pageAdmin') window.loadAgentList();
+            if(id === 'pageAdmin') window.initAdminSync();
             lucide.createIcons(); 
         };
 
@@ -429,32 +393,20 @@
 
         window.addEventListener('load', () => {
             setTimeout(() => { const s = document.getElementById('splash-screen'); if(s){ s.style.display='none'; } }, 1500);
-            
             const pi = document.getElementById('pinInput');
             pi.oninput = (e) => {
-                const v = e.target.value; document.querySelectorAll('.dot-v788').forEach((d, i) => i < v.length ? d.classList.add('active') : d.classList.remove('active'));
+                const v = e.target.value; document.querySelectorAll('.dot').forEach((d, i) => i < v.length ? d.classList.add('active') : d.classList.remove('active'));
                 if(v.length === 6) { window.handleLogin(v); e.target.value = ""; }
             };
-
-            const kbBox = document.getElementById('kbBox');
-            const kbRows = [ ["1","2","3","DEL","CLR"], ["4","5","6","0"], ["7","8","9"], ["Q","W","E","R","T","Y","U","I","O","P"], ["A","S","D","F","G","H","J","K","L"], ["Z","X","C","V","B","N","M"] ];
+            const kbBox = document.getElementById('kbBox'); const kbRows = [ ["1","2","3","DEL","CLR"], ["4","5","6","0"], ["7","8","9"], ["Q","W","E","R","T","Y","U","I","O","P"], ["A","S","D","F","G","H","J","K","L"], ["Z","X","C","V","B","N","M"] ];
             const pDisp = document.getElementById('plateDisplay');
             kbRows.forEach(r => {
                 const dr = document.createElement('div'); dr.className="kb-row mb-1 flex gap-1";
                 r.forEach(k => {
                     const b = document.createElement('button'); b.className="kb-btn";
-                    if(k==="DEL") { 
-                        b.classList.add('kb-btn-del'); b.innerHTML='<i data-lucide="delete"></i>'; 
-                        b.onpointerdown=(e)=>{ window.triggerKeyEffect(e.currentTarget); pDisp.value=pDisp.value.slice(0,-1); window.adjustInputFontSize(pDisp); window.triggerInputPulse(); }; 
-                    }
-                    else if(k==="CLR") { 
-                        b.classList.add('kb-btn-clr'); b.innerText="CLR"; 
-                        b.onpointerdown=(e)=>{ window.triggerKeyEffect(e.currentTarget); pDisp.value=''; window.adjustInputFontSize(pDisp); window.triggerInputPulse(); }; 
-                    }
-                    else { 
-                        b.innerText=k; 
-                        b.onpointerdown=(e)=>{ window.triggerKeyEffect(e.currentTarget); pDisp.value+=k; window.adjustInputFontSize(pDisp); window.triggerInputPulse(); }; 
-                    }
+                    if(k==="DEL") { b.classList.add('kb-btn-del'); b.innerHTML='<i data-lucide="delete"></i>'; b.onpointerdown=(e)=>{ window.triggerKeyEffect(e.currentTarget); pDisp.value=pDisp.value.slice(0,-1); window.adjustInputFontSize(pDisp); window.triggerInputPulse(); }; }
+                    else if(k==="CLR") { b.classList.add('kb-btn-clr'); b.innerText="CLR"; b.onpointerdown=(e)=>{ window.triggerKeyEffect(e.currentTarget); pDisp.value=''; window.adjustInputFontSize(pDisp); window.triggerInputPulse(); }; }
+                    else { b.innerText=k; b.onpointerdown=(e)=>{ window.triggerKeyEffect(e.currentTarget); pDisp.value+=k; window.adjustInputFontSize(pDisp); window.triggerInputPulse(); }; }
                     dr.appendChild(b);
                 }); kbBox.appendChild(dr);
             });
@@ -470,12 +422,7 @@
             document.getElementById('cancelLogoutBtn').onclick = () => document.getElementById('modalLogout').style.display = 'none';
             document.getElementById('confirmLogoutBtn').onclick = async () => { localStorage.clear(); await signOut(auth); window.location.reload(); };
 
-            document.getElementById('sendBC').onclick = async () => { 
-                const txt = document.getElementById('bcInput').value; 
-                await setDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'config', 'broadcast'), { text: txt }); 
-                window.showToast("SENT!"); 
-            };
-            
+            document.getElementById('sendBC').onclick = async () => { const txt = document.getElementById('bcInput').value; await setDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'config', 'broadcast'), { text: txt }); window.showToast("SENT!"); };
             document.getElementById('toggleSystem').onclick = async () => { const cur = document.getElementById('toggleSystem').innerText === "ONLINE"; await setDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'config', 'system'), { active: !cur }); };
             
             document.getElementById('confirmAddBtn').onclick = async () => {
@@ -498,7 +445,7 @@
             document.getElementById('waShareBtn').onclick = () => { if(window.titanState.currentReport) window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(window.generateCleanReport(window.titanState.currentReport)), '_blank'); };
             document.getElementById('camBtn').onclick = () => document.getElementById('camInput').click();
 
-            // ✅ AI CAMERA HANDLER
+            // AI CAMERA
             document.getElementById('camInput').onchange = async (e) => {
                 const file = e.target.files[0]; if (!file) return; window.showL("AI ANALYZING...");
                 const reader = new FileReader(); reader.readAsDataURL(file);
@@ -537,10 +484,7 @@
         window.handleLogin = async (pin) => {
             const currentDevId = getDevID();
             if(pin === "280189") { 
-                window.titanState.isAdmin = true; 
-                localStorage.setItem('csid_v788_pin', pin); 
-                document.getElementById('adminNavBtn').classList.remove('hidden'); 
-                window.safeSwitch('pageSearch'); 
+                window.titanState.isAdmin = true; localStorage.setItem('csid_v788_pin', pin); document.getElementById('adminNavBtn').classList.remove('hidden'); window.safeSwitch('pageSearch'); 
                 document.querySelectorAll('.user-pin-display').forEach(el => el.innerText = "PIN : ADMIN");
                 document.querySelectorAll('.user-time-display').forEach(el => el.innerText = "SISA: NOLIMIT");
                 return true; 
@@ -553,52 +497,61 @@
                     const expiryTime = new Date(d.expiry).getTime();
                     if(expiryTime <= Date.now()) { window.showM("EXPIRED", "Masa aktif habis. Hubungi Admin."); localStorage.clear(); window.hideL(); return false; }
                     if(d.deviceId && d.deviceId !== "" && d.deviceId !== currentDevId) { window.showM("DEVICE LOCK", "PIN ini sudah Terdaftar di hp lain. Silahkan Hubungi admin untuk aktivasi PIN."); window.hideL(); return false; }
-
                     localStorage.setItem('csid_v788_pin', pin); window.titanState.currentPin = pin;
                     await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { deviceId: currentDevId });
-                    window.safeSwitch('pageSearch'); 
-                    window.startCountdown(d.expiry);
+                    window.safeSwitch('pageSearch'); window.startCountdown(d.expiry);
                     document.querySelectorAll('.user-pin-display').forEach(el => el.innerText = "PIN : " + pin);
                     window.hideL(); return true;
                 } else { window.showM("RALAT", "PIN TIDAK DITEMUKAN."); window.hideL(); return false; }
             } catch(e) { window.hideL(); return false; }
         };
 
-        window.loadAgentList = () => {
+        // ✅ IMPROVED ADMIN SYNC & FILTER
+        window.initAdminSync = () => {
             onSnapshot(collection(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents'), (snap) => {
-                const list = document.getElementById('agList'); if(!list) return;
-                list.innerHTML = ""; let act = 0, mati = 0; const now = Date.now();
-                snap.forEach(s => {
-                    const d = s.data(); const exp = new Date(d.expiry).getTime();
-                    const isB = d.status === 'blocked'; const isE = exp <= now;
-                    if(!isE && !isB) act++; else mati++;
-                    const diff = exp - now;
-                    const sDay = diff > 0 ? (diff > 86400000 * 365 ? 'NOLIMIT' : Math.floor(diff/86400000) + ' hari') : 'EXP';
-                    const sHour = diff > 0 ? Math.floor((diff % 86400000) / 3600000) + ' jam' : '';
-
-                    list.innerHTML += `
-                    <div class="agent-card-supreme" style="border: 3px solid ${isE ? 'red':'#00e5ff'}">
-                        <div class="pin-text-supreme">PIN: ${s.id}</div>
-                        <div class="text-[11px] font-black ${isE?'text-red-600':'text-blue-600'} uppercase">SISA: ${sDay} ${sHour}</div>
-                        <div class="action-row-supreme">
-                            <button onclick="window.toggleBlock('${s.id}', '${d.status}')" class="btn-sekat-supreme" style="background:${isB ? 'red':'#fff'}; color:${isB?'#fff':'#000'}">${isB ? 'BUKA' : 'SEKAT'}</button>
-                            <button onclick="window.openMap(${d.lastLat}, ${d.lastLong})" class="btn-icon-supreme bg-green-600 text-white"><i data-lucide="map-pin" size="18"></i></button>
-                            <button onclick="window.openRenewPin('${s.id}')" class="btn-icon-supreme bg-blue-600 text-white"><i data-lucide="calendar-plus" size="18"></i></button>
-                            <button onclick="window.resetDevice('${s.id}')" class="btn-icon-supreme bg-orange-500 text-white"><i data-lucide="refresh-cw" size="18"></i></button>
-                            <button onclick="window.delAgent('${s.id}')" class="btn-icon-supreme bg-red-600 text-white"><i data-lucide="trash-2" size="18"></i></button>
-                        </div>
-                    </div>`;
-                });
-                document.getElementById('statTotal').innerText = snap.size;
-                document.getElementById('statActive').innerText = act;
-                document.getElementById('statInactive').innerText = mati;
-                lucide.createIcons();
+                window.titanState.cachedAgents = [];
+                snap.forEach(s => window.titanState.cachedAgents.push({ id: s.id, ...s.data() }));
+                window.filterAgents(); // Initial Render
             });
         };
+
+        window.filterAgents = () => {
+            const q = document.getElementById('adminSearchInput').value.toLowerCase();
+            const list = document.getElementById('agList'); if(!list) return;
+            list.innerHTML = ""; let act = 0, mati = 0; const now = Date.now();
+            
+            const filtered = window.titanState.cachedAgents.filter(a => a.id.includes(q));
+            
+            filtered.forEach(d => {
+                const exp = new Date(d.expiry).getTime();
+                const isB = d.status === 'blocked'; const isE = exp <= now;
+                if(!isE && !isB) act++; else mati++;
+                const diff = exp - now;
+                const sDay = diff > 0 ? (diff > 86400000 * 365 ? 'NOLIMIT' : Math.floor(diff/86400000) + ' hr') : 'EXP';
+                const sHr = diff > 0 ? Math.floor((diff % 86400000) / 3600000) + ' jm' : '';
+
+                list.innerHTML += `
+                <div class="agent-card-supreme" style="border: 3px solid ${isE ? 'red':'#00e5ff'}">
+                    <div class="pin-text-supreme">PIN: ${d.id}</div>
+                    <div class="text-[11px] font-black ${isE?'text-red-600':'text-blue-600'} uppercase">SISA: ${sDay} ${sHr}</div>
+                    <div class="action-row-supreme">
+                        <button onclick="window.toggleBlock('${d.id}', '${d.status}')" class="btn-sekat-supreme" style="background:${isB ? 'red':'#fff'}; color:${isB?'#fff':'#000'}">${isB ? 'BUKA' : 'SEKAT'}</button>
+                        <button onclick="window.openMap(${d.lastLat}, ${d.lastLong})" class="btn-icon-supreme bg-green-600 text-white"><i data-lucide="map-pin" size="18"></i></button>
+                        <button onclick="window.openRenewPin('${d.id}')" class="btn-icon-supreme bg-blue-600 text-white"><i data-lucide="calendar-plus" size="18"></i></button>
+                        <button onclick="window.resetDevice('${d.id}')" class="btn-icon-supreme bg-orange-500 text-white"><i data-lucide="refresh-cw" size="18"></i></button>
+                        <button onclick="window.delAgent('${d.id}')" class="btn-icon-supreme bg-red-600 text-white"><i data-lucide="trash-2" size="18"></i></button>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('statTotal').innerText = window.titanState.cachedAgents.length;
+            document.getElementById('statActive').innerText = act;
+            document.getElementById('statInactive').innerText = mati;
+            lucide.createIcons();
+        };
+
         window.delAgent = async (id) => { if(confirm("Hapus Agent?")) await deleteDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id)); };
         window.resetDevice = async (id) => { if(confirm("Buka Kunci HP?")) await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { deviceId: "" }); };
         window.toggleBlock = async (id, cur) => { await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { status: cur === 'active' ? 'blocked' : 'active' }); };
-        
         window.startCountdown = (expiryISO) => {
             if(window.titanState.countdownTimer) clearInterval(window.titanState.countdownTimer);
             const update = () => {
@@ -606,10 +559,7 @@
                 const displays = document.querySelectorAll('.user-time-display');
                 if(diff <= 0) { 
                     displays.forEach(el => el.innerText = "SISA: EXPIRED"); 
-                    if(!window.titanState.isAdmin) {
-                        window.showM("EXPIRED", "Masa aktif habis. Hubungi Admin.");
-                        localStorage.clear(); setTimeout(() => window.location.reload(), 3000);
-                    }
+                    if(!window.titanState.isAdmin) { window.showM("EXPIRED", "Masa aktif habis. Hubungi Admin."); localStorage.clear(); setTimeout(() => window.location.reload(), 3000); }
                     clearInterval(window.titanState.countdownTimer); return; 
                 }
                 if(diff < (5 * 3600000)) { displays.forEach(el => el.classList.add('critical-timer')); }
@@ -618,10 +568,10 @@
                 displays.forEach(el => el.innerText = `SISA: ${d}d ${h}:${m}:${s}`);
             }; update(); window.titanState.countdownTimer = setInterval(update, 1000);
         };
-        
         window.generateCleanReport = (v) => {
             const f = (l, val) => l.padEnd(14, ' ') + " : " + (val || "-");
-            return `SUMBER   : APLIKASI CSID.PRO\n\nIDENTITAS PEMILIK : 👥\n${f("No.PLAT", ((v.plate_region||"")+(v.plate_number||"")+(v.plate_series||"")).toUpperCase())}\n${f("PEMILIK", v.owner_name)}\n${f("ALAMAT", (v.owner_address || "").replace('- //',''))}\n${f("NIK", v.nik)}\n${f("PEKERJAAN", v.owner_job)}\n\nDATA KENDARAAN : 🚘\n${f("MEREK", v.brand)}\n${f("TIPE", v.vehicle_type)}\n${f("TAHUN", v.manufacture_year)}\n${f("WARNA", v.color)}\n${f("SILINDER", (v.engine_capacity_cc||"0")+" cc")}\n${f("RODA", v.wheel_count || "0")}\n${f("NO. RANGKA", v.chassis_number)}\n${f("NO. MESIN", v.engine_number)}\n\nDOKUMEN RESMI : 📔\n${f("NO. BPKB", v.bpkb_number || "-")}\n${f("NO. STNK", v.stnk_number || "-")}\n${f("TGL DAFTAR", v.registration_date)}\n\nNOTE : ⚠️\nAPLIKASI INI DI BUAT UNTUK MENGAKSES IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB RESMI PADA KENDARAAN.\n\nCP LINK : CSID.PRO 👇\nhttps://wa.me/628136900872`;
+            const nopol = ((v.plate_region||"")+(v.plate_number||"")+(v.plate_series||"")).toUpperCase();
+            return `SUMBER   : APLIKASI CSID.PRO\n\nIDENTITAS PEMILIK : 👥\n${f("No.PLAT", nopol)}\n${f("PEMILIK", v.owner_name)}\n${f("ALAMAT", (v.owner_address || "").replace('- //',''))}\n${f("NIK", v.nik)}\n${f("PEKERJAAN", v.owner_job)}\n\nDATA KENDARAAN : 🚘\n${f("MEREK", v.brand)}\n${f("TIPE", v.vehicle_type)}\n${f("TAHUN", v.manufacture_year)}\n${f("WARNA", v.color)}\n${f("SILINDER", (v.engine_capacity_cc||"0")+" cc")}\n${f("RODA", v.wheel_count || "0")}\n${f("NO. RANGKA", v.chassis_number)}\n${f("NO. MESIN", v.engine_number)}\n\nDOKUMEN RESMI : 📔\n${f("NO. BPKB", v.bpkb_number || "-")}\n${f("NO. STNK", v.stnk_number || "-")}\n${f("TGL DAFTAR", v.registration_date)}\n\nNOTE : ⚠️\nAPLIKASI INI DI BUAT UNTUK MENGAKSES IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB RESMI PADA KENDARAAN.\n\nCP LINK : CSID.PRO 👇\nhttps://wa.me/628136900872`;
         }
     </script>
 </body>
