@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CSID.PRO - Master V790 Intelligence</title>
+    <title>CSID.PRO - Master V795 Advanced Guard</title>
     
     <!-- Library Inti -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -43,7 +43,7 @@
         .page { position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; z-index: 100; background-color: #000; overflow: hidden; }
         .page.active { display: flex !important; }
 
-        /* --- HEADER MEWAH --- */
+        /* --- HEADER --- */
         .lux-header { 
             background: #000; padding: 15px 16px; 
             border-top: 4px solid var(--neon-cyan); border-bottom: 4px solid var(--neon-cyan); 
@@ -54,18 +54,13 @@
         .banner-pin-label { font-size: 8px; color: #fff; text-transform: uppercase; }
         .banner-time-label { font-size: 8px; color: var(--neon-cyan); text-transform: uppercase; font-weight: 900; transition: color 0.3s; }
         
-        /* ALARM MASA AKTIF */
-        @keyframes blink-red {
-            0%, 100% { color: var(--neon-cyan); }
-            50% { color: var(--neon-red); transform: scale(1.1); }
-        }
+        @keyframes blink-red { 0%, 100% { color: var(--neon-cyan); } 50% { color: var(--neon-red); transform: scale(1.1); } }
         .critical-timer { animation: blink-red 0.5s infinite; color: var(--neon-red) !important; }
 
-        /* --- BROADCAST MARQUEE --- */
+        /* --- BROADCAST --- */
         #broadcast-area { 
             background: rgba(0, 229, 255, 0.12); border-bottom: 1.5px solid var(--neon-cyan); 
             padding: 10px 0; display: none; overflow: hidden; white-space: nowrap; flex-shrink: 0;
-            position: relative;
         }
         .bc-text { 
             display: inline-block; white-space: nowrap; will-change: transform;
@@ -75,7 +70,7 @@
         }
         @keyframes marquee-scroll { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
 
-        /* --- LOGIN UI --- */
+        /* --- LOGIN --- */
         .login-card-v788 { 
             background: #000; border-radius: 40px; padding: 45px 25px; width: 100%; 
             max-width: 330px; text-align: center; border: 3px solid var(--neon-cyan); 
@@ -88,14 +83,14 @@
         .btn-daftar-wa-lux { background: transparent; color: var(--neon-white); padding: 20px; border-radius: 20px; width: 100%; text-transform: uppercase; border: 2.5px dashed var(--neon-cyan); font-size: 13px; cursor: pointer; display: block; }
         #pinInput { position: absolute; opacity: 0; pointer-events: none; left: -9999px; width: 1px; height: 1px; }
 
-        /* --- SEARCH UI --- */
+        /* --- SEARCH --- */
         .search-outer { background: #000; border: 4px solid var(--neon-cyan); border-radius: 30px; margin: 15px; padding: 15px; min-height: 100px; display: flex; align-items: center; position: relative; overflow: hidden; cursor: text; }
-        #plateDisplay { width: 100%; background: transparent; border: none; color: var(--neon-cyan); font-size: 2.2rem; text-align: center; outline: none; letter-spacing: 4px; text-transform: uppercase; z-index: 5; inputmode: none; pointer-events: auto !important; -webkit-user-select: text !important; user-select: text !important; transition: transform 0.05s ease; }
+        #plateDisplay { width: 100%; background: transparent; border: none; color: var(--neon-cyan); font-size: 2.2rem; text-align: center; outline: none; letter-spacing: 4px; text-transform: uppercase; z-index: 5; inputmode: none; pointer-events: auto !important; user-select: text !important; -webkit-user-select: text !important; transition: transform 0.05s ease; }
         .marquee-hint { position: absolute; inset: 0; width: 100%; pointer-events: none; display: flex; align-items: center; justify-content: center; z-index: 1; overflow: hidden; white-space: nowrap; }
         .marquee-text { display: inline-block; white-space: nowrap; color: rgba(0, 229, 255, 0.4); font-size: 14px; text-transform: uppercase; animation: marquee-hint-anim 12s linear infinite; font-weight: 900; letter-spacing: 1px; }
         @keyframes marquee-hint-anim { 0% { transform: translateX(100%); } 100% { transform: translateX(-150%); } }
 
-        /* KEYBOARD TAP & INPUT */
+        /* KEYBOARD TAP */
         @keyframes key-tap-flash { 0% { background-color: var(--neon-cyan); transform: scale(1); } 50% { background-color: #ffffff; transform: scale(0.92); } 100% { background-color: var(--neon-cyan); transform: scale(1); } }
         .kb-tap-active { animation: key-tap-flash 0.1s ease-out; }
         .input-pulse { transform: scale(1.05); text-shadow: 0 0 15px var(--neon-cyan); }
@@ -111,7 +106,7 @@
         .kb-btn-clr { background: #ffff00 !important; } 
         .kb-btn-del { background: #ffffff !important; } 
 
-        /* --- ADMIN PANEL --- */
+        /* --- ADMIN PANEL LUXURY WHITE --- */
         #pageAdmin { background-color: #ffffff !important; color: #000000; }
         #pageAdmin .lux-header { background: #ffffff !important; border-top: 4.5px solid #000; border-bottom: 4.5px solid #000; color: #000000 !important; }
         #pageAdmin .lux-header h2, #pageAdmin .lux-header i { color: #000 !important; font-weight: 900; }
@@ -124,12 +119,18 @@
         .stat-num-lux { font-size: 26px; color: #000; font-weight: 900; }
 
         .agent-card-supreme { background: #fff; border: 3px solid #000; border-radius: 30px; padding: 22px; margin: 0 15px 20px 15px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
-        .pin-text-supreme { font-size: 20px; color: #000; margin-bottom: 4px; }
+        .pin-text-supreme { font-size: 22px; color: #000; margin-bottom: 4px; font-weight: 900; }
+        
+        /* ✅ STATUS LOGIN STYLE */
+        .login-status-badge { display: inline-block; padding: 4px 10px; border-radius: 8px; font-size: 9px; text-transform: uppercase; font-weight: 900; margin-top: 5px; }
+        .status-waiting { background: #f3f4f6; color: #9ca3af; }
+        .status-success { background: #ccff00; color: #000; box-shadow: 0 0 10px rgba(204,255,0,0.4); }
+
         .action-row-supreme { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: 25px; }
         .btn-sekat-supreme { flex: 1.8; height: 50px; border-radius: 15px; font-size: 10px; text-transform: uppercase; border: 2.5px solid #000; cursor: pointer; font-weight: 900; }
         .btn-icon-supreme { width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; border: 2.5px solid #000; cursor: pointer; }
 
-        /* --- RESULT PAGE --- */
+        /* RESULT PAGE */
         .official-card-lux { padding: 30px 20px; text-align: left; }
         .sec-head-v788 { font-size: 17px; color: #fff; margin: 35px 0 15px 0; border-bottom: 3.5px solid #fff; padding-bottom: 12px; text-transform: uppercase; display: block; letter-spacing: 1.5px; font-weight: 900; }
         .row-data-lux { display: flex; align-items: flex-start; margin-bottom: 14px; font-size: 15.5px; }
@@ -137,7 +138,7 @@
         .lbl-lux::after { content: ":"; margin-right: 12px; }
         .val-lux { flex: 1; color: #fff; text-transform: uppercase; line-height: 1.4; word-break: break-word; }
 
-        /* MEGA TURBO LOADER */
+        /* LOADER */
         #global-loader { position: absolute; inset: 0; background: rgba(0,0,0,0.98); z-index: 11000; display: none; flex-direction: column; align-items: center; justify-content: center; }
         .turbo-ring { width: 120px; height: 120px; border: 10px solid #111; border-top-color: var(--neon-cyan); border-bottom-color: var(--neon-cyan); border-radius: 50%; animation: turbo-spin 0.3s linear infinite; box-shadow: 0 0 50px var(--neon-cyan-dim); }
         @keyframes turbo-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -154,7 +155,7 @@
 
     <div class="app-container">
         <!-- SPLASH -->
-        <div id="splash-screen" style="position: absolute; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center;"><div class="splash-logo" style="font-size: 45px; color: #fff; letter-spacing: 8px; text-shadow: 0 0 20px var(--neon-cyan);">CSID.PRO</div><div class="text-[9px] tracking-[4px] text-zinc-600 mt-3 uppercase">Master V790 Intelligence Final</div></div>
+        <div id="splash-screen" style="position: absolute; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center;"><div class="splash-logo" style="font-size: 45px; color: #fff; letter-spacing: 8px; text-shadow: 0 0 20px var(--neon-cyan);">CSID.PRO</div><div class="text-[9px] tracking-[4px] text-zinc-600 mt-3 uppercase">Master V795 Advanced Guard</div></div>
 
         <!-- MASTER TAKEDOWN -->
         <div id="modalTakedown">
@@ -207,7 +208,6 @@
                         <p class="text-[#ccff00] text-[12px] uppercase animate-pulse tracking-wider">WARNING ⚠️<br>DILARANG KERAS MENYALAHGUNAKAN APLIKASI INI TANPA IZIN RESMI CSID.PRO</p>
                     </div>
                     
-                    <!-- ACTION PANEL -->
                     <div class="action-panel-v788">
                         <button id="kbMinus" class="btn-action-v788"><i data-lucide="minus"></i></button>
                         <button id="kbPlus" class="btn-action-v788"><i data-lucide="plus"></i></button>
@@ -247,7 +247,6 @@
                         <div class="stat-box-lux"><div id="statActive" class="stat-num-lux text-green-600">0</div><div class="stat-label-lux text-[8px] uppercase">Aktif</div></div>
                         <div class="stat-box-lux"><div id="statInactive" class="stat-num-lux text-red-600">0</div><div class="stat-label-lux text-[8px] uppercase">Mati</div></div>
                     </div>
-                    <!-- ✅ ADMIN SEARCH INPUT -->
                     <div class="px-4 mb-4"><input type="number" id="adminSearchInput" oninput="window.filterAgents()" placeholder="Cari PIN Agen..." class="w-full p-5 bg-gray-100 border-2 border-black rounded-2xl text-black text-lg"></div>
                     <div id="agList" class="pb-20"></div>
                 </div>
@@ -427,7 +426,7 @@
             
             document.getElementById('confirmAddBtn').onclick = async () => {
                 const pin = document.getElementById('newPinVal').value; const days = parseFloat(document.getElementById('expiryChoice').value); if(!pin || pin.length < 4) return;
-                await setDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { username: pin, role: 'agent', status: 'active', expiry: new Date(Date.now() + days * 86400000).toISOString(), createdAt: new Date().toISOString(), deviceId: "", lastLat: 0, lastLong: 0 });
+                await setDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { username: pin, role: 'agent', status: 'active', expiry: new Date(Date.now() + days * 86400000).toISOString(), createdAt: new Date().toISOString(), deviceId: "", firstLogin: null });
                 window.closeModalAdd(); window.showToast("PIN AKTIF!");
             };
 
@@ -444,23 +443,6 @@
             document.getElementById('copyBtn').onclick = () => { if(window.titanState.currentReport) { const t = window.generateCleanReport(window.titanState.currentReport); const el = document.createElement('textarea'); el.value = t; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); window.showToast("DISALIN RAPI!"); } };
             document.getElementById('waShareBtn').onclick = () => { if(window.titanState.currentReport) window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(window.generateCleanReport(window.titanState.currentReport)), '_blank'); };
             document.getElementById('camBtn').onclick = () => document.getElementById('camInput').click();
-
-            // AI CAMERA
-            document.getElementById('camInput').onchange = async (e) => {
-                const file = e.target.files[0]; if (!file) return; window.showL("AI ANALYZING...");
-                const reader = new FileReader(); reader.readAsDataURL(file);
-                reader.onload = async () => {
-                    const b64 = reader.result.split(',')[1];
-                    try {
-                        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKeyGemini}`, { 
-                            method: 'POST', headers: { 'Content-Type': 'application/json' }, 
-                            body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: "Berikan HANYA nomor plat atau rangka dari gambar ini." }, { inlineData: { mimeType: "image/png", data: b64 } }] }] }) 
-                        });
-                        const r = await res.json(); const ext = r.candidates?.[0]?.content?.parts?.[0]?.text?.replace(/[^A-Z0-9]/gi, '').toUpperCase();
-                        if (ext && ext.length > 3) { pDisp.value = ext; window.adjustInputFontSize(pDisp); window.doSearch(); }
-                    } catch(e) {} window.hideL();
-                };
-            };
 
             onAuthStateChanged(auth, async (user) => {
                 if(!user) await signInAnonymously(auth);
@@ -496,9 +478,19 @@
                     const d = snap.data();
                     const expiryTime = new Date(d.expiry).getTime();
                     if(expiryTime <= Date.now()) { window.showM("EXPIRED", "Masa aktif habis. Hubungi Admin."); localStorage.clear(); window.hideL(); return false; }
+                    
+                    // ✅ FIX SEKAT STATUS CHECK
+                    if(d.status === 'blocked') { window.showM("LOCK", "Akses Anda disekat sementara oleh Admin."); window.hideL(); return false; }
+
                     if(d.deviceId && d.deviceId !== "" && d.deviceId !== currentDevId) { window.showM("DEVICE LOCK", "PIN ini sudah Terdaftar di hp lain. Silahkan Hubungi admin untuk aktivasi PIN."); window.hideL(); return false; }
+                    
                     localStorage.setItem('csid_v788_pin', pin); window.titanState.currentPin = pin;
-                    await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { deviceId: currentDevId });
+                    
+                    // ✅ RECORD FIRST LOGIN TIME
+                    const updateData = { deviceId: currentDevId };
+                    if(!d.firstLogin) updateData.firstLogin = new Date().toISOString();
+                    await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), updateData);
+                    
                     window.safeSwitch('pageSearch'); window.startCountdown(d.expiry);
                     document.querySelectorAll('.user-pin-display').forEach(el => el.innerText = "PIN : " + pin);
                     window.hideL(); return true;
@@ -506,12 +498,11 @@
             } catch(e) { window.hideL(); return false; }
         };
 
-        // ✅ IMPROVED ADMIN SYNC & FILTER
         window.initAdminSync = () => {
             onSnapshot(collection(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents'), (snap) => {
                 window.titanState.cachedAgents = [];
                 snap.forEach(s => window.titanState.cachedAgents.push({ id: s.id, ...s.data() }));
-                window.filterAgents(); // Initial Render
+                window.filterAgents();
             });
         };
 
@@ -519,9 +510,7 @@
             const q = document.getElementById('adminSearchInput').value.toLowerCase();
             const list = document.getElementById('agList'); if(!list) return;
             list.innerHTML = ""; let act = 0, mati = 0; const now = Date.now();
-            
             const filtered = window.titanState.cachedAgents.filter(a => a.id.includes(q));
-            
             filtered.forEach(d => {
                 const exp = new Date(d.expiry).getTime();
                 const isB = d.status === 'blocked'; const isE = exp <= now;
@@ -530,13 +519,21 @@
                 const sDay = diff > 0 ? (diff > 86400000 * 365 ? 'NOLIMIT' : Math.floor(diff/86400000) + ' hr') : 'EXP';
                 const sHr = diff > 0 ? Math.floor((diff % 86400000) / 3600000) + ' jm' : '';
 
+                // ✅ LOGIN STATUS LOGIC
+                const hasLoggedIn = d.firstLogin ? true : false;
+
                 list.innerHTML += `
-                <div class="agent-card-supreme" style="border: 3px solid ${isE ? 'red':'#00e5ff'}">
+                <div class="agent-card-supreme" style="border: 3px solid ${isB ? 'red' : (isE ? 'orange' : '#00e5ff')}">
                     <div class="pin-text-supreme">PIN: ${d.id}</div>
                     <div class="text-[11px] font-black ${isE?'text-red-600':'text-blue-600'} uppercase">SISA: ${sDay} ${sHr}</div>
+                    
+                    <div class="login-status-badge ${hasLoggedIn ? 'status-success' : 'status-waiting'}">
+                        ${hasLoggedIn ? 'BERHASIL MASUK ✅' : 'MENUNGGU LOGIN ⏳'}
+                    </div>
+                    
+                    <div class="text-[9px] opacity-40 uppercase mt-2">DEVICE: ${d.deviceId ? 'LOCKED 🔒' : 'OPEN 🔓'}</div>
                     <div class="action-row-supreme">
                         <button onclick="window.toggleBlock('${d.id}', '${d.status}')" class="btn-sekat-supreme" style="background:${isB ? 'red':'#fff'}; color:${isB?'#fff':'#000'}">${isB ? 'BUKA' : 'SEKAT'}</button>
-                        <button onclick="window.openMap(${d.lastLat}, ${d.lastLong})" class="btn-icon-supreme bg-green-600 text-white"><i data-lucide="map-pin" size="18"></i></button>
                         <button onclick="window.openRenewPin('${d.id}')" class="btn-icon-supreme bg-blue-600 text-white"><i data-lucide="calendar-plus" size="18"></i></button>
                         <button onclick="window.resetDevice('${d.id}')" class="btn-icon-supreme bg-orange-500 text-white"><i data-lucide="refresh-cw" size="18"></i></button>
                         <button onclick="window.delAgent('${d.id}')" class="btn-icon-supreme bg-red-600 text-white"><i data-lucide="trash-2" size="18"></i></button>
@@ -551,7 +548,14 @@
 
         window.delAgent = async (id) => { if(confirm("Hapus Agent?")) await deleteDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id)); };
         window.resetDevice = async (id) => { if(confirm("Buka Kunci HP?")) await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { deviceId: "" }); };
-        window.toggleBlock = async (id, cur) => { await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { status: cur === 'active' ? 'blocked' : 'active' }); };
+        
+        // ✅ FIX TOGGLE BLOCK LOGIC
+        window.toggleBlock = async (id, cur) => { 
+            const newStatus = cur === 'active' ? 'blocked' : 'active';
+            await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { status: newStatus }); 
+            window.showToast(newStatus === 'blocked' ? "AGEN DISEKAT!" : "AKSES DIBUKA!");
+        };
+
         window.startCountdown = (expiryISO) => {
             if(window.titanState.countdownTimer) clearInterval(window.titanState.countdownTimer);
             const update = () => {
@@ -568,6 +572,7 @@
                 displays.forEach(el => el.innerText = `SISA: ${d}d ${h}:${m}:${s}`);
             }; update(); window.titanState.countdownTimer = setInterval(update, 1000);
         };
+
         window.generateCleanReport = (v) => {
             const f = (l, val) => l.padEnd(14, ' ') + " : " + (val || "-");
             const nopol = ((v.plate_region||"")+(v.plate_number||"")+(v.plate_series||"")).toUpperCase();
