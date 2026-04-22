@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CSID.PRO - Master V795 Advanced Guard</title>
+    <title>CSID.PRO - Master V796 Final</title>
     
     <!-- Library Inti -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -43,7 +43,7 @@
         .page { position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; z-index: 100; background-color: #000; overflow: hidden; }
         .page.active { display: flex !important; }
 
-        /* --- HEADER --- */
+        /* --- HEADER MEWAH --- */
         .lux-header { 
             background: #000; padding: 15px 16px; 
             border-top: 4px solid var(--neon-cyan); border-bottom: 4px solid var(--neon-cyan); 
@@ -70,15 +70,27 @@
         }
         @keyframes marquee-scroll { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
 
-        /* --- LOGIN --- */
+        /* --- LOGIN UI --- */
         .login-card-v788 { 
             background: #000; border-radius: 40px; padding: 45px 25px; width: 100%; 
             max-width: 330px; text-align: center; border: 3px solid var(--neon-cyan); 
             box-shadow: 0 0 45px var(--neon-cyan-dim); position: relative;
         }
-        .dots-v788 { display: flex; justify-content: center; gap: 12px; margin-bottom: 35px; min-height: 25px; }
-        .dot-v788 { width: 18px; height: 18px; border-radius: 50%; background: #111; border: 2px solid rgba(0, 229, 255, 0.2); transition: 0.15s; }
-        .dot-v788.active { background: var(--neon-cyan); box-shadow: 0 0 20px var(--neon-cyan); border-color: #fff; transform: scale(1.3); }
+        /* ✅ FIX INDICATOR DOTS VISIBILITY */
+        .dots-v788 { display: flex; justify-content: center; gap: 15px; margin-bottom: 35px; min-height: 30px; }
+        .dot-v788 { 
+            width: 20px; height: 20px; border-radius: 50%; 
+            background: #000; border: 2.5px solid var(--neon-cyan); 
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            box-shadow: inset 0 0 5px rgba(0,229,255,0.2);
+        }
+        .dot-v788.active { 
+            background: var(--neon-cyan); 
+            box-shadow: 0 0 20px var(--neon-cyan); 
+            border-color: #fff; 
+            transform: scale(1.4); 
+        }
+        
         .btn-buka-akses { background: var(--neon-cyan); color: #000; padding: 22px; border-radius: 20px; width: 100%; text-transform: uppercase; font-weight: 900; margin-bottom: 20px; border: none; cursor: pointer; }
         .btn-daftar-wa-lux { background: transparent; color: var(--neon-white); padding: 20px; border-radius: 20px; width: 100%; text-transform: uppercase; border: 2.5px dashed var(--neon-cyan); font-size: 13px; cursor: pointer; display: block; }
         #pinInput { position: absolute; opacity: 0; pointer-events: none; left: -9999px; width: 1px; height: 1px; }
@@ -106,7 +118,7 @@
         .kb-btn-clr { background: #ffff00 !important; } 
         .kb-btn-del { background: #ffffff !important; } 
 
-        /* --- ADMIN PANEL LUXURY WHITE --- */
+        /* --- ADMIN PANEL --- */
         #pageAdmin { background-color: #ffffff !important; color: #000000; }
         #pageAdmin .lux-header { background: #ffffff !important; border-top: 4.5px solid #000; border-bottom: 4.5px solid #000; color: #000000 !important; }
         #pageAdmin .lux-header h2, #pageAdmin .lux-header i { color: #000 !important; font-weight: 900; }
@@ -121,10 +133,10 @@
         .agent-card-supreme { background: #fff; border: 3px solid #000; border-radius: 30px; padding: 22px; margin: 0 15px 20px 15px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
         .pin-text-supreme { font-size: 22px; color: #000; margin-bottom: 4px; font-weight: 900; }
         
-        /* ✅ STATUS LOGIN STYLE */
-        .login-status-badge { display: inline-block; padding: 4px 10px; border-radius: 8px; font-size: 9px; text-transform: uppercase; font-weight: 900; margin-top: 5px; }
-        .status-waiting { background: #f3f4f6; color: #9ca3af; }
-        .status-success { background: #ccff00; color: #000; box-shadow: 0 0 10px rgba(204,255,0,0.4); }
+        /* ✅ LOGIN STATUS STYLE */
+        .login-status-badge { display: inline-block; padding: 6px 14px; border-radius: 10px; font-size: 10px; text-transform: uppercase; font-weight: 900; margin-top: 10px; border: 2px solid transparent; }
+        .status-waiting { background: #f3f4f6; color: #9ca3af; border-color: #e5e7eb; }
+        .status-success { background: #ccff00; color: #000; box-shadow: 0 0 15px rgba(204,255,0,0.5); border-color: #000; }
 
         .action-row-supreme { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: 25px; }
         .btn-sekat-supreme { flex: 1.8; height: 50px; border-radius: 15px; font-size: 10px; text-transform: uppercase; border: 2.5px solid #000; cursor: pointer; font-weight: 900; }
@@ -138,7 +150,7 @@
         .lbl-lux::after { content: ":"; margin-right: 12px; }
         .val-lux { flex: 1; color: #fff; text-transform: uppercase; line-height: 1.4; word-break: break-word; }
 
-        /* LOADER */
+        /* MEGA TURBO LOADER */
         #global-loader { position: absolute; inset: 0; background: rgba(0,0,0,0.98); z-index: 11000; display: none; flex-direction: column; align-items: center; justify-content: center; }
         .turbo-ring { width: 120px; height: 120px; border: 10px solid #111; border-top-color: var(--neon-cyan); border-bottom-color: var(--neon-cyan); border-radius: 50%; animation: turbo-spin 0.3s linear infinite; box-shadow: 0 0 50px var(--neon-cyan-dim); }
         @keyframes turbo-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -155,7 +167,7 @@
 
     <div class="app-container">
         <!-- SPLASH -->
-        <div id="splash-screen" style="position: absolute; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center;"><div class="splash-logo" style="font-size: 45px; color: #fff; letter-spacing: 8px; text-shadow: 0 0 20px var(--neon-cyan);">CSID.PRO</div><div class="text-[9px] tracking-[4px] text-zinc-600 mt-3 uppercase">Master V795 Advanced Guard</div></div>
+        <div id="splash-screen" style="position: absolute; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center;"><div class="splash-logo" style="font-size: 45px; color: #fff; letter-spacing: 8px; text-shadow: 0 0 20px var(--neon-cyan);">CSID.PRO</div><div class="text-[9px] tracking-[4px] text-zinc-600 mt-3 uppercase">Master V796 Advanced Guard</div></div>
 
         <!-- MASTER TAKEDOWN -->
         <div id="modalTakedown">
@@ -171,7 +183,7 @@
             <div id="pageLogin" class="page active">
                 <div class="flex flex-col items-center justify-center h-full px-5 text-center">
                     <div class="mb-10 w-full px-4"><h1 class="uppercase text-[24px] text-white leading-tight">SELAMAT DATANG DI APLIKASI<br><span style="color:var(--neon-cyan)">CEK SAMSAT INDONESIA</span></h1></div>
-                    <div class="login-card-v788" id="loginCardTrigger" onclick="document.getElementById('pinInput').focus()">
+                    <div class="login-card-v788" id="loginCardArea" onclick="document.getElementById('pinInput').focus()">
                         <h1 class="text-white text-3xl mb-1">CSID.PRO</h1>
                         <p style="color:#666; font-size:11px; text-transform:uppercase; letter-spacing:2px; margin-bottom:30px;">MASUKKAN PIN AKSES</p>
                         <div class="dots-v788" id="dotBox">
@@ -394,7 +406,11 @@
             setTimeout(() => { const s = document.getElementById('splash-screen'); if(s){ s.style.display='none'; } }, 1500);
             const pi = document.getElementById('pinInput');
             pi.oninput = (e) => {
-                const v = e.target.value; document.querySelectorAll('.dot').forEach((d, i) => i < v.length ? d.classList.add('active') : d.classList.remove('active'));
+                const v = e.target.value; 
+                // ✅ INDICATOR LOGIC FIX
+                const ds = document.querySelectorAll('.dot-v788');
+                ds.forEach((d, i) => i < v.length ? d.classList.add('active') : d.classList.remove('active'));
+                
                 if(v.length === 6) { window.handleLogin(v); e.target.value = ""; }
             };
             const kbBox = document.getElementById('kbBox'); const kbRows = [ ["1","2","3","DEL","CLR"], ["4","5","6","0"], ["7","8","9"], ["Q","W","E","R","T","Y","U","I","O","P"], ["A","S","D","F","G","H","J","K","L"], ["Z","X","C","V","B","N","M"] ];
@@ -478,15 +494,10 @@
                     const d = snap.data();
                     const expiryTime = new Date(d.expiry).getTime();
                     if(expiryTime <= Date.now()) { window.showM("EXPIRED", "Masa aktif habis. Hubungi Admin."); localStorage.clear(); window.hideL(); return false; }
-                    
-                    // ✅ FIX SEKAT STATUS CHECK
                     if(d.status === 'blocked') { window.showM("LOCK", "Akses Anda disekat sementara oleh Admin."); window.hideL(); return false; }
-
                     if(d.deviceId && d.deviceId !== "" && d.deviceId !== currentDevId) { window.showM("DEVICE LOCK", "PIN ini sudah Terdaftar di hp lain. Silahkan Hubungi admin untuk aktivasi PIN."); window.hideL(); return false; }
                     
                     localStorage.setItem('csid_v788_pin', pin); window.titanState.currentPin = pin;
-                    
-                    // ✅ RECORD FIRST LOGIN TIME
                     const updateData = { deviceId: currentDevId };
                     if(!d.firstLogin) updateData.firstLogin = new Date().toISOString();
                     await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), updateData);
@@ -518,19 +529,15 @@
                 const diff = exp - now;
                 const sDay = diff > 0 ? (diff > 86400000 * 365 ? 'NOLIMIT' : Math.floor(diff/86400000) + ' hr') : 'EXP';
                 const sHr = diff > 0 ? Math.floor((diff % 86400000) / 3600000) + ' jm' : '';
-
-                // ✅ LOGIN STATUS LOGIC
                 const hasLoggedIn = d.firstLogin ? true : false;
 
                 list.innerHTML += `
                 <div class="agent-card-supreme" style="border: 3px solid ${isB ? 'red' : (isE ? 'orange' : '#00e5ff')}">
                     <div class="pin-text-supreme">PIN: ${d.id}</div>
                     <div class="text-[11px] font-black ${isE?'text-red-600':'text-blue-600'} uppercase">SISA: ${sDay} ${sHr}</div>
-                    
                     <div class="login-status-badge ${hasLoggedIn ? 'status-success' : 'status-waiting'}">
                         ${hasLoggedIn ? 'BERHASIL MASUK ✅' : 'MENUNGGU LOGIN ⏳'}
                     </div>
-                    
                     <div class="text-[9px] opacity-40 uppercase mt-2">DEVICE: ${d.deviceId ? 'LOCKED 🔒' : 'OPEN 🔓'}</div>
                     <div class="action-row-supreme">
                         <button onclick="window.toggleBlock('${d.id}', '${d.status}')" class="btn-sekat-supreme" style="background:${isB ? 'red':'#fff'}; color:${isB?'#fff':'#000'}">${isB ? 'BUKA' : 'SEKAT'}</button>
@@ -548,8 +555,6 @@
 
         window.delAgent = async (id) => { if(confirm("Hapus Agent?")) await deleteDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id)); };
         window.resetDevice = async (id) => { if(confirm("Buka Kunci HP?")) await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { deviceId: "" }); };
-        
-        // ✅ FIX TOGGLE BLOCK LOGIC
         window.toggleBlock = async (id, cur) => { 
             const newStatus = cur === 'active' ? 'blocked' : 'active';
             await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { status: newStatus }); 
@@ -572,7 +577,6 @@
                 displays.forEach(el => el.innerText = `SISA: ${d}d ${h}:${m}:${s}`);
             }; update(); window.titanState.countdownTimer = setInterval(update, 1000);
         };
-
         window.generateCleanReport = (v) => {
             const f = (l, val) => l.padEnd(14, ' ') + " : " + (val || "-");
             const nopol = ((v.plate_region||"")+(v.plate_number||"")+(v.plate_series||"")).toUpperCase();
