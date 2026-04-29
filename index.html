@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CSID.PRO - Master V2800 Supreme</title>
+    <title>CSID.PRO - Master V4100 Supreme</title>
     
-    <!-- Library Inti -->
+    <!-- Library Utama -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* ✅ FORCE ARIAL BOLD GLOBAL */
+        /* ✅ FORCE ARIAL BOLD GLOBAL INDONESIA */
         * { 
             box-sizing: border-box; 
             margin: 0; padding: 0; 
@@ -26,7 +26,6 @@
             --neon-cyan-dim: rgba(0, 229, 255, 0.4);
             --neon-white: #ffffff;
             --neon-red: #ff3131;
-            --neon-pink: #ff00ff;
             --wa-green: #25D366;
             --kuning-stabilo: #ccff00;
             --kb-height: 18px; 
@@ -55,13 +54,13 @@
         @keyframes turbo-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .turbo-text-white { color: #ffffff; font-size: 14px; letter-spacing: 3px; text-transform: uppercase; margin-top: 30px; font-weight: 900; }
 
-        /* BROADCAST MARQUEE WHITE & ETERNAL */
+        /* BROADCAST AREA */
         #broadcast-area { background: rgba(0,0,0,0.8); border-bottom: 2px solid var(--neon-cyan); padding: 12px 0; display: none; overflow: hidden; white-space: nowrap; flex-shrink: 0; z-index: 300; }
         .bc-text-scroll { 
             display: inline-block; padding-left: 100%; animation: marquee-eternal 35s linear infinite; 
             color: #ffffff !important; font-size: 15px; text-transform: uppercase; 
         }
-        @keyframes marquee-eternal { 0% { transform: translateX(0); } 100% { transform: translateX(-250%); } }
+        @keyframes marquee-eternal { 0% { transform: translateX(0); } 100% { transform: translateX(-200%); } }
 
         /* HEADER */
         .lux-header { background: #000; padding: 10px 16px; border-bottom: 2.5px solid var(--neon-cyan); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 200; }
@@ -86,9 +85,9 @@
 
         .registration-box-sultan { background: rgba(0, 229, 255, 0.05); border: 2.5px dashed var(--neon-cyan); border-radius: 20px; padding: 22px; margin: 25px 0; width: 100%; max-width: 330px; text-align: center; flex-shrink: 0; }
         .reg-id-display { color: #fff; font-size: 24px; letter-spacing: 5px; margin: 10px 0 15px 0; }
-        .btn-daftar-wa-lux { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--wa-green); color: #fff; padding: 18px; border-radius: 12px; width: 100%; text-transform: uppercase; font-size: 13px; font-weight: 900; box-shadow: 0 4px 0 #128C7E; }
+        .btn-daftar-wa-lux { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--wa-green); color: #fff; padding: 18px; border-radius: 12px; width: 100%; text-transform: uppercase; font-size: 14px; font-weight: 900; box-shadow: 0 4px 0 #128C7E; }
 
-        /* SEARCH ENGINE */
+        /* SEARCH AREA */
         .search-outer { background: #000; border: 3px solid var(--neon-cyan); border-radius: 20px; margin: 15px; padding: 10px; min-height: 80px; display: flex; align-items: center; position: relative; overflow: hidden; }
         #plateDisplay { width: 100%; background: transparent; border: none; color: var(--neon-cyan); font-size: 1.8rem; text-align: center; outline: none; letter-spacing: 4px; text-transform: uppercase; z-index: 5; }
         .marquee-hint { position: absolute; inset: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; z-index: 1; overflow: hidden; }
@@ -107,7 +106,7 @@
 
         .kb-container { background: #000; padding: 5px 8px 30px 8px; flex-direction: column; gap: 4px; border-top: 2.5px solid var(--neon-cyan); flex-shrink: 0; z-index: 110; }
         .kb-row { display: flex; justify-content: center; gap: 4px; width: 100%; }
-        .kb-btn { background: var(--neon-cyan); border: 2.5px solid #000; border-radius: 8px; padding: var(--kb-height) 0; flex: 1; color: #000; font-size: 18px; font-weight: 900; box-shadow: 0 4px 0 #000; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.05s; }
+        .kb-btn { background: var(--neon-cyan); border: 2.5px solid #000; border-radius: 8px; padding: var(--kb-height) 0; flex: 1; color: #000; font-size: 17px; font-weight: 900; box-shadow: 0 4px 0 #000; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.05s; }
         .kb-btn:active { transform: scale(0.9) translateY(-2px); background: #fff; box-shadow: 0 0 20px var(--neon-cyan); z-index: 1000; }
         .kb-clr-lime { background: var(--kuning-stabilo) !important; color: #000 !important; }
         .kb-del-white { background: #ffffff !important; color: #000 !important; }
@@ -131,7 +130,7 @@
         .tab-active { background: var(--neon-cyan); color: #000; }
         .tab-inactive { background: #111; color: #555; border: 2px solid #222; }
 
-        /* Kartu Agen Sultan */
+        /* KARTU AGEN V4100 */
         .agent-card-v2400 { background: #000; border-bottom: 1.5px solid #111; padding: 15px 15px 25px 15px; margin-bottom: 5px; position: relative; }
         .agent-status-v2400 { color: var(--kuning-stabilo); font-size: 10px; text-transform: uppercase; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
         .agent-pin-v2400 { color: var(--neon-cyan); font-size: 28px; margin-bottom: 4px; }
@@ -140,22 +139,32 @@
         .btn-sekat-v2400 { background: #fff; color: #000; border-radius: 6px; padding: 10px 25px; font-size: 14px; text-transform: uppercase; border: 2px solid #000; font-weight: 900; }
         .btn-sekat-v2400.blocked { background: var(--neon-red); color: #fff; }
         .btn-action-icon-v2400 { width: 48px; height: 48px; border-radius: 6px; display: flex; align-items: center; justify-content: center; border: 2px solid #000; color: #fff; cursor: pointer; }
-
-        /* --- RESULT PAGE --- */
-        .result-layout-v2000 { display: flex; flex-direction: column; height: 100%; width: 100%; background: #000; position: relative; }
-        .scroll-area-v2000 { flex: 1; overflow-y: auto; background: #000; width: 100%; padding-bottom: 220px; }
-        .cp-priority-box { margin: 15px 15px 5px 15px; padding: 20px; border: 3.5px solid var(--neon-cyan); border-radius: 25px; text-align: center; background: rgba(0, 229, 255, 0.08); }
-        .official-card-lux { padding: 15px 20px 40px 20px; text-align: left; }
-        .sec-head-v2000 { font-size: 16px; color: var(--neon-cyan); margin: 35px 0 15px 0; border-bottom: 3.5px solid #fff; padding-bottom: 8px; text-transform: uppercase; }
         
-        .row-data-v2000 { display: grid; grid-template-columns: 130px 20px 1fr; align-items: start; margin-bottom: 12px; width: 100%; font-size: 16px; }
-        .lbl-v2000 { color: var(--neon-cyan); text-transform: uppercase; font-size: 14.5px; }
-        .colon-v2000 { color: var(--neon-cyan); text-align: center; }
-        .val-v2000 { color: #ffffff !important; text-transform: uppercase; word-break: break-word; }
+        /* Violation Badge */
+        .violation-badge { background: var(--neon-red); color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 9px; text-transform: uppercase; font-weight: 900; margin-left: 10px; animation: pulse-red 1s infinite; }
+        @keyframes pulse-red { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* --- RESULT PAGE (V3800 PERFECT MIRRORING) --- */
+        .result-layout-v3800 { display: flex; flex-direction: column; height: 100%; width: 100%; background: #000; position: relative; }
+        .scroll-area-v3800 { flex: 1; overflow-y: auto; background: #000; width: 100%; padding-bottom: 220px; }
+        .official-card-lux { padding: 15px 20px 40px 20px; text-align: left; }
+        
+        /* Mirror Header visual */
+        .header-mirror-box { border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 20px; margin-bottom: 25px; text-align: center; }
+        .header-mirror-box p { color: #fff; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
+        .header-mirror-box span { color: var(--neon-cyan); font-size: 11px; text-decoration: underline; }
+
+        .sec-head-v3800 { font-size: 16px; color: var(--neon-cyan); margin: 35px 0 15px 0; border-bottom: 3.5px solid #fff; padding-bottom: 8px; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
+        
+        .row-data-v3800 { display: grid; grid-template-columns: 130px 20px 1fr; align-items: start; margin-bottom: 12px; width: 100%; font-size: 16px; }
+        .lbl-v3800 { color: var(--neon-cyan); text-transform: uppercase; font-size: 14.5px; }
+        .colon-v3800 { color: var(--neon-cyan); text-align: center; }
+        .val-v3800 { color: #ffffff !important; text-transform: uppercase; word-break: break-word; line-height: 1.3; }
 
         .footer-lux-v2000 { position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; background: #000; border-top: 1.5px solid #222; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
         .btn-sultan-big { width: 100%; height: 75px; border-radius: 22px; font-size: 18px; text-transform: uppercase; display: flex; align-items: center; justify-content: center; border: 3.5px solid #000; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.5); font-weight: 900; }
 
+        /* MODALS */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 20000; display: none; align-items: center; justify-content: center; padding: 25px; }
         .modal-card { background: #111; border-radius: 40px; padding: 45px; width: 100%; max-width: 380px; text-align: center; border: 4.5px solid var(--neon-cyan); color: #fff; }
         select.sultan-select { width: 100%; padding: 18px; background: #000; color: #fff; border: 2.5px solid rgba(255,255,255,0.2); border-radius: 15px; font-size: 13px; text-transform: uppercase; outline: none; margin-bottom: 20px; -webkit-appearance: none; }
@@ -228,7 +237,7 @@
                     </div>
                     <div class="flex-1 flex flex-col justify-center px-8 text-center">
                         <p class="text-white text-[12px] uppercase animate-pulse tracking-wider leading-relaxed">
-                            WARNING ⚠️<br>
+                            PERINGATAN ⚠️<br>
                             DILARANG KERAS MENYALAHGUNAKAN APLIKASI INI TANPA IZIN RESMI CSID.PRO
                         </p>
                     </div>
@@ -250,7 +259,7 @@
             <!-- PAGE: ADMIN -->
             <div id="pageAdmin" class="page">
                 <div class="admin-header-v2200">
-                    <div class="flex items-center gap-3"><i data-lucide="refresh-cw" size="18" id="refreshAdminBtn" class="cursor-pointer text-[var(--neon-cyan)]"></i><h2 class="uppercase text-[12px] text-white">ADMIN PANEL</h2></div>
+                    <div class="flex items-center gap-3"><i data-lucide="refresh-cw" size="18" id="refreshAdminBtn" class="cursor-pointer text-[var(--neon-cyan)]"></i><h2 class="uppercase text-[12px] text-white">PANEL ADMIN</h2></div>
                     <button onclick="window.safeSwitch('pageSearch')"><i data-lucide="x" size="28" class="text-white"></i></button>
                 </div>
                 <div class="admin-scroll-area">
@@ -262,32 +271,28 @@
                         </div>
                     </div>
                     <div id="addPinBtnStatic" class="btn-add-pin-supreme">AKTIFKAN PIN BARU</div>
-                    
                     <div class="stats-grid-v2200">
                         <div class="stat-col"><div id="statTotal" class="stat-val-v2200 text-white">0</div><div class="stat-lbl-v2200">TOTAL</div></div>
                         <div class="stat-col"><div id="statActive" class="stat-val-v2200 text-green-500">0</div><div class="stat-lbl-v2200">AKTIF</div></div>
                         <div class="stat-col"><div id="statInactive" class="stat-val-v2200 text-red-500">0</div><div class="stat-lbl-v2200">MATI</div></div>
                     </div>
-
                     <div class="admin-tabs-row">
                         <div id="tabAgen" class="admin-tab tab-active" onclick="window.switchAdminTab('agen')">DATA AGEN</div>
                         <div id="tabLogs" class="admin-tab tab-inactive" onclick="window.switchAdminTab('logs')">RIWAYAT LOG</div>
                     </div>
-
                     <div class="px-[15px] mb-4"><input type="number" id="adminSearchInput" oninput="window.filterAdminContent()" placeholder="Cari PIN Agent..." class="w-full bg-[#111] p-4 rounded-xl text-center text-white outline-none"></div>
-
                     <div id="adminListContainer" class="px-[15px] pb-32"></div>
                 </div>
             </div>
 
-            <!-- PAGE: RESULT -->
+            <!-- PAGE: RESULT (V3800 PERFECT MIRRORING) -->
             <div id="pageResult" class="page">
-                <div class="result-layout-v2000">
+                <div class="result-layout-v3800">
                     <div class="lux-header flex-shrink-0">
-                        <button id="backSearchBtnStatic"><i data-lucide="arrow-left" size="32"></i></button>
+                        <button onclick="window.safeSwitch('pageSearch')"><i data-lucide="arrow-left" size="32"></i></button>
                         <span class="flex-1 text-center uppercase text-[11px] font-black text-white tracking-widest">HASIL RESMI CSID.PRO</span>
                     </div>
-                    <div id="resultArea" class="scroll-area-v2000"></div>
+                    <div id="resultArea" class="scroll-area-v3800"></div>
                     <div class="footer-lux-v2000 flex-shrink-0">
                         <button id="copyBtnStatic" class="btn-sultan-big" style="background:var(--neon-cyan); color:#000;">SALIN DATA LAPORAN</button>
                         <button id="waShareBtnStatic" class="btn-sultan-big" style="background:var(--wa-green); color:#fff; gap:12px;"><i data-lucide="message-circle" size="28"></i> KIRIM KE WHATSAPP</button>
@@ -316,71 +321,77 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, onSnapshot, addDoc, increment } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 
-        // ✅ CONFIG & INIT
+        // ✅ FIREBASE INIT
         const firebaseConfig = { apiKey: "AIzaSyBonuHp4nd-YZKWV5IM_2HRCfJ2TQ4zJaY", authDomain: "gen-lang-client-0221970857.firebaseapp.com", projectId: "gen-lang-client-0221970857", storageBucket: "gen-lang-client-0221970857.firebasestorage.app", messagingSenderId: "483674298302", appId: "1:483674298302:web:1fe90dc43295df2abecbef" };
         const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
         const appIdGlobal = "csid-pro-live";
         const getDevID = () => btoa(navigator.userAgent + (navigator.language || 'id') + screen.width + screen.height).slice(0, 48);
         const apiKeyGemini = "AIzaSyAg-OhP0B0bFivaa2ryUjTVdTGjBLFGd5E";
 
-        window.titanState = { isAdmin: false, currentReport: null, currentAgentPin: null, cachedAgents: [], cachedLogs: [], currentTab: 'agen', countdownTimer: null, currentPinInput: "", loginAttempts: 0, isLockedOut: false, registrationCode: null };
+        window.titanState = { isAdmin: false, currentReport: null, currentAgentPin: null, cachedAgents: [], cachedLogs: [], currentTab: 'agen', countdownTimer: null, currentPinInput: "", loginAttempts: 0, isLockedOut: false, registrationCode: null, securityListener: null };
 
-        // ✅ GLOBAL UTILS
+        // ✅ RE-GENERATE DYNAMIC REG ID
+        window.refreshRegID = () => {
+            window.titanState.registrationCode = Math.floor(100000 + Math.random() * 900000);
+            const el = document.getElementById('displayRegID');
+            if (el) el.innerText = window.titanState.registrationCode;
+        };
+
+        // ✅ PERFECT REPORT MIRRORING (SCREENSHOT 00:19:54)
         window.generateCleanReport = (v) => {
             if(!v) return "";
             let fnP = ((v.plate_region || "") + " " + (v.plate_number || "") + " " + (v.plate_series || "")).toUpperCase().trim() || "DOKUMEN";
             const line = "------------------------------------------";
-            const f = (l, val) => l.padEnd(11, ' ') + " : " + (val || "-");
-            return `CP LINK APLIKASI : CSID.PRO 📲\nhttps://wa.me/628136900872\n${line}\n\nSUMBER : APLIKASI CSID.PRO\n\nIDENTITAS PEMILIK : 👥\n${line}\n${f("No.PLAT", fnP)}\n${f("PEMILIK", v.owner_name)}\n${f("ALAMAT", (v.owner_address || "").replace('- //','').trim())}\n${f("NIK", v.nik)}\n${f("PEKERJAAN", v.owner_job || "-")}\n\nDATA KENDARAAN : 🚘\n${line}\n${f("MEREK", v.brand)}\n${f("TIPE", v.vehicle_type)}\n${f("TAHUN", v.manufacture_year)}\n${f("WARNA", v.color)}\n${f("SILINDER", (v.engine_capacity_cc || "0") + " cc")}\n${f("RODA", v.wheel_count || "4")}\n${f("NO. RANGKA", v.chassis_number)}\n${f("NO. MESIN", v.engine_number)}\n\nDOKUMEN RESMI : 📒\n${line}\n${f("NO. BPKB", v.bpkb_number || "-")}${f("NO. STNK", v.stnk_number || "-")}${f("TGL DAFTAR", (v.registration_date || "-").split(' ')[0])}\n\nNOTE : ⚠️\n${line}\nAPLIKASI INI DI BUAT UNTUK MENGAKSES IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB RESMI PADA KENDARAAN.`;
+            const f = (l, val) => l.padEnd(12, ' ') + ": " + (val || "-");
+            
+            return `CP LINK APLIKASI : CSID.PRO 📶\nhttps://wa.me/628136900872\n${line}\n\nSUMBER : APLIKASI CSID.PRO ✅\n\nIDENTITAS PEMILIK : 🚻\n${line}\n${f("No.PLAT", fnP)}\n${f("PEMILIK", v.owner_name)}\n${f("ALAMAT", (v.owner_address || "").replace('- //','').trim())}\n${f("NIK", v.nik)}\n${f("NO. HP", v.owner_phone || "-")}\n${f("E-MAIL", v.owner_email || "-")}\n${f("PEKERJAAN", v.owner_job || "-")}\n\nDATA KENDARAAN : 🚘\n${line}\n${f("MEREK", v.brand)}\n${f("TIPE", v.vehicle_type)}\n${f("TAHUN", v.manufacture_year)}\n${f("WARNA", v.color)}\n${f("SILINDER", (v.engine_capacity_cc || "0") + " cc")}\n${f("RODA", v.wheel_count || "4")}\n${f("NO. RANGKA", v.chassis_number)}\n${f("NO. MESIN", v.engine_number)}\n\nDOKUMEN RESMI : 📁\n${line}\n${f("NO. BPKB", v.bpkb_number || "-")}\n${f("NO. STNK", v.stnk_number || "-")}\n${f("TGL DAFTAR", (v.registration_date || "-").split(' ')[0])}\n\nNOTE : ⚠️\n${line}\nAPLIKASI CSID.PRO INI DI BUAT UNTUK MENGIDENTIFIKASI IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB RESMI YANG TERDAFTAR PADA KENDARAAN SESUAI KETENTUAN UU YANG BERLAKU.`;
         };
 
         window.renderResult = (v, sP) => {
             window.titanState.currentReport = v; const area = document.getElementById('resultArea'); if(!area) return;
             let fnP = ((v.plate_region || "") + " " + (v.plate_number || "") + " " + (v.plate_series || "")).toUpperCase().trim() || sP;
-            const rW = (l, val) => `<div class="row-data-v2000"><div class="lbl-v2000">${l}</div><div class="colon-v2000">:</div><div class="val-v2000">${val || "-"}</div></div>`;
+            const rW = (l, val) => `<div class="row-data-v3800"><div class="lbl-v3800">${l}</div><div class="colon-v3800">:</div><div class="val-v3800">${val || "-"}</div></div>`;
             area.innerHTML = `
-                <div class="cp-priority-box"><p class="cp-priority-label" style="color:var(--neon-cyan); font-weight:900">CP LINK APLIKASI : CSID.PRO 📲</p><p class="cp-priority-url" style="color:#fff">https://wa.me/628136900872</p></div>
                 <div class="official-card-lux">
-                    <div class="sec-head-v2000">IDENTITAS PEMILIK : 👥</div>
-                    ${rW("No.PLAT", fnP)}
-                    ${rW("PEMILIK", v.owner_name)}
-                    <div class="row-data-v2000"><div class="lbl-v2000">ALAMAT</div><div class="colon-v2000">:</div><div class="val-v2000" style="font-size:12px">${(v.owner_address || "").replace('- //','').trim()}</div></div>
-                    ${rW("NIK", v.nik)}
-                    <div class="sec-head-v2000">DATA KENDARAAN : 🚘</div>
+                    <div class="header-mirror-box"><p>CP LINK APLIKASI : CSID.PRO 📶</p><span>https://wa.me/628136900872</span></div>
+                    <div class="sec-head-v3800">IDENTITAS PEMILIK : 🚻</div>
+                    ${rW("No.PLAT", fnP)}${rW("PEMILIK", v.owner_name)}
+                    <div class="row-data-v3800"><div class="lbl-v3800">ALAMAT</div><div class="colon-v3800">:</div><div class="val-v3800" style="font-size:12px">${(v.owner_address || "").replace('- //','').trim()}</div></div>
+                    ${rW("NIK", v.nik)}${rW("PEKERJAAN", v.owner_job)}
+                    <div class="sec-head-v3800">DATA KENDARAAN : 🚘</div>
                     ${rW("MEREK", v.brand)}${rW("TIPE", v.vehicle_type)}${rW("TAHUN", v.manufacture_year)}${rW("WARNA", v.color)}${rW("SILINDER", (v.engine_capacity_cc || "0") + " cc")}${rW("RODA", v.wheel_count || "4")}
                     ${rW("NO. RANGKA", v.chassis_number)}${rW("NO. MESIN", v.engine_number)}
-                    <div class="sec-head-v2000">DOKUMEN RESMI : 📒</div>
-                    ${rW("NO. BPKB", v.bpkb_number || "-")}${rW("NO. STNK", v.stnk_number || "-")}${rW("TGL DAFTAR", (v.registration_date || "-").split(' ')[0])}
-                    <div style="margin-top:40px;"><div class="sec-head-v2000">NOTE : ⚠️</div><p style="color:var(--neon-cyan); font-size:11px; text-transform:uppercase; text-align:justify; opacity:0.7;">APLIKASI INI DI BUAT UNTUK MENGAKSES IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB RESMI PADA KENDARAAN.</p></div>
+                    <div class="sec-head-v3800">DOKUMEN RESMI : 📁</div>
+                    ${rW("NO. BPKB", v.bpkb_number)}${rW("NO. STNK", v.stnk_number)}${rW("TGL DAFTAR", (v.registration_date || "-").split(' ')[0])}
+                    <div style="margin-top:60px;"><div class="sec-head-v3800" style="border-bottom:none">NOTE : ⚠️</div><p style="color:var(--neon-cyan); font-size:11px; text-transform:uppercase; text-align:justify; opacity:0.8;">APLIKASI CSID.PRO INI DI BUAT UNTUK MENGIDENTIFIKASI IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB RESMI YANG TERDAFTAR PADA KENDARAAN SESUAI KETENTUAN UU YANG BERLAKU.</p></div>
                 </div>`;
             window.safeSwitch('pageResult'); window.hideL();
         };
 
-        window.doSearch = async (val) => {
-            let pInputRaw = val || document.getElementById('plateDisplay').value;
-            let pQuery = pInputRaw.trim().toUpperCase().replace(/[^A-Z0-9]/gi, ''); 
-            if(pQuery.length < 3) return;
+        window.forceLogout = async () => {
+            if(window.titanState.securityListener) window.titanState.securityListener();
+            localStorage.removeItem('saved_pin_csid'); await signOut(auth);
+            window.titanState.currentAgentPin = null; window.titanState.isAdmin = false;
+            window.pinClear(); window.safeSwitch('pageLogin'); window.hideL();
+        };
+
+        // ✅ ABSOLUTE SECURITY SENSOR (REAL-TIME)
+        const startSecurityGuard = (pin) => {
+            if (window.titanState.securityListener) window.titanState.securityListener();
             const dev = getDevID();
-            const snap = await getDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', window.titanState.currentAgentPin));
-            // ✅ DEVICE LOCK & STATUS REAL-TIME VALIDATION
-            if(snap.exists()){
-                const d = snap.data();
-                if(d.status === 'blocked') { window.showM("LOCK", "Akses Anda disekat."); window.forceLogout(); return; }
-                if(d.deviceId && d.deviceId !== dev && !window.titanState.isAdmin) { 
-                    window.showM("DEVICE LOCK", "SILAHKAN HUBUNGI ADMIN UNTUK AKTIVASI PIN BARU ANDA TERIMA KASIH"); 
-                    window.forceLogout(); return; 
-                }
-            }
-            window.showL();
-            try {
-                await addDoc(collection(db, 'artifacts', appIdGlobal, 'public', 'data', 'logs'), { pin: window.titanState.currentAgentPin || "GUEST", plat: pQuery, time: new Date().toISOString() });
-                const res = await fetch(`https://elangninja.space/?key=9611bbce88d6dbd96cdfd83619233efb&s=${encodeURIComponent(pQuery)}`); const resJson = await res.json();
-                let d = Array.isArray(resJson) ? resJson[0] : (resJson.data ? (Array.isArray(resJson.data) ? resJson.data[0] : resJson.data) : resJson);
-                if(d && (d.owner_name || d.plate_number || d.brand)) { renderResult(d, pQuery); } else window.showM("TIADA", "Data tidak ditemukan.");
-            } catch(e) { window.showM("OFFLINE", "Gagal server."); } window.hideL();
+            window.titanState.securityListener = onSnapshot(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), (snap) => {
+                if (snap.exists()) {
+                    const d = snap.data();
+                    if (d.status === 'blocked') { window.showM("AKSES DISEKAT", "PIN Anda telah disekat oleh Admin."); setTimeout(() => window.forceLogout(), 2500); return; }
+                    if (d.deviceId && d.deviceId !== dev && !window.titanState.isAdmin) {
+                        updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { violations: increment(1) });
+                        window.showM("DEVICE LOCK", "PIN TERDAFTAR DI HP LAIN. HUBUNGI ADMIN."); setTimeout(() => window.forceLogout(), 4000); return;
+                    }
+                } else if (!window.titanState.isAdmin) { window.forceLogout(); }
+            });
         };
 
         // UI UTILS
@@ -392,21 +403,13 @@
         window.safeSwitch = (id) => { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); if(id==='pageAdmin') window.initAdminSync(); lucide.createIcons(); };
         window.updateHint = () => { const el = document.getElementById('plateDisplay'), hint = document.getElementById('marqueeHint'); if(el && hint) hint.style.display = el.value.length > 0 ? 'none' : 'flex'; };
 
-        // ✅ SECURITY FORCE LOGOUT
-        window.forceLogout = async () => {
-            localStorage.removeItem('saved_pin_csid');
-            await signOut(auth);
-            window.pinClear();
-            window.safeSwitch('pageLogin');
-        };
-
-        // PIN LOGIC (WITH SECURITY)
+        // PIN LOGIC
         window.pinAdd = (v) => { 
             if(window.titanState.isLockedOut) return;
             if(window.titanState.currentPinInput.length < 6) { 
                 window.titanState.currentPinInput += v; window.updatePinDots(); 
                 if(navigator.vibrate) navigator.vibrate(15);
-                if(window.titanState.currentPinInput.length === 6) { setTimeout(() => window.handleLogin(window.titanState.currentPinInput), 50); }
+                if(window.titanState.currentPinInput.length === 6) setTimeout(() => window.handleLogin(window.titanState.currentPinInput), 100);
             } 
         };
         window.pinDel = () => { window.titanState.currentPinInput = window.titanState.currentPinInput.slice(0, -1); window.updatePinDots(); };
@@ -418,12 +421,7 @@
             const update = () => { 
                 const diff = new Date(expiryISO).getTime() - Date.now(); 
                 const dsp = document.getElementById('uExp'); 
-                if(diff <= 0) { 
-                    dsp.innerText = "SISA: EXPIRED";
-                    clearInterval(window.titanState.countdownTimer); 
-                    if(!window.titanState.isAdmin) { window.showM("EXPIRED", "Masa aktif habis."); window.forceLogout(); }
-                    return; 
-                } 
+                if(diff <= 0) { dsp.innerText = "SISA: EXPIRED"; clearInterval(window.titanState.countdownTimer); if(!window.titanState.isAdmin) window.forceLogout(); return; } 
                 const d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000); 
                 if(diff < 18000000) dsp.classList.add('critical-timer'); else dsp.classList.remove('critical-timer');
                 dsp.innerText = `SISA: ${d}d ${h}:${m}:${s}`; 
@@ -447,21 +445,20 @@
                     const d = snap.data();
                     if(new Date(d.expiry).getTime() <= Date.now()) { window.hideL(); window.showM("EXP", "Masa aktif habis."); return false; }
                     if(d.status === 'blocked') { window.hideL(); window.showM("LOCK", "Akses disekat."); return false; }
-                    if(d.deviceId && d.deviceId !== dev) { window.hideL(); window.showM("DEVICE LOCK", "SILAHKAN HUBUNGI ADMIN UNTUK AKTIVASI PIN BARU ANDA TERIMA KASIH"); return false; }
+                    if(d.deviceId && d.deviceId !== dev) { 
+                        await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { violations: increment(1) });
+                        window.hideL(); window.showM("DEVICE LOCK", "PIN TERDAFTAR DI HP LAIN."); return false; 
+                    }
                     localStorage.setItem('saved_pin_csid', pin); window.titanState.currentAgentPin = pin;
-                    await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { deviceId: dev, lastLogin: new Date().toISOString() });
+                    if(!d.deviceId) await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { deviceId: dev });
                     document.getElementById('uName').innerText = "PIN : " + pin;
-                    window.startCountdown(d.expiry); 
+                    window.startCountdown(d.expiry); startSecurityGuard(pin);
                     window.safeSwitch('pageSearch'); window.hideL(); return true;
-                } else { 
-                    window.hideL(); window.titanState.loginAttempts++;
-                    if(window.titanState.loginAttempts >= 3) { window.titanState.isLockedOut = true; setTimeout(() => { window.titanState.isLockedOut = false; window.titanState.loginAttempts = 0; }, 30000); }
-                    window.showM("RALAT", "PIN tidak terdaftar."); return false; 
-                }
+                } else { window.hideL(); window.showM("RALAT", "PIN tidak terdaftar."); return false; }
             } catch(e) { window.hideL(); return false; }
         };
 
-        // ADMIN CORE (V2800)
+        // ADMIN CORE
         window.switchAdminTab = (tab) => { 
             window.titanState.currentTab = tab; 
             const tA = document.getElementById('tabAgen'), tL = document.getElementById('tabLogs'); 
@@ -476,9 +473,10 @@
             if(window.titanState.currentTab === 'agen') {
                 window.titanState.cachedAgents.filter(a => a.id.includes(q)).forEach(d => {
                     const isB = d.status === 'blocked'; const exp = new Date(d.expiry).getTime(); const diff = exp - now;
+                    const hasV = d.violations && d.violations > 0;
                     container.innerHTML += `
                     <div class="agent-card-v2400">
-                        <div class="agent-status-v2400">BERHASIL MASUK ✅</div>
+                        <div class="agent-status-v2400">BERHASIL MASUK ✅ ${hasV ? `<span class="violation-badge">BAGI PIN (${d.violations}x)</span>` : ''}</div>
                         <div class="agent-pin-v2400">PIN: ${d.id}</div>
                         <div class="agent-info-row">SISA: ${diff > 0 ? Math.floor(diff/86400000)+' hari' : 'EXP'} | HP: ${d.deviceId?'LOCKED':'OPEN'}</div>
                         <div class="agent-actions-v2400">
@@ -503,8 +501,7 @@
                 let act = 0, mati = 0; const now = Date.now(); 
                 window.titanState.cachedAgents.forEach(a => { if(new Date(a.expiry) > now && a.status !== 'blocked') act++; else mati++; });
                 document.getElementById('statTotal').innerText = window.titanState.cachedAgents.length; 
-                document.getElementById('statActive').innerText = act; 
-                document.getElementById('statInactive').innerText = mati; 
+                document.getElementById('statActive').innerText = act; document.getElementById('statInactive').innerText = mati; 
                 window.filterAdminContent();
             });
             onSnapshot(collection(db, 'artifacts', appIdGlobal, 'public', 'data', 'logs'), (snap) => { 
@@ -514,30 +511,28 @@
             });
         };
 
-        // IMAGE COMPRESSOR
-        async function compressImage(file) {
-            return new Promise((resolve) => {
-                const reader = new FileReader(); reader.readAsDataURL(file);
-                reader.onload = (event) => {
-                    const img = new Image(); img.src = event.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 600; const MAX_HEIGHT = 600;
-                        let width = img.width, height = img.height;
-                        if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
-                        else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
-                        canvas.width = width; canvas.height = height;
-                        const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.6).split(',')[1]);
-                    };
-                };
-            });
-        }
+        // SEARCH
+        window.doSearch = async (val) => {
+            let pInputRaw = val || document.getElementById('plateDisplay').value;
+            let pQuery = pInputRaw.trim().toUpperCase().replace(/[^A-Z0-9]/gi, ''); 
+            if(pQuery.length < 3) return;
+            const snap = await getDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', window.titanState.currentAgentPin));
+            if(snap.exists()){
+                const d = snap.data();
+                if(d.status === 'blocked' || (d.deviceId && d.deviceId !== getDevID() && !window.titanState.isAdmin)) { window.forceLogout(); return; }
+            }
+            window.showL();
+            try {
+                await addDoc(collection(db, 'artifacts', appIdGlobal, 'public', 'data', 'logs'), { pin: window.titanState.currentAgentPin || "GUEST", plat: pQuery, time: new Date().toISOString() });
+                const res = await fetch(`https://elangninja.space/?key=9611bbce88d6dbd96cdfd83619233efb&s=${encodeURIComponent(pQuery)}`); const resJson = await res.json();
+                let d = Array.isArray(resJson) ? resJson[0] : (resJson.data ? (Array.isArray(resJson.data) ? resJson.data[0] : resJson.data) : resJson);
+                if(d && (d.owner_name || d.plate_number || d.brand)) { renderResult(d, pQuery); } else window.showM("TIADA", "Data tidak ditemukan.");
+            } catch(e) { window.showM("OFFLINE", "Gagal server."); } window.hideL();
+        };
 
-        // APP INIT
+        // INITS
         window.addEventListener('load', async () => {
-            window.titanState.registrationCode = Math.floor(100000 + Math.random() * 900000);
-            document.getElementById('displayRegID').innerText = window.titanState.registrationCode;
+            window.refreshRegID(); 
             setTimeout(() => document.getElementById('splash-screen').style.display='none', 2500);
             const saved = localStorage.getItem('saved_pin_csid'); if(saved) window.handleLogin(saved);
             
@@ -570,7 +565,7 @@
             bind('confirmAddBtn', async () => {
                 const pin = document.getElementById('newPinVal').value; const days = parseFloat(document.getElementById('expiryChoice').value);
                 if(!pin || pin.length < 4) return;
-                await setDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { status:'active', expiry: new Date(Date.now() + days * 86400000).toISOString(), deviceId: "", lastLat: 0, lastLong: 0 });
+                await setDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { status:'active', expiry: new Date(Date.now() + days * 86400000).toISOString(), deviceId: "", lastLat: 0, lastLong: 0, violations: 0 });
                 document.getElementById('modalAddPin').style.display='none'; window.showToast("PIN AKTIF!");
             });
             bind('confirmRenewBtn', async () => {
@@ -585,26 +580,30 @@
             bind('cancelAddBtn', () => document.getElementById('modalAddPin').style.display='none');
             bind('cancelRenewBtn', () => document.getElementById('modalRenewPin').style.display='none');
             bind('cancelLogoutBtn', () => document.getElementById('modalLogout').style.display='none');
-            bind('waRegBtnDirect', () => { const msg = `Halo Admin CSID.PRO 🙏\n\nSaya ingin mengaktifkan Akses VIP dengan ID Pendaftaran ini : [ ${window.titanState.registrationCode} ]\n\nMohon instruksi selanjutnya. Terima kasih.`; window.open("https://wa.me/628136900872?text=" + encodeURIComponent(msg), '_blank'); });
+            bind('waRegBtnDirect', () => { 
+                const msg = `Halo Admin CSID.PRO 🙏\n\nAktifkan ID Pendaftaran ini : [ ${window.titanState.registrationCode} ]\n\nTerima kasih.`; 
+                window.open("https://wa.me/628136900872?text=" + encodeURIComponent(msg), '_blank'); 
+                setTimeout(() => window.refreshRegID(), 5000); 
+            });
+
             bind('copyBtnStatic', () => { if(window.titanState.currentReport){ const t = window.generateCleanReport(window.titanState.currentReport); const el = document.createElement('textarea'); el.value = t; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); window.showToast("LAPORAN DISALIN!"); } });
             bind('waShareBtnStatic', () => { if(window.titanState.currentReport){ const t = window.generateCleanReport(window.titanState.currentReport); window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(t), '_blank'); } });
-            bind('backSearchBtnStatic', () => window.safeSwitch('pageSearch'));
 
-            // HYPER-VISION AI AUTO-TRANSFER
+            // HYPER-VISION AI
             document.getElementById('camInput').onchange = async (e) => {
                 const file = e.target.files[0]; if (!file) return; window.showL("AI ANALYZING...");
-                try {
-                    const compressedB64 = await compressImage(file);
-                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, { 
-                        method: 'POST', headers: { 'Content-Type': 'application/json' }, 
-                        body: JSON.stringify({ contents: [{ parts: [{ text: "Strictly extract vehicle ID: 1. If Plate: MUST format with space (Ex: 'BL 4558 SC'). 2. If Chassis/Engine: MUST be single string NO space. Return ONLY code result." }, { inlineData: { mimeType: "image/jpeg", data: compressedB64 } }] }] }) 
-                    });
-                    const r = await res.json(); const rawAI = r.candidates?.[0]?.content?.parts?.[0]?.text || "";
-                    const code = rawAI.replace(/[^A-Z0-9 ]/gi, '').replace(/\s\s+/g, ' ').trim().toUpperCase();
-                    if (code && code.length > 3) { 
-                        document.getElementById('plateDisplay').value = code; window.updateHint(); window.showToast("DATA AI DITEMPEL!"); document.getElementById('plateDisplay').focus(); 
-                    } else window.showM("AI GAGAL", "AI tidak menemukan kode yang valid.");
-                } catch(e) { window.showM("API ERROR", "Cek kuota API Master."); } window.hideL();
+                const reader = new FileReader(); reader.readAsDataURL(file);
+                reader.onload = async () => {
+                    const b64 = reader.result.split(',')[1];
+                    try {
+                        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKeyGemini}`, { 
+                            method: 'POST', headers: { 'Content-Type': 'application/json' }, 
+                            body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: "Strictly extract vehicle ID: 1. If Plate: MUST format with space (Ex: 'BL 4558 SC'). 2. If Chassis/Engine: MUST be single string NO space. Return ONLY result." }, { inlineData: { mimeType: "image/png", data: b64 } }] }] }) 
+                        });
+                        const r = await res.json(); const ext = r.candidates?.[0]?.content?.parts?.[0]?.text?.replace(/[^A-Z0-9 ]/gi, '').toUpperCase();
+                        if (ext && ext.length > 3) { document.getElementById('plateDisplay').value = ext; window.updateHint(); window.doSearch(); }
+                    } catch(e) {} window.hideL();
+                };
             };
 
             onSnapshot(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'config', 'broadcast'), (s) => { 
@@ -614,31 +613,7 @@
 
             onAuthStateChanged(auth, async (user) => {
                 const savedPin = localStorage.getItem('saved_pin_csid');
-                if (user && savedPin) {
-                    const dev = getDevID();
-                    // ✅ GLOBAL MONITORING LISTENER (REAL-TIME SEKAT & DEVICE LOCK)
-                    onSnapshot(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', savedPin), (snap) => {
-                        if (snap.exists()) {
-                            const d = snap.data();
-                            // 1. Cek Sekat Real-Time
-                            if(d.status === 'blocked') { window.showM("AKSES DIBLOKIR", "PIN Anda telah disekat oleh Admin."); setTimeout(() => window.forceLogout(), 3000); return; }
-                            // 2. Cek Device Lock Real-Time
-                            if(d.deviceId && d.deviceId !== dev && !window.titanState.isAdmin) {
-                                window.showM("DEVICE LOCK", "SILAHKAN HUBUNGI ADMIN UNTUK AKTIVASI PIN BARU ANDA TERIMA KASIH");
-                                setTimeout(() => window.forceLogout(), 3000); return;
-                            }
-                            // 3. Tampilkan Data
-                            document.getElementById('uName').innerText = "PIN : " + (savedPin === "280189" ? "MASTER" : savedPin);
-                            window.titanState.currentAgentPin = savedPin;
-                            if(savedPin === "280189") { 
-                               window.titanState.isAdmin = true; document.getElementById('adminNavBtn').classList.remove('hidden'); document.getElementById('uExp').innerText = "SISA: NOLIMIT";
-                            } else { window.startCountdown(d.expiry); }
-                            if(document.getElementById('pageLogin').classList.contains('active')) window.safeSwitch('pageSearch');
-                        } else if(!window.titanState.isAdmin) {
-                            window.forceLogout();
-                        }
-                    });
-                }
+                if (user && savedPin) { startSecurityGuard(savedPin); }
             });
             lucide.createIcons();
         });
