@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CSID.PRO - Master V2700 Supreme</title>
+    <title>CSID.PRO - Master V2800 Supreme</title>
     
     <!-- Library Inti -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -55,7 +55,7 @@
         @keyframes turbo-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .turbo-text-white { color: #ffffff; font-size: 14px; letter-spacing: 3px; text-transform: uppercase; margin-top: 30px; font-weight: 900; }
 
-        /* BROADCAST MARQUEE WHITE */
+        /* BROADCAST MARQUEE WHITE & ETERNAL */
         #broadcast-area { background: rgba(0,0,0,0.8); border-bottom: 2px solid var(--neon-cyan); padding: 12px 0; display: none; overflow: hidden; white-space: nowrap; flex-shrink: 0; z-index: 300; }
         .bc-text-scroll { 
             display: inline-block; padding-left: 100%; animation: marquee-eternal 35s linear infinite; 
@@ -74,13 +74,13 @@
         /* LOGIN & KEYPAD */
         .login-scroll-system { flex: 1; overflow-y: auto; width: 100%; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
         .login-card-v788 { background: #000; border-radius: 35px; padding: 25px 20px; width: 100%; max-width: 330px; text-align: center; border: 3.5px solid var(--neon-cyan); box-shadow: 0 0 45px var(--neon-cyan-dim); position: relative; flex-shrink: 0; }
+        .login-card-v788 h1 { color: #fff; font-size: 32px; margin-bottom: 5px; }
         .dots-v788 { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
         .dot { width: 18px; height: 18px; border-radius: 50%; background: #111; border: 2px solid var(--neon-cyan); transition: 0.2s; }
         .dot.active { background: var(--neon-cyan); border: 2px solid #fff; transform: scale(1.3); }
         .pin-keypad-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .btn-pin-key { background: #111; color: var(--neon-cyan); border: 2px solid var(--neon-cyan); border-radius: 12px; padding: 18px 0; font-size: 22px; font-weight: 900; cursor: pointer; transition: 0.1s; display: flex; align-items: center; justify-content: center; }
         .btn-pin-key:active { transform: scale(0.9); background: #fff; color: #000; }
-        /* SULTAN COLORS */
         .btn-pin-clr { background: var(--kuning-stabilo) !important; color: #000 !important; font-size: 13px; }
         .btn-pin-del { background: #ffffff !important; color: #000 !important; }
 
@@ -112,7 +112,7 @@
         .kb-clr-lime { background: var(--kuning-stabilo) !important; color: #000 !important; }
         .kb-del-white { background: #ffffff !important; color: #000 !important; }
 
-        /* --- ADMIN PANEL RESTORATION --- */
+        /* --- ADMIN PANEL --- */
         .admin-scroll-area { flex: 1; overflow-y: auto; background: #000; padding-bottom: 100px; }
         .admin-header-v2200 { background: #000; padding: 15px; border-bottom: 3px solid var(--neon-cyan); display: flex; align-items: center; justify-content: space-between; }
         .bc-master-box { background: #000; border-bottom: 2px solid var(--neon-cyan); padding: 15px; }
@@ -148,17 +148,14 @@
         .official-card-lux { padding: 15px 20px 40px 20px; text-align: left; }
         .sec-head-v2000 { font-size: 16px; color: var(--neon-cyan); margin: 35px 0 15px 0; border-bottom: 3.5px solid #fff; padding-bottom: 8px; text-transform: uppercase; }
         
-        /* ✅ RESULT GRID SEJAJAR */
         .row-data-v2000 { display: grid; grid-template-columns: 130px 20px 1fr; align-items: start; margin-bottom: 12px; width: 100%; font-size: 16px; }
         .lbl-v2000 { color: var(--neon-cyan); text-transform: uppercase; font-size: 14.5px; }
         .colon-v2000 { color: var(--neon-cyan); text-align: center; }
-        /* ✅ PURE WHITE VALUES */
         .val-v2000 { color: #ffffff !important; text-transform: uppercase; word-break: break-word; }
 
         .footer-lux-v2000 { position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; background: #000; border-top: 1.5px solid #222; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
         .btn-sultan-big { width: 100%; height: 75px; border-radius: 22px; font-size: 18px; text-transform: uppercase; display: flex; align-items: center; justify-content: center; border: 3.5px solid #000; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.5); font-weight: 900; }
 
-        /* MODALS */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 20000; display: none; align-items: center; justify-content: center; padding: 25px; }
         .modal-card { background: #111; border-radius: 40px; padding: 45px; width: 100%; max-width: 380px; text-align: center; border: 4.5px solid var(--neon-cyan); color: #fff; }
         select.sultan-select { width: 100%; padding: 18px; background: #000; color: #fff; border: 2.5px solid rgba(255,255,255,0.2); border-radius: 15px; font-size: 13px; text-transform: uppercase; outline: none; margin-bottom: 20px; -webkit-appearance: none; }
@@ -230,7 +227,6 @@
                         <input type="text" id="plateDisplay" inputmode="none" spellcheck="false" autocomplete="off" oninput="window.updateHint()">
                     </div>
                     <div class="flex-1 flex flex-col justify-center px-8 text-center">
-                        <!-- ✅ WARNING COLOR WHITE -->
                         <p class="text-white text-[12px] uppercase animate-pulse tracking-wider leading-relaxed">
                             WARNING ⚠️<br>
                             DILARANG KERAS MENYALAHGUNAKAN APLIKASI INI TANPA IZIN RESMI CSID.PRO
@@ -302,14 +298,12 @@
             <!-- MODALS -->
             <div id="modalAlert" class="modal-overlay"><div class="modal-card"><h3 id="alertTitle" class="uppercase text-xl text-[var(--neon-cyan)]"></h3><p id="alertBody" class="my-8 text-slate-400 text-sm"></p><button type="button" class="w-full bg-white text-black btn-modal-action" id="closeAlertBtn">OKE</button></div></div>
             <div id="modalRenewPin" class="modal-overlay"><div class="modal-card"><h3 class="mb-2 uppercase text-[var(--neon-cyan)]">PERPANJANG PIN</h3><p id="renewPinLabel" class="text-white mb-6 text-xs">ID: ----</p>
-                <!-- ✅ FULL OPTIONS -->
                 <select id="renewExpiryChoice" class="sultan-select">
                     <option value="0.04167">TAMBAH 1 JAM (TRIAL)</option><option value="1">TAMBAH 1 HARI</option><option value="2">TAMBAH 2 HARI</option><option value="7">TAMBAH 1 MINGGU</option><option value="10">TAMBAH 10 HARI</option><option value="15">TAMBAH 15 HARI</option><option value="20">TAMBAH 20 HARI</option><option value="31" selected>TAMBAH 31 HARI</option><option value="62">TAMBAH 2 BULAN</option><option value="93">TAMBAH 3 BULAN</option><option value="186">TAMBAH 6 BULAN</option><option value="365">TAMBAH 1 TAHUN</option><option value="36500">TAMBAH NOLIMIT</option>
                 </select>
                 <div class="flex gap-4"><button id="cancelRenewBtn" class="flex-1 bg-[#222] btn-modal-action text-white">BATAL</button><button id="confirmRenewBtn" class="flex-1 bg-blue-600 btn-modal-action text-white">KONFIRMASI</button></div>
             </div></div>
             <div id="modalAddPin" class="modal-overlay"><div class="modal-card"><h3 class="mb-4 uppercase text-[var(--neon-cyan)]">AKTIFKAN PIN BARU</h3><input type="number" id="newPinVal" placeholder="6 ANGKA PIN" class="w-full p-5 bg-[#000] border-2 border-white/20 rounded-xl mb-6 text-center text-white text-2xl">
-                <!-- ✅ FULL OPTIONS -->
                 <select id="expiryChoice" class="sultan-select">
                     <option value="0.04167">1 JAM (TRIAL)</option><option value="1">1 HARI</option><option value="2">2 HARI</option><option value="7">1 MINGGU</option><option value="10">10 HARI</option><option value="15">15 HARI</option><option value="20">20 HARI</option><option value="31" selected>31 HARI</option><option value="62">2 BULAN</option><option value="93">3 BULAN</option><option value="186">6 BULAN</option><option value="365">1 TAHUN</option><option value="36500">NOLIMIT</option>
                 </select>
@@ -371,9 +365,14 @@
             if(pQuery.length < 3) return;
             const dev = getDevID();
             const snap = await getDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', window.titanState.currentAgentPin));
-            if(snap.exists() && snap.data().deviceId && snap.data().deviceId !== dev && !window.titanState.isAdmin) { 
-                window.showM("DEVICE LOCK", "SILAHKAN HUBUNGI ADMIN UNTUK AKTIVASI PIN BARU ANDA TERIMA KASIH"); 
-                return; 
+            // ✅ DEVICE LOCK & STATUS REAL-TIME VALIDATION
+            if(snap.exists()){
+                const d = snap.data();
+                if(d.status === 'blocked') { window.showM("LOCK", "Akses Anda disekat."); window.forceLogout(); return; }
+                if(d.deviceId && d.deviceId !== dev && !window.titanState.isAdmin) { 
+                    window.showM("DEVICE LOCK", "SILAHKAN HUBUNGI ADMIN UNTUK AKTIVASI PIN BARU ANDA TERIMA KASIH"); 
+                    window.forceLogout(); return; 
+                }
             }
             window.showL();
             try {
@@ -389,9 +388,17 @@
         window.showL = (m) => { document.querySelector('.turbo-text-white').innerText = m || "SEDANG AMBIL DATA"; document.getElementById('global-loader').style.display = 'flex'; };
         window.hideL = () => { document.getElementById('global-loader').style.display = 'none'; };
         window.showM = (t, b) => { document.getElementById('alertTitle').innerText = t; document.getElementById('alertBody').innerText = b; document.getElementById('modalAlert').style.display = 'flex'; };
-        window.closeAlert = () => { document.getElementById('modalAlert').style.display = 'none'; window.pinClear(); };
+        window.closeAlert = () => { document.getElementById('modalAlert').style.display = 'none'; };
         window.safeSwitch = (id) => { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); if(id==='pageAdmin') window.initAdminSync(); lucide.createIcons(); };
         window.updateHint = () => { const el = document.getElementById('plateDisplay'), hint = document.getElementById('marqueeHint'); if(el && hint) hint.style.display = el.value.length > 0 ? 'none' : 'flex'; };
+
+        // ✅ SECURITY FORCE LOGOUT
+        window.forceLogout = async () => {
+            localStorage.removeItem('saved_pin_csid');
+            await signOut(auth);
+            window.pinClear();
+            window.safeSwitch('pageLogin');
+        };
 
         // PIN LOGIC (WITH SECURITY)
         window.pinAdd = (v) => { 
@@ -414,7 +421,7 @@
                 if(diff <= 0) { 
                     dsp.innerText = "SISA: EXPIRED";
                     clearInterval(window.titanState.countdownTimer); 
-                    if(!window.titanState.isAdmin) { localStorage.removeItem('saved_pin_csid'); window.showM("EXPIRED", "Masa aktif habis."); setTimeout(() => window.location.reload(), 3000); }
+                    if(!window.titanState.isAdmin) { window.showM("EXPIRED", "Masa aktif habis."); window.forceLogout(); }
                     return; 
                 } 
                 const d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000); 
@@ -454,7 +461,7 @@
             } catch(e) { window.hideL(); return false; }
         };
 
-        // ✅ ADMIN CORE
+        // ADMIN CORE (V2800)
         window.switchAdminTab = (tab) => { 
             window.titanState.currentTab = tab; 
             const tA = document.getElementById('tabAgen'), tL = document.getElementById('tabLogs'); 
@@ -466,7 +473,6 @@
         window.filterAdminContent = () => {
             const q = document.getElementById('adminSearchInput').value.toLowerCase(); 
             const container = document.getElementById('adminListContainer'); container.innerHTML = ""; const now = Date.now();
-            
             if(window.titanState.currentTab === 'agen') {
                 window.titanState.cachedAgents.filter(a => a.id.includes(q)).forEach(d => {
                     const isB = d.status === 'blocked'; const exp = new Date(d.expiry).getTime(); const diff = exp - now;
@@ -477,10 +483,10 @@
                         <div class="agent-info-row">SISA: ${diff > 0 ? Math.floor(diff/86400000)+' hari' : 'EXP'} | HP: ${d.deviceId?'LOCKED':'OPEN'}</div>
                         <div class="agent-actions-v2400">
                             <button onclick="window.toggleBlock('${d.id}','${d.status}')" class="btn-sekat-v2400 ${isB?'blocked':''}"> ${isB?'BUKA':'SEKAT'} </button>
-                            <div onclick="window.openMap(${d.lastLat}, ${d.lastLong})" class="btn-action-icon-v2400 bg-green-600"><i data-lucide="map-pin" size="18"></i></div>
-                            <div onclick="window.openRenewPin('${d.id}')" class="btn-action-icon-v2400 bg-blue-600"><i data-lucide="calendar-plus" size="18"></i></div>
-                            <div onclick="window.resetDevice('${d.id}')" class="btn-action-icon-v2400 bg-orange-500"><i data-lucide="refresh-cw" size="18"></i></div>
-                            <div onclick="window.delAgent('${d.id}')" class="btn-action-icon-v2400 bg-red-600"><i data-lucide="trash-2" size="18"></i></div>
+                            <div onclick="window.openMap(${d.lastLat}, ${d.lastLong})" class="btn-action-icon-v2400 bg-green-600"><i data-lucide="map-pin" size="20"></i></div>
+                            <div onclick="window.openRenewPin('${d.id}')" class="btn-action-icon-v2400 bg-blue-600"><i data-lucide="calendar-plus" size="20"></i></div>
+                            <div onclick="window.resetDevice('${d.id}')" class="btn-action-icon-v2400 bg-orange-500"><i data-lucide="refresh-cw" size="20"></i></div>
+                            <div onclick="window.delAgent('${d.id}')" class="btn-action-icon-v2400 bg-red-600"><i data-lucide="trash-2" size="20"></i></div>
                         </div>
                     </div>`;
                 });
@@ -508,7 +514,7 @@
             });
         };
 
-        // ✅ IMAGE COMPRESSOR FOR STABILITY
+        // IMAGE COMPRESSOR
         async function compressImage(file) {
             return new Promise((resolve) => {
                 const reader = new FileReader(); reader.readAsDataURL(file);
@@ -554,7 +560,7 @@
             bind('camBtn', () => document.getElementById('camInput').click());
             bind('pasteBtn', async () => { try { const text = await navigator.clipboard.readText(); if(text){ document.getElementById('plateDisplay').value = text.trim().toUpperCase(); window.updateHint(); } } catch(e){} });
             bind('logoutBtn', () => document.getElementById('modalLogout').style.display = 'flex');
-            bind('confirmLogoutBtn', async () => { localStorage.removeItem('saved_pin_csid'); await signOut(auth); window.pinClear(); window.location.reload(); });
+            bind('confirmLogoutBtn', async () => { window.forceLogout(); document.getElementById('modalLogout').style.display = 'none'; });
             bind('adminNavBtn', () => window.safeSwitch('pageAdmin'));
             bind('sendBC', async () => { const txt = document.getElementById('bcAdminInput').value; if(txt==="") return; await setDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'config', 'broadcast'), { text: txt }); window.showToast("SENT!"); document.getElementById('bcAdminInput').value=""; });
             bind('addPinBtnStatic', () => document.getElementById('modalAddPin').style.display='flex');
@@ -580,27 +586,23 @@
             bind('cancelRenewBtn', () => document.getElementById('modalRenewPin').style.display='none');
             bind('cancelLogoutBtn', () => document.getElementById('modalLogout').style.display='none');
             bind('waRegBtnDirect', () => { const msg = `Halo Admin CSID.PRO 🙏\n\nSaya ingin mengaktifkan Akses VIP dengan ID Pendaftaran ini : [ ${window.titanState.registrationCode} ]\n\nMohon instruksi selanjutnya. Terima kasih.`; window.open("https://wa.me/628136900872?text=" + encodeURIComponent(msg), '_blank'); });
-
             bind('copyBtnStatic', () => { if(window.titanState.currentReport){ const t = window.generateCleanReport(window.titanState.currentReport); const el = document.createElement('textarea'); el.value = t; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); window.showToast("LAPORAN DISALIN!"); } });
             bind('waShareBtnStatic', () => { if(window.titanState.currentReport){ const t = window.generateCleanReport(window.titanState.currentReport); window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(t), '_blank'); } });
             bind('backSearchBtnStatic', () => window.safeSwitch('pageSearch'));
 
-            // ✅ HYPER-VISION AI AUTO-TRANSFER
+            // HYPER-VISION AI AUTO-TRANSFER
             document.getElementById('camInput').onchange = async (e) => {
                 const file = e.target.files[0]; if (!file) return; window.showL("AI ANALYZING...");
                 try {
                     const compressedB64 = await compressImage(file);
-                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKeyGemini}`, { 
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, { 
                         method: 'POST', headers: { 'Content-Type': 'application/json' }, 
-                        body: JSON.stringify({ contents: [{ parts: [{ text: "Strictly extract vehicle ID: 1. If Plate: MUST format with space (Ex: 'BL 4558 SC'). 2. If Chassis/Engine: MUST be single string NO space. Return ONLY code result, no explanation." }, { inlineData: { mimeType: "image/jpeg", data: compressedB64 } }] }] }) 
+                        body: JSON.stringify({ contents: [{ parts: [{ text: "Strictly extract vehicle ID: 1. If Plate: MUST format with space (Ex: 'BL 4558 SC'). 2. If Chassis/Engine: MUST be single string NO space. Return ONLY code result." }, { inlineData: { mimeType: "image/jpeg", data: compressedB64 } }] }] }) 
                     });
                     const r = await res.json(); const rawAI = r.candidates?.[0]?.content?.parts?.[0]?.text || "";
                     const code = rawAI.replace(/[^A-Z0-9 ]/gi, '').replace(/\s\s+/g, ' ').trim().toUpperCase();
                     if (code && code.length > 3) { 
-                        const display = document.getElementById('plateDisplay');
-                        display.value = code; 
-                        window.updateHint(); window.showToast("DATA AI DITEMPEL!");
-                        display.focus(); 
+                        document.getElementById('plateDisplay').value = code; window.updateHint(); window.showToast("DATA AI DITEMPEL!"); document.getElementById('plateDisplay').focus(); 
                     } else window.showM("AI GAGAL", "AI tidak menemukan kode yang valid.");
                 } catch(e) { window.showM("API ERROR", "Cek kuota API Master."); } window.hideL();
             };
@@ -613,19 +615,29 @@
             onAuthStateChanged(auth, async (user) => {
                 const savedPin = localStorage.getItem('saved_pin_csid');
                 if (user && savedPin) {
-                    const snap = await getDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', savedPin));
-                    if (snap.exists()) {
-                        const d = snap.data(); const dev = getDevID();
-                        if(d.deviceId && d.deviceId !== dev && !window.titanState.isAdmin) {
-                            localStorage.removeItem('saved_pin_csid'); window.showM("DEVICE LOCK", "SILAHKAN HUBUNGI ADMIN UNTUK AKTIVASI PIN BARU ANDA TERIMA KASIH"); return;
+                    const dev = getDevID();
+                    // ✅ GLOBAL MONITORING LISTENER (REAL-TIME SEKAT & DEVICE LOCK)
+                    onSnapshot(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', savedPin), (snap) => {
+                        if (snap.exists()) {
+                            const d = snap.data();
+                            // 1. Cek Sekat Real-Time
+                            if(d.status === 'blocked') { window.showM("AKSES DIBLOKIR", "PIN Anda telah disekat oleh Admin."); setTimeout(() => window.forceLogout(), 3000); return; }
+                            // 2. Cek Device Lock Real-Time
+                            if(d.deviceId && d.deviceId !== dev && !window.titanState.isAdmin) {
+                                window.showM("DEVICE LOCK", "SILAHKAN HUBUNGI ADMIN UNTUK AKTIVASI PIN BARU ANDA TERIMA KASIH");
+                                setTimeout(() => window.forceLogout(), 3000); return;
+                            }
+                            // 3. Tampilkan Data
+                            document.getElementById('uName').innerText = "PIN : " + (savedPin === "280189" ? "MASTER" : savedPin);
+                            window.titanState.currentAgentPin = savedPin;
+                            if(savedPin === "280189") { 
+                               window.titanState.isAdmin = true; document.getElementById('adminNavBtn').classList.remove('hidden'); document.getElementById('uExp').innerText = "SISA: NOLIMIT";
+                            } else { window.startCountdown(d.expiry); }
+                            if(document.getElementById('pageLogin').classList.contains('active')) window.safeSwitch('pageSearch');
+                        } else if(!window.titanState.isAdmin) {
+                            window.forceLogout();
                         }
-                        document.getElementById('uName').innerText = "PIN : " + (savedPin === "280189" ? "MASTER" : savedPin);
-                        window.titanState.currentAgentPin = savedPin;
-                        if(savedPin === "280189") { 
-                           window.titanState.isAdmin = true; document.getElementById('adminNavBtn').classList.remove('hidden'); document.getElementById('uExp').innerText = "SISA: NOLIMIT";
-                        } else { window.startCountdown(d.expiry); }
-                        if(document.getElementById('pageLogin').classList.contains('active')) window.safeSwitch('pageSearch');
-                    }
+                    });
                 }
             });
             lucide.createIcons();
