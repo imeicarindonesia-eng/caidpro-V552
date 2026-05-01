@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CSID.PRO - Master V14000 Black Edition</title>
+    <title>CSID.PRO - Master V15000 Ultimate Sultan</title>
     
     <!-- Library Utama -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -19,7 +19,7 @@
             outline: none; 
             font-family: 'Arial', sans-serif !important; 
             font-weight: 900 !important; 
-            /* ✅ MENGHILANGKAN DELAY SENTUH */
+            /* ✅ ELIMINASI DELAY SENTUH GLOBAL */
             touch-action: manipulation;
         }
 
@@ -53,14 +53,14 @@
         #splash-screen { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .splash-logo { font-size: 48px; color: var(--vibrant-orange); letter-spacing: 5px; text-shadow: 0 0 20px var(--vibrant-orange); margin-bottom: 20px; }
 
-        /* LOADER */
+        /* LOADER TURBO */
         #global-loader { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 11000; display: none; flex-direction: column; align-items: center; justify-content: center; }
         .turbo-ring-amber-grey { width: 110px; height: 110px; border: 10px solid var(--monochrome-gray); border-top-color: var(--vibrant-orange); border-bottom-color: var(--vibrant-orange); border-radius: 50%; animation: turbo-spin 0.1s linear infinite; box-shadow: 0 0 40px var(--monochrome-gray-dim); }
         @keyframes turbo-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .turbo-text-grey { color: var(--monochrome-gray); font-size: 14px; letter-spacing: 2px; text-transform: uppercase; margin-top: 35px; font-weight: 900; text-align: center; }
 
-        /* ✅ BROADCAST AREA - BLACK BACKGROUND & ORANGE TEXT */
-        #broadcast-area { background: #000; border-bottom: 1.5px solid var(--monochrome-gray); padding: 12px 0; display: none; overflow: hidden; white-space: nowrap; flex-shrink: 0; z-index: 300; }
+        /* ✅ BROADCAST AREA - BLACK BG & ORANGE TEXT */
+        #broadcast-area { background: #000; border-bottom: 2.5px solid var(--monochrome-gray); padding: 12px 0; display: none; overflow: hidden; white-space: nowrap; flex-shrink: 0; z-index: 300; }
         .bc-text-scroll { display: inline-block; padding-left: 100%; animation: marquee-eternal 35s linear infinite; color: var(--vibrant-orange) !important; font-size: 15px; text-transform: uppercase; text-shadow: 0 0 10px rgba(255, 140, 0, 0.4); }
         @keyframes marquee-eternal { 0% { transform: translateX(0); } 100% { transform: translateX(-250%); } }
 
@@ -109,7 +109,7 @@
         .kb-btn:active { transform: scale(0.95); background: #fff; color: #000 !important; box-shadow: 0 0 20px var(--vibrant-orange); }
         .kb-orange-solid { background: var(--vibrant-orange) !important; color: #000 !important; border: 3px solid #000 !important; }
 
-        /* --- ADMIN PANEL (GREY & ORANGE) --- */
+        /* --- ✅ ADMIN PANEL (GREY & ORANGE) --- */
         #pageAdmin { background-color: var(--monochrome-gray); color: var(--vibrant-orange); height: 100%; }
         .admin-header-v10000 { background: #111; padding: 20px 15px; border-bottom: 4px solid var(--vibrant-orange); display: flex; align-items: center; justify-content: space-between; color: var(--vibrant-orange); }
         .admin-scroll-area { flex: 1; overflow-y: auto; background-color: var(--monochrome-gray); padding-bottom: 120px; width: 100%; -webkit-overflow-scrolling: touch; }
@@ -132,12 +132,12 @@
         .admin-tab { flex: 1; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 12px; text-transform: uppercase; cursor: pointer; font-weight: 900; border: 3px solid #000; box-shadow: 0 4px 0 #000; background: #333; color: #777; }
         .tab-active { background: var(--vibrant-orange) !important; color: #000 !important; }
 
-        /* --- RESULT PAGE --- */
+        /* --- RESULT PAGE PRECISION --- */
         .result-layout-v10000 { display: flex; flex-direction: column; height: 100%; width: 100%; background: #000; position: relative; }
         .scroll-area-v10000 { flex: 1; overflow-y: auto; background: #000; width: 100%; padding-bottom: 220px; }
         .official-card-lux { padding: 15px 20px 40px 20px; text-align: left; }
         
-        /* ULTRA-ALIGNMENT GRID */
+        /* ✅ GRID TITIK DUA ULTRA ALIGNMENT */
         .row-data-v8600 { display: flex; align-items: flex-start; margin-bottom: 12px; width: 100%; font-size: 15.5px; }
         .lbl-v8600 { width: 125px; color: var(--vibrant-orange); text-transform: uppercase; font-size: 13.5px; flex-shrink: 0; display: flex; justify-content: space-between; position: relative; }
         .lbl-v8600::after { content: ":"; position: absolute; right: 0; color: var(--vibrant-orange); }
@@ -148,6 +148,8 @@
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 20000; display: none; align-items: center; justify-content: center; padding: 25px; }
         .modal-card { background: #111; border-radius: 40px; padding: 40px; width: 100%; max-width: 380px; text-align: center; border: 4.5px solid var(--monochrome-gray); color: #fff; }
         select.sultan-select { width: 100%; padding: 18px; background: #000; color: #fff; border: 2.5px solid rgba(255,255,255,0.2); border-radius: 15px; font-size: 13px; text-transform: uppercase; outline: none; margin-bottom: 20px; }
+        
+        #adminGatewayModal { display: none; }
     </style>
 </head>
 <body onclick="if(window.hidePastePopup) window.hidePastePopup()">
@@ -356,7 +358,7 @@
                 window.titanState.currentAgentPin = pin;
                 document.getElementById('adminNavBtn').classList.remove('hidden'); 
                 document.getElementById('uName').innerText = "PIN : MASTER"; 
-                document.getElementById('uExp').innerText = "STATUS: NOLIMIT"; 
+                document.getElementById('uExp').innerText = "STATUS: NOLIMIT"; // ✅ UPDATED FROM SUPER ADMIN
                 window.safeSwitch('pageSearch');
                 document.getElementById('adminGatewayModal').style.display = 'none';
                 window.hideL();
@@ -531,7 +533,7 @@
                     let d = Array.isArray(resJson) ? resJson[0] : (resJson.data ? (Array.isArray(resJson.data) ? resJson.data[0] : resJson.data) : resJson);
                     if(d && (d.owner_name || d.plate_number || d.brand)) { 
                         window.titanState.currentReport = d; const area = document.getElementById('resultArea');
-                        let fnP = ((d.plate_region || "") + (d.plate_number || "") + (d.plate_series || "")).toUpperCase().trim() || pQuery;
+                        let fnP = ((d.plate_region || "") + " " + (d.plate_number || "") + " " + (d.plate_series || "")).toUpperCase().trim() || pQuery;
                         const rW = (l, val) => `<div class="row-data-v8600"><div class="lbl-v8600"><span>${l}</span></div><div class="val-v8600">${val || "-"}</div></div>`;
                         area.innerHTML = `
                             <div class="official-card-lux">
@@ -584,7 +586,7 @@
         });
 
         window.generateCleanReport = (v) => {
-            let fnP = ((v.plate_region || "") + (v.plate_number || "") + (v.plate_series || "")).toUpperCase().trim() || "DOKUMEN";
+            let fnP = ((v.plate_region || "") + " " + (v.plate_number || "") + " " + (v.plate_series || "")).toUpperCase().trim() || "DOKUMEN";
             const f = (l, val) => l.padEnd(12, ' ') + " : " + (val || "-");
             return `CP LINK APLIKASI : CSID.PRO 📶\nhttps://wa.me/628136900872\n------------------------------------------\n\nSUMBER : APLIKASI CSID.PRO ✅\n\nIDENTITAS PEMILIK : 🚻\n------------------------------------------\n${f("No.PLAT", fnP)}\n${f("PEMILIK", v.owner_name)}\n${f("ALAMAT", (v.owner_address || "").replace('- //','').trim())}\n${f("NIK", v.nik)}\n${f("NO. HP", v.owner_phone || "-")}\n${f("E-MAIL", v.owner_email || "-")}\n${f("PEKERJAAN", v.owner_job || "-")}\n\nDATA KENDARAAN : 🚘\n------------------------------------------\n${f("MEREK", v.brand)}\n${f("TIPE", v.vehicle_type)}\n${f("TAHUN", v.manufacture_year)}\n${f("WARNA", v.color)}\n${f("SILINDER", (v.engine_capacity_cc || "0") + " cc")}\n${f("RODA", v.wheel_count || "4")}\n${f("NO. RANGKA", v.chassis_number)}\n${f("No. MESIN", v.engine_number)}\n\nDOKUMEN RESMI : 📁\n------------------------------------------\n${f("NO. BPKB", v.bpkb_number || "-")}\n${f("NO. STNK", v.stnk_number || "-")}\n${f("TGL DAFTAR", (v.registration_date || "-").split(' ')[0])}\n\nNOTE : ⚠️\n------------------------------------------\nAPLIKASI CSID.PRO INI DI BUAT UNTUK MENGIDENTIFIKASI IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB RESMI YANG TERDAFTAR PADA KENDARAAN SESUAI KETENTUAN UU YANG BERLAKU.`;
         };
