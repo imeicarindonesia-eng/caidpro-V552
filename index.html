@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CSID.PRO - Master V15000 Ultimate Sultan</title>
+    <title>CSID.PRO - Master V16000 Turbo Edition</title>
     
     <!-- Library Utama -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -109,7 +109,7 @@
         .kb-btn:active { transform: scale(0.95); background: #fff; color: #000 !important; box-shadow: 0 0 20px var(--vibrant-orange); }
         .kb-orange-solid { background: var(--vibrant-orange) !important; color: #000 !important; border: 3px solid #000 !important; }
 
-        /* --- ✅ ADMIN PANEL (GREY & ORANGE) --- */
+        /* --- ADMIN PANEL (GREY & ORANGE) --- */
         #pageAdmin { background-color: var(--monochrome-gray); color: var(--vibrant-orange); height: 100%; }
         .admin-header-v10000 { background: #111; padding: 20px 15px; border-bottom: 4px solid var(--vibrant-orange); display: flex; align-items: center; justify-content: space-between; color: var(--vibrant-orange); }
         .admin-scroll-area { flex: 1; overflow-y: auto; background-color: var(--monochrome-gray); padding-bottom: 120px; width: 100%; -webkit-overflow-scrolling: touch; }
@@ -148,8 +148,6 @@
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 20000; display: none; align-items: center; justify-content: center; padding: 25px; }
         .modal-card { background: #111; border-radius: 40px; padding: 40px; width: 100%; max-width: 380px; text-align: center; border: 4.5px solid var(--monochrome-gray); color: #fff; }
         select.sultan-select { width: 100%; padding: 18px; background: #000; color: #fff; border: 2.5px solid rgba(255,255,255,0.2); border-radius: 15px; font-size: 13px; text-transform: uppercase; outline: none; margin-bottom: 20px; }
-        
-        #adminGatewayModal { display: none; }
     </style>
 </head>
 <body onclick="if(window.hidePastePopup) window.hidePastePopup()">
@@ -302,7 +300,7 @@
         const getDevID = () => btoa(navigator.userAgent + (navigator.language || 'id') + screen.width + screen.height).slice(0, 48);
         const apiKeyGemini = "AIzaSyAg-OhP0B0bFivaa2ryUjTVdTGjBLFGd5E";
 
-        // ✅ FUNGSI GLOBAL UTAMA (DIURUTKAN AGAR TIDAK DELAY)
+        // ✅ FUNGSI GLOBAL UTAMA
         window.showToast = (m) => { const t = document.createElement('div'); t.innerText = m; t.className = "fixed top-10 left-1/2 -translate-x-1/2 bg-black text-white px-6 py-3 rounded-full z-[25000] shadow-2xl font-black text-[10px] uppercase animate-bounce"; document.body.appendChild(t); setTimeout(() => t.remove(), 2500); };
         window.showL = (m) => { const el = document.querySelector('.turbo-text-grey'); if(el) el.innerText = m || "TUNGGU SEDANG AMBIL DATA"; document.getElementById('global-loader').style.display = 'flex'; };
         window.hideL = () => { document.getElementById('global-loader').style.display = 'none'; };
@@ -358,7 +356,7 @@
                 window.titanState.currentAgentPin = pin;
                 document.getElementById('adminNavBtn').classList.remove('hidden'); 
                 document.getElementById('uName').innerText = "PIN : MASTER"; 
-                document.getElementById('uExp').innerText = "STATUS: NOLIMIT"; // ✅ UPDATED FROM SUPER ADMIN
+                document.getElementById('uExp').innerText = "STATUS: NOLIMIT"; 
                 window.safeSwitch('pageSearch');
                 document.getElementById('adminGatewayModal').style.display = 'none';
                 window.hideL();
@@ -481,7 +479,6 @@
         window.confirmAdd = async () => { const pin = document.getElementById('newPinVal').value; const days = parseFloat(document.getElementById('expiryChoice').value); if(!pin || pin.length < 4) return; await setDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { status:'active', expiry: new Date(Date.now() + days * 86400000).toISOString(), deviceId: "", lastLat: 0, lastLong: 0, violations: 0 }); document.getElementById('modalAddPin').style.display='none'; window.showToast("AKTIF!"); };
         window.confirmRenew = async () => { const id = window.titanState.renewTargetId; const days = parseFloat(document.getElementById('renewExpiryChoice').value); if(!id) return; const snap = await getDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id)); if(snap.exists()){ const cur = new Date(snap.data().expiry).getTime(); const base = cur < Date.now() ? Date.now() : cur; await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { expiry: new Date(base + days * 86400000).toISOString(), status: 'active' }); document.getElementById('modalRenewPin').style.display='none'; window.showToast("DONE!"); } };
         
-        // ✅ TURBO LOGOUT (INSTANT SWITCH)
         window.forceLogout = async () => { 
             if(window.titanState.securityListener) window.titanState.securityListener(); 
             localStorage.removeItem('saved_pin_csid'); 
@@ -524,12 +521,29 @@
             });
             const bind = (id, fn) => { const el = document.getElementById(id); if(el) el.onpointerdown = fn; };
             bind('searchBtn', async () => {
-                window.showL(); let pQuery = document.getElementById('plateDisplay').value.trim().toUpperCase().replace(/[^A-Z0-9]/gi, ''); if(pQuery.length < 3) { window.hideL(); return; }
-                const snap = await getDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', window.titanState.currentAgentPin));
-                if(snap.exists()){ const d = snap.data(); if(d.status === 'blocked' || (d.deviceId && d.deviceId !== getDevID() && !window.titanState.isAdmin)) { window.forceLogout(); return; } }
+                window.showL(); 
+                let pQuery = document.getElementById('plateDisplay').value.trim().toUpperCase().replace(/[^A-Z0-9]/gi, ''); 
+                if(pQuery.length < 3) { window.hideL(); return; }
+                
+                // ✅ ADMIN TURBO BYPASS (FIX LATENCY)
+                if (!window.titanState.isAdmin) {
+                    const snap = await getDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', window.titanState.currentAgentPin));
+                    if(snap.exists()){ 
+                        const d = snap.data(); 
+                        if(d.status === 'blocked' || (d.deviceId && d.deviceId !== getDevID())) { window.forceLogout(); return; } 
+                    }
+                }
+
                 try {
-                    await addDoc(collection(db, 'artifacts', appIdGlobal, 'public', 'data', 'logs'), { pin: window.titanState.currentAgentPin || "GUEST", plat: pQuery, time: new Date().toISOString() });
-                    const res = await fetch(`https://elangninja.space/?key=9611bbce88d6dbd96cdfd83619233efb&s=${encodeURIComponent(pQuery)}`); const resJson = await res.json();
+                    // ✅ ASYNC LOGGING (LATENCY KILLER)
+                    addDoc(collection(db, 'artifacts', appIdGlobal, 'public', 'data', 'logs'), { 
+                        pin: window.titanState.currentAgentPin || "MASTER", 
+                        plat: pQuery, 
+                        time: new Date().toISOString() 
+                    });
+
+                    const res = await fetch(`https://elangninja.space/?key=9611bbce88d6dbd96cdfd83619233efb&s=${encodeURIComponent(pQuery)}`); 
+                    const resJson = await res.json();
                     let d = Array.isArray(resJson) ? resJson[0] : (resJson.data ? (Array.isArray(resJson.data) ? resJson.data[0] : resJson.data) : resJson);
                     if(d && (d.owner_name || d.plate_number || d.brand)) { 
                         window.titanState.currentReport = d; const area = document.getElementById('resultArea');
