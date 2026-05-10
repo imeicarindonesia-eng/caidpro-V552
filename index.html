@@ -3,17 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CSID.PRO - Master V51000 Eternal Sync</title>
+    <title>CSID.PRO - Master V51000 Sultan Edition</title>
     
-    <!-- Library Utama -->
-    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="dns-prefetch" href="//elangninja.space">
     
     <style>
-        /* ✅ FORCE ARIAL BOLD GLOBAL INDONESIA */
+        /* ✅ GLOBAL STYLING - SULTAN V51000 */
         * { 
             box-sizing: border-box; 
             margin: 0; padding: 0; 
@@ -25,15 +20,14 @@
         }
 
         :root {
-            --monochrome-gray: #4b5563; 
             --vibrant-orange: #ff8c00; 
             --neon-red: #ff3131;
-            --wa-green: #25D366;
             --kuning-stabilo: #ccff00;
-            --kb-height: 18px; 
+            --kb-height: 22px; 
+            --panel-bg: #2d343f;
         }
 
-        html, body { width: 100%; height: 100%; overflow: hidden; background-color: #000; color: var(--vibrant-orange); }
+        html, body { width: 100%; height: 100%; overflow: hidden; background-color: #000; color: #fff; }
         .app-container { width: 100vw; height: 100dvh; background-color: #000; display: flex; justify-content: center; align-items: center; position: relative; }
         
         @media (min-width: 450px) { 
@@ -46,506 +40,551 @@
         .page { position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; z-index: 100; background-color: #000; overflow: hidden; }
         .page.active { display: flex !important; }
 
-        /* SPLASH SCREEN */
+        /* SPLASH SCREEN PREMIUM */
         #splash-screen { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .splash-logo { font-size: 48px; color: var(--vibrant-orange); letter-spacing: 5px; text-shadow: 0 0 20px var(--vibrant-orange); margin-bottom: 20px; }
+        .splash-logo { font-size: 56px; color: var(--vibrant-orange); letter-spacing: 8px; text-shadow: 0 0 30px var(--vibrant-orange); font-weight: 900; animation: pulse 1.5s infinite ease-in-out; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.95); } }
 
-        /* TURBO LOADING - DASHED LINE */
-        #global-loader { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 11000; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        .dashed-loader { width: 220px; height: 4px; background: rgba(255, 140, 0, 0.1); position: relative; overflow: hidden; border-radius: 2px; }
-        .dashed-line { 
-            width: 100%; height: 100%; background: repeating-linear-gradient(90deg, var(--vibrant-orange), var(--vibrant-orange) 10px, transparent 10px, transparent 20px); 
-            animation: dash-slide 0.8s linear infinite; 
-        }
-        @keyframes dash-slide { from { background-position: 0 0; } to { background-position: 40px 0; } }
-        .loading-text { color: var(--vibrant-orange); font-size: 14px; letter-spacing: 2px; text-transform: uppercase; margin-top: 25px; animation: pulse 1.5s infinite; }
+        /* PAGE 1: LOGIN */
+        .login-scroll-system { flex: 1; overflow-y: auto; width: 100%; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; justify-content: center; }
+        .welcome-title { text-align: center; color: #fff; font-size: 14px; line-height: 1.6; text-transform: uppercase; margin-bottom: 40px; letter-spacing: 2px; opacity: 0.8; }
+        .welcome-title span { color: var(--vibrant-orange); display: block; font-size: 18px; margin-top: 5px; }
+        .login-card-v9100 { background: #0a0a0a; border: 2.5px solid #222; border-radius: 50px; padding: 45px 30px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,1); position: relative; border-top: 3px solid var(--vibrant-orange); }
+        .login-card-v9100 h1 { color: #fff; font-size: 58px; font-weight: 900; letter-spacing: 4px; margin-bottom: 20px; cursor: pointer; user-select: none; text-shadow: 0 0 20px rgba(255, 140, 0, 0.5); }
+        .id-dashboard-box { background: #000; border: 2px solid var(--vibrant-orange); border-radius: 35px; padding: 30px 15px; margin: 35px 0; box-shadow: inset 0 0 20px rgba(255, 140, 0, 0.2); }
+        .id-label-lux { color: #888; font-size: 10px; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 2px; font-weight: 900; }
+        .id-value-lux { color: var(--vibrant-orange); font-size: 46px; letter-spacing: 8px; font-weight: 900; text-shadow: 0 0 10px var(--vibrant-orange); }
+        .btn-login-online-lux { background: linear-gradient(180deg, var(--vibrant-orange) 0%, #cc7a00 100%); color: #000; width: 100%; padding: 25px; border-radius: 22px; font-size: 22px; font-weight: 900; text-transform: uppercase; border: 4px solid #000; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 18px; box-shadow: 0 8px 0 #000; transition: all 0.1s; }
+        .btn-login-online-lux:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
+        .btn-wa-reg { background-color: #25D366; color: #fff; width: 100%; max-width: 380px; padding: 22px; border-radius: 22px; font-size: 15px; font-weight: 900; text-transform: uppercase; border: 3px solid #000; margin-top: 35px; display: flex; align-items: center; justify-content: center; gap: 15px; cursor: pointer; box-shadow: 0 6px 0 #000; }
 
-        /* BROADCAST AREA - WHITE TEXT */
-        #broadcast-area { background: #000; border-bottom: 2.5px solid var(--monochrome-gray); padding: 12px 0; display: none; overflow: hidden; white-space: nowrap; flex-shrink: 0; z-index: 300; }
-        .bc-text-scroll { display: inline-block; padding-left: 100%; animation: marquee-eternal 35s linear infinite; color: #ffffff !important; font-size: 15px; text-transform: uppercase; }
-        @keyframes marquee-eternal { 0% { transform: translateX(0); } 100% { transform: translateX(-250%); } }
+        /* PAGE 2: SEARCH - 7 BUTTONS SULTAN */
+        .lux-header { background: #000; padding: 12px 18px; border-bottom: 2px solid #222; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; min-height: 70px; }
+        .banner-info-box { text-align: right; line-height: 1.2; }
+        .banner-pin-label { font-size: 11px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+        .banner-time-label { font-size: 11px; color: var(--vibrant-orange); text-transform: uppercase; }
 
-        /* HEADER */
-        .lux-header { background: #000; padding: 12px 18px; border-bottom: 2.5px solid var(--monochrome-gray); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 200; }
-        .banner-info-box { text-align: right; line-height: 1.3; }
-        .banner-pin-label { font-size: 11px; color: #ffffff; text-transform: uppercase; letter-spacing: 1px; }
-        .banner-time-label { font-size: 12px; color: var(--vibrant-orange); text-transform: uppercase; letter-spacing: 0.5px; }
+        .broadcast-container { background: #111; border-bottom: 1.5px solid #333; height: 35px; display: flex; align-items: center; overflow: hidden; position: relative; width: 100%; }
+        .broadcast-content { flex: 1; white-space: nowrap; overflow: hidden; position: relative; width: 100%; }
+        .broadcast-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; color: #fff; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+        @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
 
-        /* LOGIN UI */
-        .login-scroll-system { flex: 1; overflow-y: auto; width: 100%; display: flex; flex-direction: column; align-items: center; padding: 60px 20px; background-image: radial-gradient(circle at top, #111 0%, #000 100%); }
-        .login-card-v9100 { background: rgba(15, 15, 15, 0.8); backdrop-filter: blur(15px); border-radius: 50px; padding: 50px 30px; width: 100%; max-width: 370px; text-align: center; border: 1.5px solid rgba(255, 140, 0, 0.3); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); position: relative; }
-        .login-card-v9100 h1 { color: #fff; font-size: 40px; margin-bottom: 8px; cursor: pointer; letter-spacing: 2px; }
-        .id-dashboard-box { background: linear-gradient(145deg, #050505, #111); border: 2px solid var(--monochrome-gray); border-radius: 25px; padding: 30px 15px; margin-bottom: 35px; position: relative; }
-        .id-label-lux { color: var(--monochrome-gray); font-size: 9px; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 2px; }
-        .id-value-lux { color: var(--vibrant-orange); font-size: 38px; letter-spacing: 8px; font-weight: 900; }
-        .btn-login-online-lux { background: linear-gradient(to bottom, var(--vibrant-orange), #cc5500); color: #000; width: 100%; padding: 24px; border-radius: 20px; font-size: 18px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px; }
-        .registration-box-sultan { background: rgba(255, 140, 0, 0.05); border: 2.5px dashed var(--monochrome-gray); border-radius: 25px; padding: 25px 20px; margin-top: 30px; width: 100%; max-width: 370px; text-align: center; }
-        .btn-wa-lux-sultan { display: flex; align-items: center; justify-content: center; gap: 10px; background-color: var(--wa-green); color: #fff; padding: 14px; border-radius: 12px; width: 100%; text-transform: uppercase; font-size: 13px; font-weight: 900; cursor: pointer; border: none; }
-
-        /* SEARCH ENGINE - ✅ ADAPTIVE VISION */
-        .search-outer { background: #000; border: 3px solid var(--monochrome-gray); border-radius: 20px; margin: 15px; padding: 10px; min-height: 80px; display: flex; align-items: center; position: relative; overflow: hidden; }
+        /* SEARCH INPUT DENGAN AUTO SHRINK */
+        .search-outer { background: #000; border: 3px solid #334155; border-radius: 20px; margin: 15px; padding: 10px 15px; min-height: 90px; display: flex; align-items: center; position: relative; gap: 10px; overflow: hidden; }
         #plateDisplay { 
-            width: 100%; background: transparent; border: none; color: #fff; 
-            font-size: 1.8rem; text-align: center; outline: none; letter-spacing: 4px; text-transform: uppercase; 
-            z-index: 5; text-shadow: 0 0 10px rgba(255,255,255,0.3); transition: font-size 0.2s ease;
+            flex: 1; 
+            background: transparent; 
+            border: none; 
+            color: #fff; 
+            font-size: 2.2rem; /* Ukuran Default */
+            text-align: center; 
+            letter-spacing: 2px; 
+            text-transform: uppercase; 
+            width: 100%; 
+            transition: font-size 0.2s ease-in-out; /* Animasi mengecil */
+            white-space: nowrap;
         }
 
-        /* ACTION BAR */
-        .action-panel-v805 { display: flex; padding: 6px 10px; gap: 6px; background: #000; border-top: 1.5px solid #222; flex-shrink: 0; z-index: 500 !important; }
-        .btn-action-v805 { height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex: 1; box-shadow: 0 4px 0 #000; border: 2.5px solid #000; cursor: pointer; transition: 0.05s; }
-        .btn-action-v805:active { transform: translateY(2px); box-shadow: none; filter: brightness(1.2); }
-        .btn-lime-sq { background: var(--kuning-stabilo) !important; color: #000 !important; }
-        .btn-orange-sq { background: var(--vibrant-orange) !important; color: #000 !important; }
-        .btn-logout-red { background: var(--neon-red) !important; color: #fff !important; }
+        .action-row-sultan { display: flex; gap: 6px; padding: 0 10px; margin-bottom: 20px; justify-content: center; width: 100%; }
+        .btn-sq-lux { flex: 1; height: 58px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; box-shadow: 0 5px 0 #000; }
+        .btn-sq-lux:active { transform: translateY(4px); box-shadow: 0 0px 0 #000; }
+        .btn-sq-lux svg { width: 22px; height: 22px; stroke-width: 3; fill: none; }
+        
+        .c-stabilo { background-color: var(--kuning-stabilo); }
+        .c-red { background-color: var(--neon-red); }
+        .c-orange { background-color: var(--vibrant-orange); }
 
-        /* ✅ KEYBOARD SULTAN - TACTILE FEEDBACK (TIMBUL) */
-        .kb-container { background: #000; padding: 5px 8px 90px 8px; flex-direction: column; gap: 4px; border-top: 2.5px solid var(--monochrome-gray); flex-shrink: 0; z-index: 110; }
-        .kb-row { display: flex; justify-content: center; gap: 4px; width: 100%; }
-        .kb-btn { 
-            background: var(--monochrome-gray); border: 2.5px solid #000; border-radius: 8px; 
-            padding: var(--kb-height) 0; flex: 1; color: #fff; font-size: 17px; font-weight: 900; 
-            box-shadow: 0 4px 0 #000; display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; transition: 0.05s; 
+        .kb-container { background: #000; padding: 10px 8px 40px 8px; border-top: 2px solid #111; flex-shrink: 0; }
+        .kb-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 6px; }
+        .kb-btn { background: #334155; border-radius: 8px; padding: var(--kb-height) 0; flex: 1; color: #fff; font-size: 18px; box-shadow: 0 4px 0 #000; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
+        .kb-btn:active { transform: translateY(2px); box-shadow: none; background: #fff; color: #000; }
+        .kb-orange-solid { background-color: var(--vibrant-orange) !important; color: #000 !important; }
+
+        /* PAGE 3: RESULT - LAPORAN SULTAN FIXED */
+        .scroll-area-report { flex: 1; overflow-y: auto; background: #000; padding: 10px 15px; }
+        .report-box { background: #000; font-family: monospace !important; font-size: 13px; line-height: 1.6; color: #fff; white-space: pre-wrap; padding: 10px; border: 1px dashed #333; }
+        .footer-lux-result { background: #000; border-top: 2px solid #222; padding: 15px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+        .btn-sultan-big { width: 100%; height: 75px; border-radius: 20px; font-size: 16px; text-transform: uppercase; display: flex; align-items: center; justify-content: center; font-weight: 900; border: none; cursor: pointer; }
+
+        /* PAGE 4: ADMIN PANEL - SULTAN */
+        .admin-header-lux { background: #000; padding: 15px 20px; border-bottom: 2px solid #333; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; min-height: 80px; }
+        .admin-header-left { display: flex; align-items: center; gap: 10px; }
+        .admin-header-center { text-align: center; line-height: 1.1; }
+        .admin-header-center p { font-size: 11px; color: #fff; text-transform: uppercase; }
+        .admin-header-center span { font-size: 11px; color: var(--vibrant-orange); text-transform: uppercase; }
+
+        .admin-scroll { flex: 1; overflow-y: auto; padding: 15px; background: var(--panel-bg); padding-bottom: 120px; }
+        .stat-box-sultan { background: #1a1a1a; border: 2px solid #444; border-radius: 20px; padding: 15px 5px; text-align: center; }
+        .admin-search-box-lux { width: 100%; background: #1a1a1a; border: 2.5px solid var(--vibrant-orange); border-radius: 25px; padding: 22px; color: #fff; font-size: 18px; text-align: center; text-transform: uppercase; font-weight: 900; margin-bottom: 15px; }
+
+        /* BROADCAST EDITOR */
+        .broadcast-editor-box { background: #111; border: 2.5px solid #444; border-radius: 25px; padding: 20px; margin-bottom: 25px; }
+        .broadcast-input { width: 100%; background: #000; border: 2px solid #555; border-radius: 15px; padding: 15px; color: #fff; font-size: 14px; margin-bottom: 15px; resize: none; min-height: 80px; }
+        .btn-broadcast-sultan { background: var(--vibrant-orange); color: #000; padding: 15px; border-radius: 15px; width: 100%; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; }
+
+        .agent-card-lux { background: #1a1a1a; border-radius: 40px; padding: 25px; margin-bottom: 25px; border: 3px solid var(--vibrant-orange); position: relative; }
+        .agent-header-status { position: absolute; top: 20px; right: 25px; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+        .badge-locked { color: #fff; font-size: 13px; font-weight: 900; text-transform: uppercase; }
+        .badge-online { background: #22c55e; color: #000; padding: 4px 10px; border-radius: 10px; font-size: 9px; text-transform: uppercase; font-weight: 900 !important; }
+        .agent-id-lux { font-size: 52px; color: var(--vibrant-orange); font-weight: 900; display: block; margin-top: 10px; letter-spacing: 2px; }
+        .agent-sisa-lux { font-size: 18px; color: var(--vibrant-orange); font-weight: 900; text-transform: uppercase; display: block; }
+        .agent-last-active { font-size: 10px; color: #888; text-transform: uppercase; margin-bottom: 20px; display: block; }
+        .agent-last-active.never { color: #facc15; font-style: italic; opacity: 0.7; }
+        
+        .agent-actions-lux { display: flex; gap: 8px; align-items: center; }
+        .btn-act-sultan { 
+            height: 65px; border-radius: 20px; border: 2px solid #000; cursor: pointer; color: #fff; 
+            display: flex; align-items: center; justify-content: center; font-weight: 900;
+            box-shadow: 0 4px 0 #000; flex: 1;
         }
-        .kb-btn:active { transform: scale(0.9) translateY(4px); box-shadow: none; background: #fff; color: #000; }
-        .kb-orange-solid { background: var(--vibrant-orange) !important; color: #000 !important; border: 3px solid #000 !important; }
+        .btn-act-sultan svg { width: 26px; height: 26px; stroke: #fff; fill: none; stroke-width: 2.5; }
+        .btn-sekat-lux { background: var(--vibrant-orange); color: #000; flex: 3; font-size: 16px; text-transform: uppercase; border: none; transition: background 0.3s; }
+        .btn-sekat-lux.blocked { background: var(--neon-red) !important; color: #fff !important; }
+        .btn-blue-lux { background: #2563eb; }
+        .btn-orange-lux { background: #ea580c; }
+        .btn-red-lux { background: #ef4444; }
 
-        /* ✅ ADMIN PANEL - FULL RESTORATION */
-        #pageAdmin { background-color: var(--monochrome-gray); color: var(--vibrant-orange); height: 100%; }
-        .admin-header-v10000 { background: #111; padding: 20px 15px; border-bottom: 4px solid var(--vibrant-orange); display: flex; align-items: center; justify-content: space-between; color: var(--vibrant-orange); }
-        .admin-scroll-area { flex: 1; overflow-y: auto; background-color: var(--monochrome-gray); padding-bottom: 120px; width: 100%; -webkit-overflow-scrolling: touch; }
-        
-        .bc-master-box { background: #111; border-bottom: 2.5px solid var(--vibrant-orange); padding: 20px 15px; }
-        .bc-master-input { flex: 1; background: #222; color: #fff; border: 2px solid var(--vibrant-orange); border-radius: 12px; padding: 0 15px; font-size: 14px; outline: none; height: 50px; }
-        .btn-bc-send { background: var(--vibrant-orange); color: #000; padding: 0 20px; border-radius: 12px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; }
-
-        .stats-grid-v10000 { margin: 25px 15px; border: 3px solid var(--vibrant-orange); border-radius: 35px; display: flex; background: #222; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .stat-col-v10000 { flex: 1; text-align: center; padding: 30px 0; border-right: 2px solid var(--vibrant-orange); display: flex; flex-direction: column; justify-content: center; }
-        .stat-col-v10000:last-child { border-right: none; }
-        .stat-val-v10000 { font-size: 36px; font-weight: 900; color: var(--vibrant-orange); line-height: 1; }
-        .stat-lbl-v10000 { font-size: 10px; text-transform: uppercase; color: #fff; margin-top: 8px; letter-spacing: 2px; }
-        
-        .btn-add-pin-supreme { background: var(--vibrant-orange) !important; color: #000 !important; width: 100%; height: 75px; display: flex; align-items: center; justify-content: center; font-size: 16px; text-transform: uppercase; font-weight: 900; border: 4px solid #000; cursor: pointer; border-bottom: 8px solid #000; margin-bottom: 10px; border-radius: 20px; }
-        .agent-card-v10000 { background: #222; border: 3px solid var(--vibrant-orange); padding: 22px; margin: 15px; border-radius: 30px; position: relative; color: var(--vibrant-orange); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-        .agent-status-row { font-size: 11px; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; color: #fff; }
-        .agent-pin-lux { color: var(--vibrant-orange); font-size: 30px; font-weight: 900; margin-bottom: 8px; letter-spacing: 3px; }
-        .agent-time-lux { color: var(--vibrant-orange); font-size: 11px; text-transform: uppercase; margin-bottom: 25px; letter-spacing: 1.5px; }
-        
-        .agent-actions-row { display: flex; align-items: center; gap: 8px; width: 100%; }
-        .btn-sekat-v10000 { flex: 2.5; background: var(--vibrant-orange); color: #000; border-radius: 18px; padding: 18px; font-size: 12px; text-transform: uppercase; border: 3px solid #000; font-weight: 900; cursor: pointer; box-shadow: 0 4px 0 #000; }
-        .btn-sekat-v10000.blocked { background: var(--neon-red); color: #fff; }
-        .btn-icon-sq-v10000 { width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; border: 3px solid #000; color: #fff; cursor: pointer; box-shadow: 0 4px 0 #000; }
-
-        .admin-tabs-row { display: flex; padding: 0 15px; gap: 12px; margin: 25px 0; }
-        .admin-tab { flex: 1; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 12px; text-transform: uppercase; cursor: pointer; font-weight: 900; border: 3px solid #000; box-shadow: 0 4px 0 #000; background: #333; color: #777; }
-        .tab-active { background: var(--vibrant-orange) !important; color: #000 !important; }
-
-        /* ✅ RESULT PAGE (HALAMAN 4) - SMOOTH SCROLL */
-        .result-layout-v43000 { display: flex; flex-direction: column; height: 100%; width: 100%; background: #000; position: relative; overflow: hidden; }
-        .scroll-area-v43000 { flex: 1; overflow-y: auto !important; background: #000; width: 100%; -webkit-overflow-scrolling: touch; padding-bottom: 220px; }
-        .official-card-sultan { padding: 15px 20px 40px 20px; text-align: left; }
-        
-        .header-mirror-box-v32000 { text-align: center; border-bottom: 2.5px solid var(--monochrome-gray); padding-bottom: 15px; margin-bottom: 35px; }
-        .header-mirror-box-v32000 p { color: #fff; font-size: 12px; text-transform: uppercase; margin-bottom: 4px; }
-        .header-mirror-box-v32000 span { color: var(--vibrant-orange); font-size: 14px; text-decoration: underline; font-weight: 900; }
-
-        .sec-head-v32000 { font-size: 15px; color: #fff; margin: 25px 0 5px 0; text-transform: uppercase; display: flex; align-items: center; gap: 10px; letter-spacing: 0.5px; }
-
-        /* ULTRA ALIGNMENT GRID */
-        .row-data-v43000 { display: flex; align-items: flex-start; margin-bottom: 12px; width: 100%; font-size: 15px; line-height: 1.1; }
-        .lbl-v43000 { width: 135px; color: var(--vibrant-orange); text-transform: uppercase; font-size: 13px; flex-shrink: 0; display: flex; justify-content: space-between; position: relative; }
-        .lbl-v43000::after { content: ":"; position: absolute; right: 0; color: var(--vibrant-orange); }
-        .val-v43000 { flex: 1; padding-left: 15px; color: #fff !important; text-transform: uppercase; word-break: break-word; font-weight: 900; }
-
-        .footer-lux-v2000 { position: absolute; bottom: 0; width: 100%; padding: 15px; background: #000; border-top: 1.5px solid #222; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
-        .btn-sultan-big { width: 100%; height: 75px; border-radius: 22px; font-size: 18px; text-transform: uppercase; display: flex; align-items: center; justify-content: center; border: 3.5px solid #000; cursor: pointer; font-weight: 900; }
-
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 20000; display: none; align-items: center; justify-content: center; padding: 25px; }
-        .modal-card { background: #111; border-radius: 40px; padding: 40px; width: 100%; max-width: 380px; text-align: center; border: 4.5px solid var(--monochrome-gray); color: #fff; }
-        select.sultan-select { width: 100%; padding: 18px; background: #000; color: #fff; border: 2.5px solid rgba(255,255,255,0.2); border-radius: 15px; font-size: 13px; text-transform: uppercase; outline: none; margin-bottom: 20px; }
+        /* MODALS */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; display: none; align-items: center; justify-content: center; padding: 25px; }
+        .modal-card { background: #111; border-radius: 45px; padding: 40px; width: 100%; max-width: 400px; text-align: center; border: 2px solid #334155; }
+        .modal-input { width: 100%; background: #000; border: 2px solid #fff; border-radius: 15px; padding: 20px; text-align: center; font-size: 24px; margin: 20px 0; color: #fff; }
     </style>
 </head>
-<body onclick="if(window.hidePastePopup) window.hidePastePopup()">
+<body>
 
     <div id="splash-screen"><div class="splash-logo">CSID.PRO</div></div>
 
-    <div id="global-loader">
-        <div class="dashed-loader"><div class="dashed-line"></div></div>
-        <p class="loading-text">SEDANG MEMUAT DATA...</p>
-    </div>
-
     <div class="app-container">
         <div class="mobile-frame">
-            <div id="pastePopup" onpointerdown="window.handleNativePasteBackup(event)">TEMPEL DATA</div>
-
-            <!-- PAGE: LOGIN -->
+            
+            <!-- PAGE 1: LOGIN -->
             <div id="pageLogin" class="page active">
                 <div class="login-scroll-system">
-                    <div class="mb-14 w-full px-4 text-center">
-                        <h1 class="uppercase text-[22px] leading-tight tracking-tight" style="color:var(--vibrant-orange)" onpointerdown="window.hitMasterGate()">SELAMAT DATANG DI APLIKASI<br>CEK SAMSAT RANMOR INDONESIA</h1>
-                    </div>
+                    <h2 class="welcome-title">SELAMAT DATANG DI APLIKASI<span>CEK SAMSAT RANMOR INDONESIA</span></h2>
                     <div class="login-card-v9100">
-                        <h1 id="masterGateTrigger" onpointerdown="window.hitMasterGate()">CSID.PRO</h1>
-                        <div class="id-dashboard-box mt-10">
+                        <h1 id="logoMaster" onclick="window.hitMaster()">CSID.PRO</h1>
+                        <div class="id-dashboard-box">
                             <p class="id-label-lux">ID PENDAFTARAN ANDA :</p>
                             <h2 id="myOnlineID" class="id-value-lux">------</h2>
                         </div>
-                        <button type="button" class="btn-login-online-lux" onpointerdown="window.handleLoginOnline()">
-                            <i data-lucide="shield-check" size="28"></i> LOGIN ONLINE
+                        <button id="btnLogin" class="btn-login-online-lux" onclick="window.handleLogin()">
+                            <svg viewBox="0 0 24 24" style="stroke:#000; width:30px; height:30px; fill:none; stroke-width:3;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                            LOGIN ONLINE
                         </button>
                     </div>
-                    <div class="registration-box-sultan">
-                        <button type="button" class="btn-wa-lux-sultan" onpointerdown="window.handleWaReg()"><i class="fab fa-whatsapp"></i> DAFTAR VIA WHATSAPP</button>
-                    </div>
+                    <button class="btn-wa-reg" onclick="window.handleWaReg()">
+                        <svg viewBox="0 0 24 24" style="width:28px; height:28px; fill:#fff;"><path d="M12.011 2c-5.511 0-9.989 4.478-9.989 9.989 0 1.761.462 3.47 1.336 4.977l-1.417 5.176 5.302-1.391c1.455.792 3.09 1.209 4.757 1.209 5.511 0 9.989-4.478 9.989-9.989 0-5.511-4.478-9.989-9.989-9.989zm5.221 14.15c-.227.639-1.301 1.232-1.785 1.282-.483.048-.96.223-3.136-.632-2.784-1.096-4.581-3.924-4.721-4.11-.139-.187-1.139-1.513-1.139-2.887 0-1.374.72-2.051.977-2.327.257-.276.559-.345.746-.345.186 0 .372.001.534.009.171.008.402-.065.63.488.227.554.779 1.901.848 2.039.069.138.115.3.023.485-.093.186-.139.3-.279.462-.14.161-.293.36-.419.483-.139.138-.284.288-.123.565.161.277.716 1.181 1.54 1.916.823.734 1.519.963 1.834 1.102.314.138.498.115.684-.092.186-.208.79-.922.999-1.244.21-.322.419-.276.706-.171.288.106 1.821.859 2.135 1.016.314.157.523.23.6.36.077.13.077.755-.15 1.394z"/></svg> DAFTAR VIA WHATSAPP
+                    </button>
                 </div>
             </div>
 
-            <!-- PAGE: SEARCH -->
+            <!-- PAGE 2: SEARCH -->
             <div id="pageSearch" class="page">
-                <div id="broadcast-area"><div class="bc-text-scroll" id="bcContent">MEMUAT PESAN ADMIN...</div></div>
                 <div class="lux-header">
-                    <div class="flex items-center gap-2"><i data-lucide="shield-check" size="18" style="color:var(--monochrome-gray)"></i><h2 class="text-[10px] uppercase text-white">CSID.PRO</h2></div>
+                    <div class="flex items-center gap-2">
+                        <svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2.5;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                        <h2 class="text-[14px] text-white tracking-widest uppercase">CSID.PRO</h2>
+                    </div>
                     <div class="banner-info-box">
                         <p class="banner-pin-label" id="uName">PIN : -</p>
-                        <p class="banner-time-label" id="uExp">SISA: --:--:--</p>
+                        <p class="banner-time-label" id="uExp">SISA: --</p>
                     </div>
                 </div>
+                <div class="broadcast-container"><div class="broadcast-content"><span id="broadcastTickerText" class="broadcast-text">MEMUAT PESAN BROADCAST TERBARU...</span></div></div>
                 <div class="flex-1 flex flex-col overflow-hidden">
-                    <div class="search-outer mt-4">
-                        <input type="text" id="plateDisplay" inputmode="none" spellcheck="false" autocomplete="off" placeholder="KETIK DISINI ..." oninput="window.updateHint()">
+                    <div class="search-outer">
+                        <input type="text" id="plateDisplay" placeholder="KETIK DISINI ..." autocomplete="off" inputmode="none">
                     </div>
-                    <div class="flex-1 flex flex-col justify-center px-8 text-center"><p class="text-white text-[12px] uppercase animate-pulse tracking-wider leading-relaxed">PERINGATAN ⚠️<br>DILARANG KERAS MENYALAHGUNAKAN APLIKASI INI TANPA IZIN RESMI CSID.PRO</p></div>
-                    
-                    <div class="action-panel-v805">
-                        <button class="btn-action-v805 btn-lime-sq" onpointerdown="window.adjustKB(-4)"><i data-lucide="minus"></i></button>
-                        <button class="btn-action-v805 btn-lime-sq" onpointerdown="window.adjustKB(4)"><i data-lucide="plus"></i></button>
-                        <button class="btn-action-v805 btn-lime-sq" onpointerdown="document.getElementById('camInput').click()"><i data-lucide="camera"></i></button>
-                        <button class="btn-action-v805 btn-lime-sq" style="color:#000" onpointerdown="window.handleNativePasteBackup(event)"><i data-lucide="clipboard-list"></i></button>
-                        <button id="adminNavBtn" class="hidden btn-action-v805 btn-lime-sq" onpointerdown="window.safeSwitch('pageAdmin')"><i data-lucide="shield-check" style="color:var(--neon-red)"></i></button>
-                        <button class="btn-action-v805 btn-logout-red" onpointerdown="document.getElementById('modalLogout').style.display='flex'"><i data-lucide="power"></i></button>
-                        <button class="btn-action-v805 btn-orange-sq" onpointerdown="window.doSearch()"><i data-lucide="search"></i></button>
+                    <div class="px-8 text-center text-[10px] opacity-60 uppercase mb-4 leading-relaxed">PERINGATAN ⚠️<br>DILARANG KERAS MENYALAHGUNAKAN APLIKASI INI TANPA IZIN RESMI CSID.PRO</div>
+                    <div class="action-row-sultan">
+                        <button class="btn-sq-lux c-stabilo" onclick="window.adj(-2)"><svg stroke="#000" viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
+                        <button class="btn-sq-lux c-stabilo" onclick="window.adj(2)"><svg stroke="#000" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+                        <button class="btn-sq-lux c-stabilo" onclick="window.showMsg('Fitur Kamera Dalam Perbaikan')"><svg stroke="#000" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
+                        <button class="btn-sq-lux c-stabilo" onclick="window.safeSwitch('pageResult')"><svg stroke="#000" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 12h6M9 16h6M9 8h6"/></svg></button>
+                        <button class="btn-sq-lux c-stabilo" onclick="window.showAdminIfMaster()"><svg stroke="#ef4444" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></button>
+                        <button class="btn-sq-lux c-red" onclick="window.doLogout()"><svg stroke="#fff" viewBox="0 0 24 24"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg></button>
+                        <button class="btn-sq-lux c-orange" onclick="window.doSearch()"><svg stroke="#000" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
                     </div>
-                    <div class="kb-container" id="kbBox"></div>
-                </div>
-                <input type="file" id="camInput" accept="image/*" capture="environment" class="hidden">
-            </div>
-
-            <!-- PAGE: ADMIN -->
-            <div id="pageAdmin" class="page">
-                <div class="admin-header-v10000">
-                    <div class="flex items-center gap-3"><i data-lucide="refresh-cw" size="18" id="refreshAdminBtn" class="cursor-pointer text-orange-500" onpointerdown="window.initAdminSync()"></i><h2 class="uppercase text-[12px] font-black text-white">ADMIN PANEL</h2></div>
-                    <div class="banner-info-box mr-4">
-                        <p id="admPin" class="banner-pin-label text-white">PIN : MASTER</p>
-                        <p id="admExp" class="banner-time-label" style="color:var(--vibrant-orange)">STATUS: NOLIMIT</p>
-                    </div>
-                    <button onpointerdown="window.safeSwitch('pageSearch')"><i data-lucide="x" size="28"></i></button>
-                </div>
-                <div class="admin-scroll-area">
-                    <div class="bc-master-box"><div class="flex gap-2"><input type="text" id="bcAdminInput" placeholder="Pesan siaran putih..." class="bc-master-input"><button class="btn-bc-send" onpointerdown="window.sendBroadcast()">KIRIM</button></div></div>
-                    <div class="px-4 mt-6"><button class="btn-add-pin-supreme" onpointerdown="window.openAddPin()">AKTIFKAN PIN BARU</button></div>
-                    <div class="stats-grid-v10000">
-                        <div class="stat-col-v10000"><div id="statTotal" class="stat-val-v10000">0</div><div class="stat-lbl-v10000">TOTAL</div></div>
-                        <div class="stat-col-v10000"><div id="statActive" class="stat-val-v10000" style="color:var(--wa-green)">0</div><div class="stat-lbl-v10000">AKTIF</div></div>
-                        <div class="stat-col-v10000"><div id="statInactive" class="stat-val-v10000" style="color:var(--neon-red)">0</div><div class="stat-lbl-v10000">MATI</div></div>
-                    </div>
-                    <div class="admin-tabs-row">
-                        <div id="tabAgen" class="admin-tab tab-active" onpointerdown="window.switchAdminTab('agen')">DATA AGEN</div>
-                        <div id="tabLogs" class="admin-tab" onpointerdown="window.switchAdminTab('logs')">RIWAYAT LOG</div>
-                    </div>
-                    <div style="padding:0 15px; margin-bottom:15px;"><input type="number" id="adminSearchInput" oninput="window.filterAdminContent()" placeholder="CARI PIN AGENT..." style="width:100%; background:#333; border:2px solid var(--vibrant-orange); border-radius:20px; padding:18px; color:var(--vibrant-orange); text-align:center;"></div>
-                    <div id="adminListContainer" class="pb-32"></div>
+                    <div id="keyboard" class="kb-container p-2"></div>
                 </div>
             </div>
 
-            <!-- PAGE: RESULT -->
+            <!-- PAGE 3: RESULT -->
             <div id="pageResult" class="page">
-                <div class="result-layout-v43000">
-                    <div class="lux-header flex-shrink-0">
-                        <button onpointerdown="window.safeSwitch('pageSearch')"><i data-lucide="arrow-left" size="32" style="color:var(--monochrome-gray)"></i></button>
-                        <span class="flex-1 text-center uppercase text-[11px] font-black text-white tracking-widest">HASIL RESMI CSID.PRO</span>
-                        <div class="banner-info-box">
-                            <p id="resPin" class="banner-pin-label text-[9px]">PIN : -</p>
-                            <p id="resExp" class="banner-time-label text-[9px]">SISA : --:--</p>
-                        </div>
+                <div class="lux-header">
+                    <button class="p-4" onclick="window.safeSwitch('pageSearch')"><svg stroke="#fff" viewBox="0 0 24 24" style="width:24px; height:24px; fill:none; stroke-width:3;"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+                    <span class="text-[11px] text-white uppercase font-black tracking-widest">HASIL RESMI CSID.PRO</span>
+                    <div class="banner-info-box"><p id="resPin" class="banner-pin-label">PIN: -</p></div>
+                </div>
+                <div id="resultArea" class="scroll-area-report"></div>
+                <div class="footer-lux-result">
+                    <button class="btn-sultan-big bg-zinc-800 text-orange-500 mb-2 font-black uppercase" onclick="window.copyReport()">SALIN LAPORAN</button>
+                    <button class="btn-sultan-big bg-[#25D366] text-white font-black uppercase" onclick="window.shareReport()">KIRIM KE WHATSAPP</button>
+                </div>
+            </div>
+
+            <!-- PAGE 4: ADMIN PANEL -->
+            <div id="pageAdmin" class="page">
+                <div class="admin-header-lux">
+                    <div class="admin-header-left">
+                        <svg viewBox="0 0 24 24" style="width:28px;height:28px;stroke:var(--vibrant-orange);fill:none;stroke-width:3;"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                        <h2 class="text-white text-[16px] uppercase font-black tracking-tighter">ADMIN PANEL</h2>
                     </div>
-                    <div id="resultArea" class="scroll-area-v43000"></div>
-                    <div class="footer-lux-v2000 flex-shrink-0">
-                        <button id="copyBtnStatic" class="btn-sultan-big" style="background:var(--monochrome-gray); color:var(--vibrant-orange); border:none" onpointerdown="window.copyReport()">SALIN DATA LAPORAN</button>
-                        <button id="waShareBtnStatic" class="btn-sultan-big" style="background:var(--wa-green); color:#fff; gap:12px;" onpointerdown="window.shareReport()"><i data-lucide="message-circle" size="28"></i> KIRIM KE WHATSAPP</button>
+                    <div class="admin-header-center"><p>PIN : MASTER</p><span>STATUS: NOLIMIT</span></div>
+                    <button onclick="window.safeSwitch('pageSearch')">
+                        <svg viewBox="0 0 24 24" style="width:40px; height:40px; stroke:var(--vibrant-orange); stroke-width:4; fill:none;"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                    </button>
+                </div>
+                <div class="admin-scroll">
+                    <div class="grid grid-cols-3 gap-3 mb-6">
+                        <div class="stat-box-sultan"><span id="statTotal" class="text-2xl text-orange-500 font-black">0</span><p class="stat-label">TOTAL AGEN</p></div>
+                        <div class="stat-box-sultan"><span id="statActive" class="text-2xl text-green-500 font-black">0</span><p class="stat-label">AKTIF</p></div>
+                        <div class="stat-box-sultan"><span id="statOnline" class="text-2xl text-blue-500 font-black">0</span><p class="stat-label">ONLINE</p></div>
                     </div>
+
+                    <div class="broadcast-editor-box">
+                        <p class="text-[10px] text-gray-400 uppercase mb-2">BROADCAST CENTER :</p>
+                        <textarea id="broadcastMsgInput" class="broadcast-input" placeholder="KETIK PESAN UNTUK SEMUA AGEN DISINI..."></textarea>
+                        <button class="btn-broadcast-sultan" onclick="window.sendBroadcast()">KIRIM BROADCAST</button>
+                    </div>
+
+                    <button class="w-full bg-orange-500 text-black py-6 rounded-[25px] mb-8 font-black uppercase text-xl border-4 border-black" onclick="window.openAddAgentModal()">+ AKTIFKAN PIN BARU</button>
+                    <input type="number" id="adminSearchInput" class="admin-search-box-lux" placeholder="CARI PIN AGENT..." oninput="window.filterAgents()">
+                    <div id="agentListContainer"></div>
                 </div>
             </div>
 
             <!-- MODALS -->
-            <div id="adminGatewayModal" class="modal-overlay"><div class="modal-card"><h3 class="mb-6 uppercase text-white">AKSES MASTER ADMIN</h3><input type="number" id="masterPinInput" placeholder="PIN MASTER" style="width:100%; background:#000; border:2px solid #fff; border-radius:15px; padding:20px; color:#fff; text-align:center; font-size:20px; margin-bottom:20px;"><div class="flex gap-4"><button onpointerdown="document.getElementById('adminGatewayModal').style.display='none'" class="flex-1 bg-[#222] py-5 rounded-2xl text-xs text-white">BATAL</button><button onpointerdown="window.confirmMasterAccess()" class="flex-1 bg-white text-black py-5 rounded-2xl text-xs font-black">KONFIRMASI</button></div></div></div>
-            <div id="modalAlert" class="modal-overlay"><div class="modal-card"><h3 id="alertTitle" class="uppercase text-xl text-white"></h3><p id="alertBody" class="my-8 text-slate-400 text-sm"></p><button type="button" class="w-full bg-white text-black py-4 rounded-xl font-black" onpointerdown="window.closeAlert()">OKE</button></div></div>
-            
-            <div id="modalRenewPin" class="modal-overlay"><div class="modal-card"><h3 class="mb-2 uppercase text-white">PERPANJANG PIN</h3><p id="renewPinLabel" class="text-white mb-6 text-xs">ID: ----</p>
-                <select id="renewExpiryChoice" class="sultan-select">
-                    <!-- ✅ FULL OPTIONS -->
-                    <option value="0.04167">TAMBAH 1 JAM</option><option value="1">TAMBAH 1 HARI</option><option value="2">TAMBAH 2 HARI</option><option value="7">TAMBAH 1 MINGGU</option><option value="15">TAMBAH 15 HARI</option><option value="31" selected>TAMBAH 31 HARI</option><option value="60">TAMBAH 60 HARI</option><option value="93">TAMBAH 3 BULAN</option><option value="186">TAMBAH 6 BULAN</option><option value="365">TAMBAH 1 TAHUN</option><option value="36500">TAMBAH NOLIMIT</option>
-                </select>
-                <div class="flex gap-4"><button onpointerdown="document.getElementById('modalRenewPin').style.display='none'" class="flex-1 bg-[#222] py-4 rounded-xl text-xs text-white">BATAL</button><button onpointerdown="window.confirmRenew()" class="flex-1 bg-blue-600 py-4 rounded-xl text-xs text-white">KONFIRMASI</button></div>
-            </div></div>
+            <div id="adminGatewayModal" class="modal-overlay"><div class="modal-card"><h3 class="uppercase text-white font-black">AKSES MASTER ADMIN</h3><input type="number" id="masterPinInput" placeholder="PIN MASTER" class="modal-input"><div class="flex gap-4"><button onclick="document.getElementById('adminGatewayModal').style.display='none'" class="flex-1 bg-zinc-800 py-4 rounded-2xl text-white">BATAL</button><button onclick="window.confirmMaster()" class="flex-1 bg-white text-black py-4 rounded-2xl font-black">KONFIRMASI</button></div></div></div>
+            <div id="addAgentModal" class="modal-overlay"><div class="modal-card"><h3 class="uppercase font-black text-white">AKTIFKAN PIN AGEN</h3><input type="number" id="newAgentPin" placeholder="PIN (6 DIGIT)" class="modal-input"><select id="newAgentDuration" class="modal-input text-sm"><option value="1">1 HARI</option><option value="3">3 HARI</option><option value="7">7 HARI</option><option value="30">30 HARI</option><option value="365">1 TAHUN</option><option value="99999">NOLIMIT</option></select><div class="flex gap-4"><button onclick="document.getElementById('addAgentModal').style.display='none'" class="flex-1 bg-zinc-800 py-4 rounded-2xl text-white">BATAL</button><button onclick="window.processAddAgent()" class="flex-1 bg-orange-500 text-black py-4 rounded-2xl font-black">SIMPAN</button></div></div></div>
+            <div id="msgModal" class="modal-overlay"><div class="modal-card"><h3 class="mb-4 text-orange-500 uppercase font-black" id="msgTitle">INFORMASI</h3><p id="msgText" class="mb-8 text-white text-sm uppercase leading-relaxed text-center px-4"></p><button onclick="document.getElementById('msgModal').style.display='none'" class="w-full bg-white text-black py-4 rounded-xl font-black">OKE</button></div></div>
 
-            <div id="modalAddPin" class="modal-overlay"><div class="modal-card"><h3 class="mb-4 uppercase text-white">AKTIFKAN PIN BARU</h3><input type="number" id="newPinVal" placeholder="6 ANGKA PIN" style="width:100%; background:#000; border:2px solid #fff; border-radius:15px; padding:20px; color:#fff; text-align:center; font-size:20px; margin-bottom:20px;">
-                <select id="expiryChoice" class="sultan-select">
-                    <option value="0.04167">1 JAM</option><option value="1">1 HARI</option><option value="2">2 HARI</option><option value="7">1 MINGGU</option><option value="15">15 HARI</option><option value="31" selected>31 HARI</option><option value="60">60 HARI</option><option value="93">3 BULAN</option><option value="186">6 BULAN</option><option value="365">1 TAHUN</option><option value="36500">NOLIMIT</option>
-                </select>
-                <div class="flex gap-4"><button onpointerdown="document.getElementById('modalAddPin').style.display='none'" class="flex-1 bg-[#222] py-4 rounded-xl text-xs text-white">BATAL</button><button onpointerdown="window.confirmAdd()" class="flex-1 bg-white text-black py-4 rounded-xl text-xs font-black">KONFIRMASI</button></div>
-            </div></div>
-            <div id="modalLogout" class="modal-overlay"><div class="modal-card"><div class="text-red-500 mb-6 flex justify-center"><i data-lucide="log-out" size="56"></i></div><h3 class="uppercase text-xl mb-2 text-center text-white">KONFIRMASI KELUAR</h3><div class="flex gap-4 px-2"><button onpointerdown="document.getElementById('modalLogout').style.display='none'" class="flex-1 bg-[#222] py-4 rounded-xl text-xs text-white">TIDAK</button><button onpointerdown="window.forceLogout()" class="flex-1 bg-red-600 py-4 rounded-xl text-xs text-white">YA</button></div></div></div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, onSnapshot, addDoc, limit, query } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
-        // ✅ CONFIG & INIT
-        const firebaseConfig = { apiKey: "AIzaSyBonuHp4nd-YZKWV5IM_2HRCfJ2TQ4zJaY", authDomain: "gen-lang-client-0221970857.firebaseapp.app", projectId: "gen-lang-client-0221970857", storageBucket: "gen-lang-client-0221970857.firebasestorage.app", messagingSenderId: "483674298302", appId: "1:483674298302:web:1fe90dc43295df2abecbef" };
-        const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
-        const appIdGlobal = "csid-pro-live";
-        const getDevID = () => btoa(navigator.userAgent + (navigator.language || 'id') + screen.width + screen.height).slice(0, 48);
-        const apiKeyGemini = "AIzaSyAg-OhP0B0bFivaa2ryUjTVdTGjBLFGd5E";
-
-        window.titanState = { isAdmin: false, currentReportData: null, currentAgentPin: null, cachedAgents: [], cachedLogs: [], currentTab: 'agen', registrationCode: null, gateHits: 0, securityListener: null, countdownTimer: null, localCache: {} };
-
-        // FUNGSI GLOBAL
-        window.showToast = (m) => { const t = document.createElement('div'); t.innerText = m; t.className = "fixed top-10 left-1/2 -translate-x-1/2 bg-black text-white px-6 py-3 rounded-full z-[25000] shadow-2xl font-black text-[10px] uppercase animate-bounce"; document.body.appendChild(t); setTimeout(() => t.remove(), 2500); };
-        window.showL = (m) => { document.querySelector('.loading-text').innerText = m || "SEDANG MEMUAT DATA..."; document.getElementById('global-loader').style.display = 'flex'; };
-        window.hideL = () => { document.getElementById('global-loader').style.display = 'none'; };
-        window.showM = (t, b) => { document.getElementById('alertTitle').innerText = t; document.getElementById('alertBody').innerText = b; document.getElementById('modalAlert').style.display = 'flex'; };
-        window.closeAlert = () => { document.getElementById('modalAlert').style.display = 'none'; };
-        
-        window.safeSwitch = (id) => { 
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
-            document.getElementById(id).classList.add('active'); 
-            if(id==='pageAdmin') window.initAdminSync(); 
-            lucide.createIcons(); 
-            window.syncHeaderInfo();
+        const MAP = {
+            nama: ['NamaPemilik', 'nama_pemilik', 'nm_pmlk', 'nama'],
+            nik: ['NoKTP', 'nik', 'no_identitas'],
+            msisdn: ['NoHP', 'msisdn', 'phone', 'no_hp'],
+            email: ['Email', 'email_pmlk', 'email'],
+            pekerjaan: ['Pekerjaan', 'pekerjaan_pmlk', 'job'],
+            alamat: ['alamat', 'almt_pmlk', 'address', 'AlamatPemilik'],
+            nopol: ['nopol', 'no_polisi', 'nomor_polisi'],
+            merek: ['Merk', 'merek', 'merk', 'nm_merek'],
+            tipe: ['Type', 'tipe', 'type', 'model', 'nm_model'],
+            tahun: ['TahunPembuatan', 'tahun', 'thn_buat'],
+            warna: ['Warna', 'warna', 'nm_warna'],
+            noka: ['NoRangka', 'no_rangka', 'noka', 'vin'],
+            nosin: ['NoMesin', 'no_mesin', 'nosin'],
+            bpkb: ['NoBPKB', 'no_bpkb', 'nomor_bpkb'],
+            stnk: ['NoSTNK', 'no_stnk', 'nomor_stnk'],
+            silinder: ['IsiCylinder', 'isi_silinder', 'cc'],
+            bbm: ['BBM', 'bahan_bakar', 'bbm'],
+            tgl_daftar: ['TanggalDaftar', 'tgl_daftar', 'tgl_registrasi']
         };
 
-        // ✅ ADAPTIVE FONT SIZE & AUTO-SHRINK
-        window.updateHint = () => {
-            const el = document.getElementById('plateDisplay'); if(!el) return;
-            const len = el.value.length;
-            if(len > 18) el.style.fontSize = "0.9rem"; else if(len > 14) el.style.fontSize = "1.2rem"; else if(len > 8) el.style.fontSize = "1.5rem"; else el.style.fontSize = "1.8rem";
-        };
-
-        // ✅ SYNC HEADER INFO (ETERNAL SYNC FIXED V47000)
-        window.syncHeaderInfo = () => {
-            const pin = window.titanState.currentAgentPin;
-            const isAdmin = window.titanState.isAdmin;
-            const uName = document.getElementById('uName'), uExp = document.getElementById('uExp');
-            const rPin = document.getElementById('resPin'), rExp = document.getElementById('resExp');
-            const admPin = document.getElementById('admPin'), admExp = document.getElementById('admExp');
-            
-            if(isAdmin) {
-                const pTxt = "PIN : MASTER", eTxt = "STATUS: NOLIMIT";
-                [uName, rPin, admPin].forEach(el => { if(el) el.innerText = pTxt; });
-                [uExp, rExp, admExp].forEach(el => { 
-                    if(el) { el.innerText = eTxt; el.style.color = "var(--vibrant-orange)"; } 
-                });
-            } else if(pin) {
-                const pTxt = "PIN : " + pin;
-                [uName, rPin].forEach(el => { if(el) el.innerText = pTxt; });
-            }
-        };
-
-        // ✅ REAL-TIME COUNTDOWN
-        window.startCountdown = (expiryISO) => { 
-            if(window.titanState.countdownTimer) clearInterval(window.titanState.countdownTimer); 
-            const update = () => { 
-                if(window.titanState.isAdmin) return;
-                const diff = new Date(expiryISO).getTime() - Date.now(); 
-                const uExp = document.getElementById('uExp'), rExp = document.getElementById('resExp');
-                if(diff <= 0) { 
-                    const msg = "SISA: EXPIRED"; if(uExp) uExp.innerText = msg; if(rExp) rExp.innerText = msg;
-                    window.forceLogout(); return; 
-                } 
-                const d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000); 
-                const timeText = `SISA: ${d}d ${h}:${m}:${s}`;
-                if(uExp) uExp.innerText = timeText; if(rExp) rExp.innerText = timeText;
-            }; update(); window.titanState.countdownTimer = setInterval(update, 1000); 
-        };
-
-        // TURBO SEARCH
-        window.doSearch = async () => {
-            const displayEl = document.getElementById('plateDisplay');
-            let pQuery = displayEl.value.trim().toUpperCase().replace(/[^A-Z0-9]/gi, ''); 
-            if(pQuery.length < 3) return;
-            if(window.titanState.localCache[pQuery]) { window.renderSyncResult(window.titanState.localCache[pQuery], pQuery); return; }
-            window.showL("SEDANG MEMUAT DATA..."); 
-            const searchPromise = fetch(`https://elangninja.space/?key=9611bbce88d6dbd96cdfd83619233efb&s=${encodeURIComponent(pQuery)}`, { priority: 'high' });
-            try {
-                if (!window.titanState.isAdmin) {
-                    const snap = await getDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', window.titanState.currentAgentPin));
-                    if(snap.exists()){ const d = snap.data(); if(d.status === 'blocked' || (d.deviceId && d.deviceId !== getDevID())) { window.forceLogout(); return; } }
+        const deepFind = (obj, targetKeys) => {
+            if (!obj) return null;
+            if (Array.isArray(obj)) {
+                for (let item of obj) {
+                    const result = deepFind(item, targetKeys);
+                    if (result) return result;
                 }
-                const res = await searchPromise; const resJson = await res.json();
-                let d = Array.isArray(resJson) ? resJson[0] : (resJson.data ? (Array.isArray(resJson.data) ? resJson.data[0] : resJson.data) : resJson);
-                if(d && (d.owner_name || d.plate_number || d.brand)) { 
-                    window.titanState.localCache[pQuery] = d; window.renderSyncResult(d, pQuery);
-                    addDoc(collection(db, 'artifacts', appIdGlobal, 'public', 'data', 'logs'), { pin: window.titanState.currentAgentPin || "MASTER", plat: pQuery, time: new Date().toISOString() });
-                } else window.showM("TIADA", "Data tidak ditemukan.");
-            } catch(e) { window.showM("OFFLINE", "Gagal server."); } window.hideL();
-        };
-
-        window.renderSyncResult = (d, pQuery) => {
-            window.titanState.currentReportData = d; const area = document.getElementById('resultArea');
-            let fnP = ((d.plate_region || "") + " " + (d.plate_number || "") + " " + (d.plate_series || "")).toUpperCase().trim() || pQuery;
-            const rW = (l, val) => `<div class="row-data-v43000"><div class="lbl-v43000"><span>${l}</span></div><div class="val-v43000">${val || "-"}</div></div>`;
-            area.innerHTML = `
-                <div class="official-card-sultan">
-                    <div class="text-[11px] mb-8 text-white uppercase text-center border-b border-white/5 pb-4">🔊 SUMBER : APLIKASI CSID.PRO</div>
-                    <div class="sec-head-v32000">🚻 IDENTITAS PEMILIK :</div>
-                    <div style="border-top:1.5px solid var(--monochrome-gray); margin-bottom:15px;"></div>
-                    ${rW("No.PLAT", fnP)}${rW("PEMILIK", d.owner_name)}
-                    <div class="row-data-v43000"><div class="lbl-v43000"><span>ALAMAT</span></div><div class="val-v43000" style="font-size:12px; line-height:1.4;">${(d.owner_address || "").replace('- //','').trim()}</div></div>
-                    ${rW("NIK", d.nik)}${rW("PEKERJAAN", d.owner_job || "-")}
-                    <div class="sec-head-v32000">🚘 DATA KENDARAAN :</div>
-                    <div style="border-top:1.5px solid var(--monochrome-gray); margin-bottom:15px;"></div>
-                    ${rW("MEREK", d.brand)}${rW("TIPE", d.vehicle_type)}${rW("TAHUN", d.manufacture_year)}${rW("WARNA", d.color)}
-                    ${rW("SILINDER", (d.engine_capacity_cc || "0") + " cc")}${rW("RODA", d.wheel_count || "4")}${rW("NO. RANGKA", d.chassis_number)}${rW("NO. MESIN", d.engine_number)}
-                    <div class="sec-head-v32000">📙 DOKUMEN RESMI :</div>
-                    <div style="border-top:1.5px solid var(--monochrome-gray); margin-bottom:15px;"></div>
-                    ${rW("NO. BPKB", d.bpkb_number)}${rW("NO. STNK", d.stnk_number)}
-                    <div style="border-top:1.5px solid var(--monochrome-gray); margin-top:35px; padding-top:15px;"></div>
-                    <div class="header-mirror-box-v32000"><p>🔊 LINK DAFTAR APLIKASI : CSID.PRO</p><span>https://wa.me/628136900872</span></div>
-                    <div class="sec-head-v32000" style="margin-top:20px;">✍️ NOTE :</div>
-                    <div style="border-top:1.5px solid var(--monochrome-gray); margin-bottom:15px;"></div>
-                    <p style="color:var(--vibrant-orange); font-size:11px; text-transform:uppercase; text-align:justify; opacity:0.8; line-height:1.6;">APLIKASI CSID.PRO INI DI BUAT UNTUK MENGAKSES IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH, SESUAI TNKB YANG TERDAFTAR PADA KENDARAAN, DAN BERDASARKAN KETENTUAN UNDANG-UNDANG YANG BERLAKU ⚖️</p>
-                </div>`;
-            window.safeSwitch('pageResult');
-        };
-
-        window.handleLoginOnline = async () => {
-            const myId = window.titanState.registrationCode;
-            const dev = getDevID(); window.showL("SEDANG MEMUAT DATA..."); 
-            try {
-                await signInAnonymously(auth);
-                const agentRef = doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', myId);
-                const snap = await getDoc(agentRef);
-                if(snap.exists()){
-                    const d = snap.data();
-                    if(new Date(d.expiry).getTime() <= Date.now()) { window.hideL(); window.showM("EXP", "Masa aktif habis."); return; }
-                    if(d.status === 'blocked') { window.hideL(); window.showM("LOCK", "Akses disekat."); return; }
-                    if(d.deviceId && d.deviceId !== dev) { window.hideL(); window.showM("DEVICE LOCK", "PIN TERDAFTAR DI HP LAIN."); return; }
-                    localStorage.setItem('saved_pin_csid', myId); window.titanState.currentAgentPin = myId;
-                    if(!d.deviceId) await updateDoc(agentRef, { deviceId: dev });
-                    window.showToast("ANDA BERHASIL MASUK");
-                    if(window.titanState.securityListener) window.titanState.securityListener();
-                    window.titanState.securityListener = onSnapshot(agentRef, (s) => {
-                        if(s.exists()){ const data = s.data(); if(data.status === 'blocked' || (data.deviceId && data.deviceId !== dev)) window.forceLogout(); window.startCountdown(data.expiry); window.syncHeaderInfo(); }
-                    });
-                    setTimeout(() => { window.safeSwitch('pageSearch'); window.hideL(); }, 800);
-                } else { window.hideL(); window.showM("PENDING", "ID belum aktif. Hubungi Admin."); }
-            } catch(e) { window.hideL(); window.showToast("SERVER ERROR!"); }
-        };
-
-        // ✅ ADMIN LOGIC RESTORED (FAST SYNC)
-        window.initAdminSync = () => {
-            onSnapshot(collection(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents'), (snap) => {
-                window.titanState.cachedAgents = []; snap.forEach(s => window.titanState.cachedAgents.push({ id: s.id, ...s.data() }));
-                let act = 0, mati = 0; const now = Date.now(); 
-                window.titanState.cachedAgents.forEach(a => { if(new Date(a.expiry) > now && a.status !== 'blocked') act++; else mati++; });
-                document.getElementById('statTotal').innerText = window.titanState.cachedAgents.length; 
-                document.getElementById('statActive').innerText = act; document.getElementById('statInactive').innerText = mati; 
-                window.filterAdminContent();
-            });
-            onSnapshot(query(collection(db, 'artifacts', appIdGlobal, 'public', 'data', 'logs'), limit(50)), (snap) => { 
-                window.titanState.cachedLogs = []; snap.forEach(s => window.titanState.cachedLogs.push(s.data())); 
-                window.titanState.cachedLogs.sort((a,b) => new Date(b.time) - new Date(a.time)); 
-            });
-        };
-
-        window.filterAdminContent = () => {
-            const q = document.getElementById('adminSearchInput').value.toLowerCase(); 
-            const container = document.getElementById('adminListContainer'); const now = Date.now();
-            let html = "";
-            if(window.titanState.currentTab === 'agen') {
-                window.titanState.cachedAgents.filter(a => a.id.includes(q)).forEach(d => {
-                    const isB = d.status === 'blocked'; const exp = new Date(d.expiry).getTime(); const diff = exp - now;
-                    const sDay = diff > 0 ? Math.floor(diff/86400000)+' hari' : 'EXPIRED';
-                    html += `<div class="agent-card-v10000" style="border-color: ${isB || diff <= 0 ? 'var(--neon-red)' : 'var(--vibrant-orange)'}"><div class="agent-status-row"><span>${d.deviceId?'LOCKED ✅':'OPEN 🔓'}</span></div><div class="agent-pin-lux">ID: ${d.id}</div><div class="agent-time-lux">SISA: ${sDay}</div><div class="agent-actions-row"><button onpointerdown="window.toggleBlock('${d.id}','${d.status}')" class="btn-sekat-v10000 ${isB?'blocked':''}"> ${isB?'BUKA':'SEKAT'} </button><div onpointerdown="window.openMap(${d.lastLat}, ${d.lastLong})" class="btn-icon-sq-v10000 bg-green-600"><i data-lucide="map-pin" size="18"></i></div><div onpointerdown="window.openRenewPin('${d.id}')" class="btn-icon-sq-v10000 bg-blue-600"><i data-lucide="calendar-plus" size="18"></i></div><div onpointerdown="window.resetDevice('${d.id}')" class="btn-icon-sq-v10000 bg-orange-500"><i data-lucide="refresh-cw" size="18"></i></div><div onpointerdown="window.delAgent('${d.id}')" class="btn-icon-sq-v10000 bg-red-600"><i data-lucide="trash-2" size="18"></i></div></div></div>`;
-                });
-            } else {
-                window.titanState.cachedLogs.filter(l => l.plat.includes(q) || l.pin.includes(q)).forEach(l => {
-                    html += `<div class="p-5 border-b border-orange-500/10 text-white"><div class="text-xl font-black" style="color:var(--vibrant-orange)">${l.plat}</div><div class="text-[10px] opacity-60 uppercase">${l.pin} • ${new Date(l.time).toLocaleString()}</div></div>`;
-                });
             }
-            container.innerHTML = html; lucide.createIcons();
+            if (typeof obj !== 'object') return null;
+            const currentKeys = Object.keys(obj);
+            for (let target of targetKeys) {
+                const foundKey = currentKeys.find(k => k.toLowerCase() === target.toLowerCase());
+                if (foundKey && obj[foundKey] !== null && obj[foundKey] !== undefined && obj[foundKey] !== "") return obj[foundKey];
+            }
+            for (let key in obj) {
+                if (typeof obj[key] === 'object' && obj[key] !== null) {
+                    const result = deepFind(obj[key], targetKeys);
+                    if (result) return result;
+                }
+            }
+            return null;
         };
 
-        window.switchAdminTab = (tab) => { window.titanState.currentTab = tab; document.getElementById('tabAgen').className = tab==='agen'?'admin-tab tab-active':'admin-tab'; document.getElementById('tabLogs').className = tab==='logs'?'admin-tab tab-active':'admin-tab'; window.filterAdminContent(); };
-        window.sendBroadcast = async () => { const txt = document.getElementById('bcAdminInput').value; try { await setDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'config', 'broadcast'), { text: txt || "" }); window.showToast("TERKIRIM!"); document.getElementById('bcAdminInput').value = ""; } catch(e) { window.showToast("GAGAL!"); } };
-        window.confirmAdd = async () => { const pin = document.getElementById('newPinVal').value; const days = parseFloat(document.getElementById('expiryChoice').value); if(!pin) return; await setDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', pin), { status:'active', expiry: new Date(Date.now() + days * 86400000).toISOString(), deviceId: "", lastLat: 0, lastLong: 0, violations: 0 }); document.getElementById('modalAddPin').style.display='none'; window.showToast("PIN AKTIF!"); };
-        window.confirmRenew = async () => { const id = window.titanState.renewTargetId; const days = parseFloat(document.getElementById('renewExpiryChoice').value); const snap = await getDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id)); if(snap.exists()){ const cur = new Date(snap.data().expiry).getTime(); const base = cur < Date.now() ? Date.now() : cur; await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { expiry: new Date(base + days * 86400000).toISOString(), status: 'active' }); document.getElementById('modalRenewPin').style.display='none'; window.showToast("DONE!"); } };
+        const getVal = (category) => {
+            if (!window.titanState || !window.titanState.lastResult) return '-';
+            const aliases = MAP[category] || [category];
+            const result = deepFind(window.titanState.lastResult, aliases);
+            return result || '-';
+        };
 
-        window.adjustKB = (val) => { let cur = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--kb-height')) || 16; let newVal = Math.max(10, Math.min(40, cur + val)); document.documentElement.style.setProperty('--kb-height', newVal + 'px'); };
-        window.handleWaReg = () => { window.open(`https://api.whatsapp.com/send?phone=628136900872&text=${encodeURIComponent('Halo Admin CSID.PRO 🙏 Aktifkan ID Pendaftaran saya: [ ' + window.titanState.registrationCode + ' ]')}`, '_blank'); };
-        window.forceLogout = async () => { if(window.titanState.securityListener) window.titanState.securityListener(); localStorage.removeItem('saved_pin_csid'); window.titanState.isAdmin = false; window.titanState.currentAgentPin = null; window.safeSwitch('pageLogin'); document.getElementById('modalLogout').style.display='none'; await signOut(auth); };
-        window.delAgent = async (id) => { if(confirm("HAPUS PIN?")) await deleteDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id)); };
-        window.resetDevice = async (id) => { if(confirm("RESET HP?")) await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { deviceId: "" }); };
-        window.toggleBlock = async (id, cur) => { await updateDoc(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'agents', id), { status: cur === 'active' ? 'blocked' : 'active' }); };
-        window.openAddPin = () => { document.getElementById('modalAddPin').style.display = 'flex'; };
-        window.openRenewPin = (id) => { window.titanState.renewTargetId = id; document.getElementById('renewPinLabel').innerText = "ID: " + id; document.getElementById('modalRenewPin').style.display='flex'; };
-        window.openMap = (lat, lng) => { if(lat && lng) window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank'); else window.showToast("GPS TIADA"); };
-        window.hitMasterGate = () => { window.titanState.gateHits++; if(window.titanState.gateHits >= 5) { window.titanState.gateHits = 0; document.getElementById('adminGatewayModal').style.display = 'flex'; } };
-        window.confirmMasterAccess = async () => { if(document.getElementById('masterPinInput').value === "280189") { localStorage.setItem('saved_pin_csid', "280189"); window.titanState.isAdmin = true; document.getElementById('adminNavBtn').classList.remove('hidden'); window.safeSwitch('pageSearch'); document.getElementById('adminGatewayModal').style.display = 'none'; } else window.showToast("SALAH!"); };
-        window.handleNativePasteBackup = async (e) => { e.stopPropagation(); try { const t = await navigator.clipboard.readText(); if(t) { document.getElementById('plateDisplay').value = t.toUpperCase().replace(/[^A-Z0-9]/g, ''); window.updateHint(); window.doSearch(); } } catch(e){} };
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'csid-pro-live';
 
-        window.addEventListener('load', async () => {
-            const savedId = localStorage.getItem('csid_online_id') || Math.floor(100000 + Math.random() * 900000).toString();
-            localStorage.setItem('csid_online_id', savedId); window.titanState.registrationCode = savedId;
-            document.getElementById('myOnlineID').innerText = savedId;
-            setTimeout(() => document.getElementById('splash-screen').style.display='none', 2500);
-            const savedPin = localStorage.getItem('saved_pin_csid'); 
-            if(savedPin) { if(savedPin === "280189") { window.titanState.isAdmin = true; document.getElementById('adminNavBtn').classList.remove('hidden'); window.safeSwitch('pageSearch'); } else { window.handleLoginOnline(); } }
-            onSnapshot(doc(db, 'artifacts', appIdGlobal, 'public', 'data', 'config', 'broadcast'), (s) => { 
-                const ba = document.getElementById('broadcast-area'); if(s.exists() && s.data().text && s.data().text !== ""){ ba.style.display='block'; document.getElementById('bcContent').innerText = s.data().text; } else { if(ba) ba.style.display='none'; }
-            });
-            const kbBox = document.getElementById('kbBox'), kbRows = [["1","2","3","DEL","CLR"],["4","5","6","0"],["7","8","9"],["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["Z","X","C","V","B","N","M"]];
-            kbRows.forEach(r => {
-                const dr = document.createElement('div'); dr.className="kb-row mb-1 flex gap-1";
-                r.forEach(k => {
-                    const b = document.createElement('button'); b.className="kb-btn";
-                    if(k==="DEL" || k==="CLR") b.classList.add('kb-orange-solid');
-                    if(k==="DEL") { b.innerHTML='<i data-lucide="delete" class="mx-auto"></i>'; b.onpointerdown=()=> { document.getElementById('plateDisplay').value = document.getElementById('plateDisplay').value.slice(0,-1); window.updateHint(); }; }
-                    else if(k==="CLR") { b.innerText="CLR"; b.onpointerdown=()=> { document.getElementById('plateDisplay').value = ''; window.updateHint(); }; }
-                    else { b.innerText=k; b.onpointerdown=()=> { document.getElementById('plateDisplay').value += k; window.updateHint(); }; }
-                    dr.appendChild(b);
-                }); kbBox.appendChild(dr);
-            });
-            lucide.createIcons();
+        window.titanState = { 
+            isAdmin: false, hits: 0, allAgents: [],
+            regCode: localStorage.getItem('csid_id') || Math.floor(100000 + Math.random() * 899999).toString(), 
+            deviceId: localStorage.getItem('csid_dev_id') || crypto.randomUUID(),
+            agentData: null, lastResult: null, currentReport: "",
+            apiKey: 'KORLANTAS_250588ReALtimE'
+        };
+        localStorage.setItem('csid_id', window.titanState.regCode);
+        localStorage.setItem('csid_dev_id', window.titanState.deviceId);
+
+        async function initAuth() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else { await signInAnonymously(auth); }
+            } catch (err) { console.error("Auth init failed", err); }
+        }
+
+        window.showMsg = (text, title = "INFORMASI") => {
+            document.getElementById('msgTitle').innerText = title;
+            document.getElementById('msgText').innerText = text;
+            document.getElementById('msgModal').style.display = 'flex';
+        };
+
+        window.safeSwitch = (id) => {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.syncHeaders();
+        };
+
+        window.syncHeaders = () => {
+            const pin = window.titanState.isAdmin ? "MASTER" : window.titanState.regCode;
+            const exp = window.titanState.isAdmin ? "NOLIMIT" : (window.titanState.agentData?.expired || "--");
+            const uName = document.getElementById('uName');
+            const uExp = document.getElementById('uExp');
+            if(uName) uName.innerText = "PIN : " + pin;
+            if(uExp) uExp.innerText = "SISA: " + exp;
+        };
+
+        window.adj = (v) => {
+            let cur = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--kb-height'));
+            document.documentElement.style.setProperty('--kb-height', Math.max(10, cur + v) + 'px');
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                initAdminStats();
+                initBroadcastListener();
+                checkAutoLogin();
+            }
         });
 
-        // CAMERA AI
-        document.getElementById('camInput').onchange = async (e) => {
-            const file = e.target.files[0]; if (!file) return; window.showL("AI VISION...");
-            const reader = new FileReader(); reader.readAsDataURL(file);
-            reader.onload = async () => {
-                const b64 = reader.result.split(',')[1];
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKeyGemini}`, { 
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: "Extract vehicle identifier. Return ONLY result." }, { inlineData: { mimeType: "image/png", data: b64 } }] }] }) 
-                });
-                const r = await res.json(); const ext = r.candidates?.[0]?.content?.parts?.[0]?.text?.replace(/[^A-Z0-9]/gi, '').toUpperCase();
-                if (ext && ext.length > 3) { document.getElementById('plateDisplay').value = ext; window.updateHint(); window.doSearch(); } else window.showM("AI GAGAL", "Gagal membaca gambar.");
-                window.hideL();
-            };
+        // ✅ AUTO LOGIN LOGIC
+        const checkAutoLogin = async () => {
+            const agentRef = doc(db, 'artifacts', appId, 'public', 'data', 'agents', window.titanState.regCode);
+            const snap = await getDoc(agentRef);
+            if (snap.exists()) {
+                const data = snap.data();
+                if (data.status === 'active') {
+                    await updateDoc(agentRef, { lastActive: new Date().toLocaleString('id-ID'), deviceId: window.titanState.deviceId });
+                    window.titanState.agentData = data;
+                    window.safeSwitch('pageSearch');
+                } else {
+                    window.showMsg("PIN ANDA SUDAH TIDAK AKTIF SILAHKAN HUBUNGI ADMIN UNTUK MEMPERPANJANG MASA AKTIF", "AKSES DITOLAK");
+                }
+            }
         };
 
-        // ✅ OFFICIAL REPORT SYNC
-        window.generateCleanReport = (v) => { 
-            let fnP = ((v.plate_region || "") + (v.plate_number || "") + (v.plate_series || "")).toUpperCase().trim(); 
-            const f = (l, val) => l.padEnd(12, ' ') + " : " + (val || "-"); 
-            return `🔊 SUMBER : APLIKASI CSID.PRO\n🚻 IDENTITAS PEMILIK :\n------------------------------------------\n${f("No.PLAT", fnP)}\n${f("PEMILIK", v.owner_name)}\n${f("ALAMAT", (v.owner_address || "").replace('- //','').trim())}\n${f("NIK", v.nik)}\n${f("PEKERJAAN", v.owner_job || "-")}\n\n🚘 DATA KENDARAAN :\n------------------------------------------\n${f("MEREK", v.brand)}\n${f("TIPE", v.vehicle_type)}\n${f("TAHUN", v.manufacture_year)}\n${f("WARNA", v.color)}\n${f("SILINDER", (v.engine_capacity_cc || "0") + " cc")}\n${f("RODA", v.wheel_count || "4")}\n${f("NO. RANGKA", v.chassis_number)}\n${f("NO. MESIN", v.engine_number)}\n\n📙 DOKUMEN RESMI :\n------------------------------------------\n${f("NO. BPKB", v.bpkb_number)}\n${f("NO. STNK", v.stnk_number)}\n\n------------------------------------------\n🔊 LINK DAFTAR APLIKASI : CSID.PRO https://wa.me/628136900872\n\n✍️ NOTE :\n------------------------------------------\nAPLIKASI CSID.PRO INI DI BUAT UNTUK MENGAKSES IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH, SESUAI TNKB YANG TERDAFTAR PADA KENDARAAN, DAN BERDASARKAN KETENTUAN UNDANG-UNDANG YANG BERLAKU ⚖️`; 
+        // ✅ LOGIN MANUAL
+        window.handleLogin = async () => {
+            const agentRef = doc(db, 'artifacts', appId, 'public', 'data', 'agents', window.titanState.regCode);
+            const snap = await getDoc(agentRef);
+            if(snap.exists()){
+                const data = snap.data();
+                if(data.status === 'active') {
+                    await updateDoc(agentRef, { lastActive: new Date().toLocaleString('id-ID'), deviceId: window.titanState.deviceId });
+                    window.titanState.agentData = data;
+                    window.safeSwitch('pageSearch');
+                } else {
+                    window.showMsg("PIN ANDA SUDAH TIDAK AKTIF SILAHKAN HUBUNGI ADMIN UNTUK MEMPERPANJANG MASA AKTIF", "AKSES DITOLAK");
+                }
+            } else {
+                window.showMsg("ID PENDAFTARAN TIDAK DITEMUKAN. SILAHKAN DAFTAR TERLEBIH DAHULU.");
+            }
         };
-        window.copyReport = () => { if(window.titanState.currentReportData){ const t = window.generateCleanReport(window.titanState.currentReportData); const el = document.createElement('textarea'); el.value = t; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); window.showToast("SALIN RAPI!"); } };
-        window.shareReport = () => { if(window.titanState.currentReportData){ window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(window.generateCleanReport(window.titanState.currentReportData)), '_blank'); } };
+
+        // ✅ BROADCAST LOGIC
+        const initBroadcastListener = () => {
+            onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'broadcast'), (snap) => {
+                if(snap.exists()){
+                    document.getElementById('broadcastTickerText').innerText = snap.data().message || "SELAMAT DATANG DI APLIKASI CSID.PRO SULTAN V51000";
+                }
+            });
+        };
+
+        window.sendBroadcast = async () => {
+            const msg = document.getElementById('broadcastMsgInput').value.trim();
+            if(!msg) return window.showMsg("KETIK PESAN DULU!");
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'broadcast'), { message: msg, updatedAt: new Date().toISOString() });
+                window.showMsg("BROADCAST TERKIRIM!");
+                document.getElementById('broadcastMsgInput').value = "";
+            } catch(e) { window.showMsg("GAGAL KIRIM BROADCAST"); }
+        };
+
+        // ✅ ADMIN LOGIC
+        const initAdminStats = () => {
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'agents'), (snap) => {
+                const agents = [];
+                let total = 0, active = 0, online = 0;
+                snap.forEach(d => {
+                    const data = d.data();
+                    agents.push({id: d.id, ...data});
+                    total++;
+                    if(data.status === 'active') active++;
+                    if(data.deviceId) online++;
+                });
+                window.titanState.allAgents = agents;
+                const sT = document.getElementById('statTotal'), sA = document.getElementById('statActive'), sO = document.getElementById('statOnline');
+                if(sT) sT.innerText = total; if(sA) sA.innerText = active; if(sO) sO.innerText = online;
+                window.renderAgentList(agents);
+            });
+        };
+
+        window.renderAgentList = (agents) => {
+            const container = document.getElementById('agentListContainer');
+            if(!container) return;
+            container.innerHTML = agents.map(a => `
+                <div class="agent-card-lux">
+                    <div class="agent-header-status">
+                        <div class="badge-locked">LOCKED <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#22c55e;fill:none;display:inline;stroke-width:4;"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        ${a.deviceId ? `<div class="badge-online">📱 ONLINE</div>` : ''}
+                    </div>
+                    <span class="agent-id-lux">ID: ${a.id}</span>
+                    <span class="agent-sisa-lux">SISA: ${a.expired || 'HABIS'}</span>
+                    <span class="agent-last-active ${!a.lastActive ? 'never' : ''}">LOG: ${a.lastActive || 'BELUM PERNAH MASUK'}</span>
+                    <div class="agent-actions-lux">
+                        <button class="btn-act-sultan btn-sekat-lux ${a.status === 'dead' ? 'blocked' : ''}" onclick="window.toggleAgent('${a.id}','${a.status}')">
+                            ${a.status === 'dead' ? 'DIBLOKIR' : 'SEKAT'}
+                        </button>
+                        <button class="btn-act-sultan btn-blue-lux" onclick="window.showMsg('SILAHKAN EDIT DATA DI DATABASE')">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M12 14v6M9 17h6"/></svg>
+                        </button>
+                        <button class="btn-act-sultan btn-orange-lux" onclick="window.resetDevice('${a.id}')">
+                            <svg viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                        </button>
+                        <button class="btn-act-sultan btn-red-lux" onclick="window.deleteAgent('${a.id}')">
+                            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                        </button>
+                    </div>
+                </div>`).join('');
+        };
+
+        window.toggleAgent = async (id, s) => { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', id), {status: s === 'active' ? 'dead' : 'active'}); };
+        window.resetDevice = async (id) => { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', id), {deviceId: null}); window.showMsg("RESET HP SUKSES!"); };
+        window.deleteAgent = async (id) => { if(confirm('HAPUS PERMANEN?')) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', id)); };
+
+        // ✅ MASTER GATEWAY
+        window.hitMaster = () => { if(++window.titanState.hits >= 5) { window.titanState.hits = 0; document.getElementById('adminGatewayModal').style.display = 'flex'; } };
+        window.confirmMaster = () => {
+            if(document.getElementById('masterPinInput').value === "280189") {
+                window.titanState.isAdmin = true;
+                window.safeSwitch('pageSearch');
+                document.getElementById('adminGatewayModal').style.display = 'none';
+            } else window.showMsg("PIN SALAH!");
+        };
+
+        window.showAdminIfMaster = () => { if(window.titanState.isAdmin) window.safeSwitch('pageAdmin'); else window.showMsg("KHUSUS MASTER!"); };
+        window.doLogout = () => { window.titanState.isAdmin = false; window.safeSwitch('pageLogin'); };
+        window.handleWaReg = () => window.open(`https://wa.me/628136900872?text=HALO ADMIN, AKTIFKAN ID CSID.PRO SAYA : ${window.titanState.regCode}`);
+
+        // ✅ LOGIKA AUTO-SHRINK FONT
+        window.updateDisplaySize = () => {
+            const dp = document.getElementById('plateDisplay');
+            if(!dp) return;
+            const len = dp.value.length;
+            if (len > 25) dp.style.fontSize = "0.9rem";
+            else if (len > 20) dp.style.fontSize = "1.2rem";
+            else if (len > 15) dp.style.fontSize = "1.5rem";
+            else if (len > 10) dp.style.fontSize = "1.8rem";
+            else dp.style.fontSize = "2.2rem";
+        };
+
+        // ✅ SEARCH
+        window.doSearch = async () => {
+            const val = document.getElementById('plateDisplay').value.trim();
+            if(!val) return;
+            try {
+                const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent('http://202.155.143.156/tnkb_api_key.php?q='+val.replace(/\s/g,'')+'&apikey='+window.titanState.apiKey)}`);
+                const json = await res.json();
+                if(json && typeof json === 'object') {
+                    window.titanState.lastResult = json;
+                    window.renderResult();
+                    window.safeSwitch('pageResult');
+                } else window.showMsg("DATA TIDAK DITEMUKAN.");
+            } catch(e) { window.showMsg("SERVER SIBUK."); }
+        };
+
+        window.renderResult = () => {
+            const area = document.getElementById('resultArea');
+            if(!area) return;
+            const report = `🔊 SUMBER : APLIKASI CSID.PRO\n\n🚻 IDENTITAS PEMILIK :\n------------------------------------------\nNAMA : ${getVal('nama').toUpperCase()}\nNIK : ${getVal('nik')}\nMSSDN : ${getVal('msisdn')}\nEMAIL : ${getVal('email')}\nPEKERJAAN : ${getVal('pekerjaan')}\nALAMAT : ${getVal('alamat').toUpperCase()}\n\n🚘 DATA KENDARAAN :\n------------------------------------------\nNOPOL : ${getVal('nopol').toUpperCase()}\nMEREK : ${getVal('merek').toUpperCase()}\nTYPE : ${getVal('tipe').toUpperCase()}\nTAHUN : ${getVal('tahun')}\nWARNA : ${getVal('warna').toUpperCase()}\nCYLINDER : ${getVal('silinder')}\nJENIS BBM : ${getVal('bbm').toUpperCase()}\n\n📙 DOKUMEN RESMI :\n------------------------------------------\nNOKA : ${getVal('noka').toUpperCase()}\nNOSIN : ${getVal('nosin').toUpperCase()}\nNO. BPKB : ${getVal('bpkb')}\nNO. STNK : ${getVal('stnk')}\nTGL DAFTAR : ${getVal('tgl_daftar')}\n------------------------------------------\n🔊 LINK DAFTAR APLIKASI : CSID.PRO https://wa.me/628136900872\n\n✍️ NOTE :\n------------------------------------------\nAPLIKASI CSID.PRO INI DI BUAT UNTUK MENGAKSES IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH, SESUAI TNKB YANG TERDAFTAR PADA KENDARAAN, DAN BERDASARKAN KETENTUAN UNDANG-UNDANG YANG BERLAKU ⚖️.`;
+            area.innerHTML = `<div class="report-box">${report}</div>`;
+            window.titanState.currentReport = report;
+        };
+
+        window.copyReport = () => {
+            const el = document.createElement('textarea'); el.value = window.titanState.currentReport; document.body.appendChild(el); el.select();
+            document.execCommand('copy'); document.body.removeChild(el); window.showMsg("LAPORAN DISALIN!");
+        };
+        window.shareReport = () => window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(window.titanState.currentReport)}`);
+
+        // ✅ KEYBOARD BUILDER DENGAN TRIGGER AUTO-SHRINK
+        window.buildKB = () => {
+            const layout = [["1","2","3","DEL","CLR"],["4","5","6","0"],["7","8","9"],["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["Z","X","C","V","B","N","M"]];
+            const box = document.getElementById('keyboard'); if(!box) return; box.innerHTML = '';
+            layout.forEach(row => {
+                const d = document.createElement('div'); d.className = "kb-row";
+                row.forEach(k => {
+                    const b = document.createElement('button');
+                    b.className = (k === "DEL" || k === "CLR") ? "kb-btn kb-orange-solid" : "kb-btn";
+                    if(k === "DEL") b.innerHTML = '<svg stroke="#000" viewBox="0 0 24 24" style="width:24px; height:24px; fill:none; stroke-width:3;"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM18 9l-6 6M12 9l6 6"/></svg>';
+                    else b.innerText = k;
+                    b.onclick = () => { 
+                        const dp = document.getElementById('plateDisplay'); 
+                        if(k === "DEL") dp.value = dp.value.slice(0,-1); 
+                        else if(k === "CLR") dp.value = ""; 
+                        else dp.value += k; 
+                        window.updateDisplaySize(); // Trigger ukuran font
+                    };
+                    d.appendChild(b);
+                }); box.appendChild(d);
+            });
+        };
+
+        window.filterAgents = () => {
+            const queryText = document.getElementById('adminSearchInput').value.trim();
+            window.renderAgentList(window.titanState.allAgents.filter(a => a.id.includes(queryText)));
+        };
+
+        window.openAddAgentModal = () => document.getElementById('addAgentModal').style.display='flex';
+        window.processAddAgent = async () => {
+            const p = document.getElementById('newAgentPin').value;
+            const d = document.getElementById('newAgentDuration').value;
+            if(p.length < 6) return window.showMsg("PIN 6 DIGIT!");
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', p), { status:'active', expired: d + ' HARI', createdAt: new Date().toISOString() });
+            document.getElementById('addAgentModal').style.display='none';
+        };
+
+        window.addEventListener('load', () => {
+            const myID = document.getElementById('myOnlineID');
+            if(myID) myID.innerText = window.titanState.regCode;
+            initAuth();
+            window.buildKB();
+            
+            // Tambahkan listener untuk input manual (jika ada keyboard fisik)
+            const dp = document.getElementById('plateDisplay');
+            if(dp) dp.addEventListener('input', window.updateDisplaySize);
+
+            setTimeout(() => { document.getElementById('splash-screen').style.display = 'none'; }, 2000);
+        });
     </script>
 </body>
 </html>
