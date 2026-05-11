@@ -40,14 +40,14 @@
         .page { position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; z-index: 100; background-color: #000; overflow: hidden; }
         .page.active { display: flex !important; }
 
-        /* SPLASH SCREEN */
+        /* SPLASH SCREEN PREMIUM */
         #splash-screen { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .splash-logo { font-size: 56px; color: var(--vibrant-orange); letter-spacing: 8px; text-shadow: 0 0 30px var(--vibrant-orange); font-weight: 900; animation: pulse 1.5s infinite ease-in-out; }
         @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.95); } }
 
         /* LOADING OVERLAY */
         #loading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 99998; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .loader-ring { width: 80px; height: 80px; border: 8px solid #333; border-top: 8px solid var(--vibrant-orange); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        .loader-ring { width: 60px; height: 60px; border: 6px solid #333; border-top: 6px solid var(--vibrant-orange); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* PAGE 1: LOGIN */
@@ -60,7 +60,6 @@
         .id-label-lux { color: #888; font-size: 10px; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 2px; font-weight: 900; }
         .id-value-lux { color: var(--vibrant-orange); font-size: 46px; letter-spacing: 8px; font-weight: 900; text-shadow: 0 0 10px var(--vibrant-orange); }
         .btn-login-online-lux { background: linear-gradient(180deg, var(--vibrant-orange) 0%, #cc7a00 100%); color: #000; width: 100%; padding: 25px; border-radius: 22px; font-size: 22px; font-weight: 900; text-transform: uppercase; border: 4px solid #000; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 18px; box-shadow: 0 8px 0 #000; transition: all 0.1s; }
-        .btn-login-online-lux:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
         .btn-wa-reg { background-color: #25D366; color: #fff; width: 100%; max-width: 380px; padding: 22px; border-radius: 22px; font-size: 15px; font-weight: 900; text-transform: uppercase; border: 3px solid #000; margin-top: 35px; display: flex; align-items: center; justify-content: center; gap: 15px; cursor: pointer; box-shadow: 0 6px 0 #000; }
 
         /* PAGE 2: SEARCH */
@@ -91,7 +90,6 @@
 
         .action-row-sultan { display: flex; gap: 8px; padding: 0 10px; margin-bottom: 20px; justify-content: center; width: 100%; }
         .btn-sq-lux { flex: 1; height: 62px; border-radius: 15px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2.5px solid #000; box-shadow: 0 5px 0 #000; transition: all 0.1s; }
-        .btn-sq-lux:active { transform: translateY(4px); box-shadow: 0 0px 0 #000; }
         .btn-sq-lux svg { width: 30px; height: 30px; stroke-width: 2.5; fill: none; }
         
         .c-stabilo { background-color: var(--kuning-stabilo); }
@@ -122,6 +120,7 @@
         .agent-header-status { position: absolute; top: 15px; right: 20px; font-size: 10px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; gap: 4px; color: #fff; }
         .agent-id-lux { font-size: 48px; color: var(--vibrant-orange); font-weight: 900; display: block; margin-top: 10px; letter-spacing: 2px; }
         .agent-sisa-lux { font-size: 18px; color: var(--vibrant-orange); font-weight: 900; text-transform: uppercase; display: block; margin-bottom: 10px; }
+        .agent-last-active { font-size: 10px; color: #888; text-transform: uppercase; margin-bottom: 20px; display: block; }
         
         .agent-actions-lux { display: flex; gap: 8px; align-items: center; }
         .btn-act-sultan { 
@@ -135,6 +134,7 @@
         .btn-blue-lux { background: #2563eb; }
         .btn-orange-lux { background: #ea580c; }
         .btn-red-lux { background: #ef4444; }
+        .btn-green-lux { background: #22c55e; }
 
         /* MODALS */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; display: none; align-items: center; justify-content: center; padding: 25px; }
@@ -146,11 +146,9 @@
 
     <div id="splash-screen"><div class="splash-logo">CSID.PRO</div></div>
     
-    <!-- ✅ LOADING INDICATOR UNTUK MENGURANGI RASA DELAY -->
     <div id="loading-overlay">
         <div class="loader-ring"></div>
-        <p class="text-orange-500 font-black tracking-widest animate-pulse">SEDANG MENCARI DATA...</p>
-        <p class="text-[10px] text-gray-500 mt-2">MENGHUBUNGKAN KE SERVER SAMSAT</p>
+        <p class="text-orange-500 font-black tracking-widest animate-pulse">SEDANG MEMUAT DATA...</p>
     </div>
 
     <div class="app-container">
@@ -217,15 +215,15 @@
                 </div>
                 <div id="resultArea" class="scroll-area-report"></div>
                 <div class="footer-lux-result">
-                    <button class="btn-sultan-big bg-zinc-800 text-orange-500 mb-2 font-black uppercase" onclick="window.copyReport()">SALIN LAPORAN</button>
-                    <button class="btn-sultan-big bg-[#25D366] text-white font-black uppercase" onclick="window.shareReport()">KIRIM KE WHATSAPP</button>
+                    <button class="btn-sultan-big bg-zinc-800 text-orange-500 mb-2" onclick="window.copyReport()">SALIN LAPORAN</button>
+                    <button class="btn-sultan-big bg-[#25D366] text-white" onclick="window.shareReport()">KIRIM KE WHATSAPP</button>
                 </div>
             </div>
 
             <!-- PAGE 4: ADMIN PANEL -->
             <div id="pageAdmin" class="page">
                 <div class="admin-header-lux">
-                    <h2 class="text-white text-[16px] uppercase font-black tracking-tighter">ADMIN PANEL</h2>
+                    <h2 class="text-white text-[16px] uppercase font-black">ADMIN PANEL</h2>
                     <button onclick="window.safeSwitch('pageSearch')">
                         <svg viewBox="0 0 24 24" style="width:30px; height:30px; stroke:var(--vibrant-orange); stroke-width:4; fill:none;"><path d="M18 6L6 18M6 6l12 12"/></svg>
                     </button>
@@ -278,7 +276,7 @@
                 </div>
             </div>
 
-            <div id="msgModal" class="modal-overlay"><div class="modal-card"><h3 class="mb-4 text-orange-500 uppercase font-black" id="msgTitle">INFO</h3><p id="msgText" class="mb-8 text-white text-sm uppercase leading-relaxed text-center px-4"></p><button onclick="document.getElementById('msgModal').style.display='none'" class="w-full bg-white text-black py-4 rounded-xl font-black">OKE</button></div></div>
+            <div id="msgModal" class="modal-overlay"><div class="modal-card"><h3 class="mb-4 text-orange-500 uppercase font-black" id="msgTitle">INFO</h3><p id="msgText" class="mb-8 text-white text-sm text-center px-4"></p><button onclick="document.getElementById('msgModal').style.display='none'" class="w-full bg-white text-black py-4 rounded-xl font-black">OKE</button></div></div>
 
         </div>
     </div>
@@ -288,6 +286,7 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
+        // ✅ DATA MAPPING FIELD SAMSAT
         const MAP = {
             nama: ['NamaPemilik', 'nama_pemilik', 'nm_pmlk', 'nama'],
             nik: ['NoKTP', 'nik', 'no_identitas'],
@@ -350,9 +349,14 @@
         };
 
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : firebaseConfigFallback;
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        
+        let app, auth, db;
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+        } catch(e) { console.error("Firebase fail", e); }
+
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'csid-pro-live';
 
         window.titanState = { 
@@ -365,12 +369,17 @@
         localStorage.setItem('csid_id', window.titanState.regCode);
         localStorage.setItem('csid_dev_id', window.titanState.deviceId);
 
+        const hideSplash = () => {
+            const s = document.getElementById('splash-screen');
+            if(s) s.style.display = 'none';
+        };
+
         async function initAuth() {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else { await signInAnonymously(auth); }
-            } catch (err) { console.error("Auth failed", err); }
+            } catch (err) { console.error("Auth fail", err); hideSplash(); }
         }
 
         window.showMsg = (text, title = "INFO") => {
@@ -388,10 +397,8 @@
         window.syncHeaders = () => {
             const pin = window.titanState.isAdmin ? "MASTER" : window.titanState.regCode;
             const exp = window.titanState.isAdmin ? "NOLIMIT" : (window.titanState.agentData?.expired || "--");
-            const uName = document.getElementById('uName');
-            const uExp = document.getElementById('uExp');
-            if(uName) uName.innerText = "PIN : " + pin;
-            if(uExp) uExp.innerText = "SISA: " + exp;
+            document.getElementById('uName').innerText = "PIN : " + pin;
+            document.getElementById('uExp').innerText = "SISA: " + exp;
         };
 
         window.adj = (v) => {
@@ -408,35 +415,27 @@
         });
 
         const checkAutoLogin = async () => {
-            const agentRef = doc(db, 'artifacts', appId, 'public', 'data', 'agents', window.titanState.regCode);
-            const snap = await getDoc(agentRef);
-            if (snap.exists()) {
-                const data = snap.data();
-                if (data.status === 'active') {
-                    await updateDoc(agentRef, { lastActive: new Date().toLocaleString('id-ID'), deviceId: window.titanState.deviceId });
-                    window.titanState.agentData = data;
-                    window.safeSwitch('pageSearch');
-                } else {
-                    window.showMsg("PIN ANDA SUDAH TIDAK AKTIF SILAHKAN HUBUNGI ADMIN UNTUK MEMPERPANJANG MASA AKTIF", "AKSES DITOLAK");
+            try {
+                const agentRef = doc(db, 'artifacts', appId, 'public', 'data', 'agents', window.titanState.regCode);
+                const snap = await getDoc(agentRef);
+                if (snap.exists()) {
+                    const data = snap.data();
+                    if (data.status === 'active') {
+                        await updateDoc(agentRef, { lastActive: new Date().toLocaleString('id-ID'), deviceId: window.titanState.deviceId });
+                        window.titanState.agentData = data;
+                        window.safeSwitch('pageSearch');
+                    }
                 }
-            }
+            } catch(e) {} finally { hideSplash(); }
         };
 
         window.handleLogin = async () => {
             const agentRef = doc(db, 'artifacts', appId, 'public', 'data', 'agents', window.titanState.regCode);
             const snap = await getDoc(agentRef);
-            if(snap.exists()){
-                const data = snap.data();
-                if(data.status === 'active') {
-                    await updateDoc(agentRef, { lastActive: new Date().toLocaleString('id-ID'), deviceId: window.titanState.deviceId });
-                    window.titanState.agentData = data;
-                    window.safeSwitch('pageSearch');
-                } else {
-                    window.showMsg("PIN ANDA SUDAH TIDAK AKTIF SILAHKAN HUBUNGI ADMIN UNTUK MEMPERPANJANG MASA AKTIF", "AKSES DITOLAK");
-                }
-            } else {
-                window.showMsg("ID TIDAK DITEMUKAN. DAFTAR VIA WA.");
-            }
+            if(snap.exists() && snap.data().status === 'active') {
+                window.titanState.agentData = snap.data();
+                window.safeSwitch('pageSearch');
+            } else window.showMsg("PIN BELUM AKTIF. DAFTAR VIA WA.");
         };
 
         const initBroadcastListener = () => {
@@ -447,12 +446,7 @@
 
         window.sendBroadcast = async () => {
             const msg = document.getElementById('broadcastMsgInput').value.trim();
-            if(!msg) return window.showMsg("KETIK PESAN DULU!");
-            try {
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'broadcast'), { message: msg, updatedAt: new Date().toISOString() });
-                window.showMsg("BROADCAST TERKIRIM!");
-                document.getElementById('broadcastMsgInput').value = "";
-            } catch(e) { window.showMsg("GAGAL KIRIM BROADCAST"); }
+            if(msg) await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'broadcast'), { message: msg });
         };
 
         const initAdminStats = () => {
@@ -467,8 +461,8 @@
                     if(data.deviceId) online++;
                 });
                 window.titanState.allAgents = agents;
-                const sT = document.getElementById('statTotal'), sA = document.getElementById('statActive'), sO = document.getElementById('statOnline');
-                if(sT) sT.innerText = total; if(sA) sA.innerText = active; if(sO) sO.innerText = online;
+                const st = document.getElementById('statTotal'), sa = document.getElementById('statActive'), so = document.getElementById('statOnline');
+                if(st) st.innerText = total; if(sa) sa.innerText = active; if(so) so.innerText = online;
                 window.renderAgentList(agents);
             });
         };
@@ -486,9 +480,10 @@
                         <button class="btn-act-sultan btn-sekat-lux ${a.status === 'dead' ? 'blocked' : ''}" onclick="window.toggleAgent('${a.id}','${a.status}')">
                             ${a.status === 'dead' ? 'MATI' : 'SEKAT'}
                         </button>
-                        <button class="btn-act-sultan btn-blue-lux" onclick="window.showMsg('Fitur Edit Aktif Di Database')"><svg stroke="#000" viewBox="0 0 24 24"><path d="M19 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M12 11v4M10 13h4"/></svg></button>
-                        <button class="btn-act-sultan btn-orange-lux" onclick="window.resetDevice('${a.id}')"><svg stroke="#000" viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>
-                        <button class="btn-act-sultan btn-red-lux" onclick="window.deleteAgent('${a.id}')"><svg stroke="#000" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>
+                        <button class="btn-act-sultan btn-green-lux"><svg stroke="#000" viewBox="0 0 24 24" style="width:28px; height:28px; fill:none; stroke-width:2.5;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></button>
+                        <button class="btn-act-sultan btn-blue-lux"><svg stroke="#000" viewBox="0 0 24 24" style="width:28px; height:28px; fill:none; stroke-width:2.5;"><path d="M19 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V6"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M12 11v4M10 13h4"/></svg></button>
+                        <button class="btn-act-sultan btn-orange-lux" onclick="window.resetDevice('${a.id}')"><svg stroke="#000" viewBox="0 0 24 24" style="width:28px; height:28px; fill:none; stroke-width:2.5;"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>
+                        <button class="btn-act-sultan btn-red-lux" onclick="window.deleteAgent('${a.id}')"><svg stroke="#000" viewBox="0 0 24 24" style="width:28px; height:28px; fill:none; stroke-width:2.5;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>
                     </div>
                 </div>`).join('');
         };
@@ -519,7 +514,6 @@
             if(!dp) return;
             const len = dp.value.length;
             if (len > 25) dp.style.fontSize = "0.9rem";
-            else if (len > 20) dp.style.fontSize = "1.2rem";
             else if (len > 15) dp.style.fontSize = "1.5rem";
             else dp.style.fontSize = "2.2rem";
         };
@@ -527,26 +521,17 @@
         window.doSearch = async () => {
             const val = document.getElementById('plateDisplay').value.trim();
             if(!val) return;
-            
-            // ✅ Tampilkan Loading
             document.getElementById('loading-overlay').style.display = 'flex';
-            
             try {
                 const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent('http://202.155.143.156/tnkb_api_key.php?q='+val.replace(/\s/g,'')+'&apikey='+window.titanState.apiKey)}`);
                 const json = await res.json();
-                
-                // ✅ Sembunyikan Loading
                 document.getElementById('loading-overlay').style.display = 'none';
-                
-                if(json && typeof json === 'object' && Object.keys(json).length > 0) {
+                if(json && Object.keys(json).length > 0) {
                     window.titanState.lastResult = json;
                     window.renderResult();
                     window.safeSwitch('pageResult');
-                } else window.showMsg("DATA TIDAK DITEMUKAN ATAU PLAT NOMOR SALAH.");
-            } catch(e) { 
-                document.getElementById('loading-overlay').style.display = 'none';
-                window.showMsg("SERVER SIBUK ATAU KONEKSI TERPUTUS. SILAHKAN COBA LAGI."); 
-            }
+                } else window.showMsg("DATA TIDAK DITEMUKAN.");
+            } catch(e) { document.getElementById('loading-overlay').style.display = 'none'; }
         };
 
         window.renderResult = () => {
@@ -584,7 +569,7 @@
 
         window.copyReport = () => {
             const el = document.createElement('textarea'); el.value = window.titanState.currentReport; document.body.appendChild(el); el.select();
-            document.execCommand('copy'); document.body.removeChild(el); window.showMsg("LAPORAN BERHASIL DISALIN!");
+            document.execCommand('copy'); document.body.removeChild(el); window.showMsg("SALIN SUKSES!");
         };
         window.shareReport = () => window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(window.titanState.currentReport)}`);
 
@@ -610,29 +595,26 @@
         };
 
         window.filterAgents = () => {
-            const qText = document.getElementById('adminSearchInput').value.trim();
-            window.renderAgentList(window.titanState.allAgents.filter(a => a.id.includes(qText)));
+            const q = document.getElementById('adminSearchInput').value.trim();
+            window.renderAgentList(window.titanState.allAgents.filter(a => a.id.includes(q)));
         };
 
         window.openAddAgentModal = () => document.getElementById('addAgentModal').style.display='flex';
         window.processAddAgent = async () => {
             const p = document.getElementById('newAgentPin').value;
             const d = document.getElementById('newAgentDuration').value;
-            if(p.length < 6) return window.showMsg("PIN MIN 6 DIGIT");
-            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', p), { status:'active', expired: d, createdAt: new Date().toISOString() });
-            document.getElementById('addAgentModal').style.display='none';
-            window.showMsg("PIN " + p + " BERHASIL DIAKTIFKAN SELAMA " + d);
+            if(p.length >= 6) {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', p), { status:'active', expired: d, createdAt: new Date().toISOString() });
+                document.getElementById('addAgentModal').style.display='none';
+            }
         };
 
         window.addEventListener('load', () => {
-            const myID = document.getElementById('myOnlineID');
-            if(myID) myID.innerText = window.titanState.regCode;
+            document.getElementById('myOnlineID').innerText = window.titanState.regCode;
             initAuth();
             window.buildKB();
-            setTimeout(() => { 
-                const splash = document.getElementById('splash-screen');
-                if(splash) splash.style.display = 'none'; 
-            }, 2500);
+            document.getElementById('plateDisplay').addEventListener('input', window.updateDisplaySize);
+            setTimeout(hideSplash, 3000);
         });
     </script>
 </body>
