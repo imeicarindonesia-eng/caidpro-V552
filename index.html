@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
-        /* ✅ GLOBAL STYLING - SULTAN V51000 */
+        /* ✅ GLOBAL STYLING - SULTAN V51000 PRO HYPER-DRIVE */
         * { 
             box-sizing: border-box; 
             margin: 0; padding: 0; 
@@ -24,7 +24,6 @@
             --neon-red: #ff3131;
             --kuning-stabilo: #ccff00;
             --kb-height: 22px; 
-            --panel-bg: #1e293b;
         }
 
         html, body { width: 100%; height: 100%; overflow: hidden; background-color: #000; color: #fff; }
@@ -40,17 +39,14 @@
         .page { position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; z-index: 100; background-color: #000; overflow: hidden; }
         .page.active { display: flex !important; }
 
-        /* SPLASH SCREEN PREMIUM */
         #splash-screen { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .splash-logo { font-size: 56px; color: var(--vibrant-orange); letter-spacing: 8px; text-shadow: 0 0 30px var(--vibrant-orange); font-weight: 900; animation: pulse 1.5s infinite ease-in-out; }
+        .splash-logo { font-size: 56px; color: var(--vibrant-orange); letter-spacing: 8px; text-shadow: 0 0 30px var(--vibrant-orange); font-weight: 900; animation: pulse 1s infinite ease-in-out; }
         @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.95); } }
 
-        /* LOADING OVERLAY */
         #loading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 99998; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .loader-ring { width: 60px; height: 60px; border: 6px solid #333; border-top: 6px solid var(--vibrant-orange); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        .loader-ring { width: 60px; height: 60px; border: 6px solid #fff; border-top: 6px solid var(--vibrant-orange); border-radius: 50%; animation: spin 0.5s linear infinite; margin-bottom: 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* PAGE 1: LOGIN */
         .login-scroll-system { flex: 1; overflow-y: auto; width: 100%; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; justify-content: center; }
         .welcome-title { text-align: center; color: #fff; font-size: 14px; line-height: 1.6; text-transform: uppercase; margin-bottom: 40px; letter-spacing: 2px; opacity: 0.8; }
         .welcome-title span { color: var(--vibrant-orange); display: block; font-size: 18px; margin-top: 5px; }
@@ -62,7 +58,6 @@
         .btn-login-online-lux { background: linear-gradient(180deg, var(--vibrant-orange) 0%, #cc7a00 100%); color: #000; width: 100%; padding: 25px; border-radius: 22px; font-size: 22px; font-weight: 900; text-transform: uppercase; border: 4px solid #000; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 18px; box-shadow: 0 8px 0 #000; transition: all 0.1s; }
         .btn-wa-reg { background-color: #25D366; color: #fff; width: 100%; max-width: 380px; padding: 22px; border-radius: 22px; font-size: 15px; font-weight: 900; text-transform: uppercase; border: 3px solid #000; margin-top: 35px; display: flex; align-items: center; justify-content: center; gap: 15px; cursor: pointer; box-shadow: 0 6px 0 #000; }
 
-        /* PAGE 2: SEARCH */
         .lux-header { background: #000; padding: 12px 18px; border-bottom: 2px solid #222; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; min-height: 70px; }
         .banner-info-box { text-align: right; line-height: 1.2; }
         .banner-pin-label { font-size: 11px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
@@ -75,17 +70,7 @@
 
         .search-outer { background: #000; border: 3px solid #334155; border-radius: 20px; margin: 15px; padding: 10px 15px; min-height: 90px; display: flex; align-items: center; position: relative; gap: 10px; overflow: hidden; }
         #plateDisplay { 
-            flex: 1; 
-            background: transparent; 
-            border: none; 
-            color: #fff; 
-            font-size: 2.2rem; 
-            text-align: center; 
-            letter-spacing: 2px; 
-            text-transform: uppercase; 
-            width: 100%; 
-            transition: font-size 0.2s ease-in-out; 
-            white-space: nowrap;
+            flex: 1; background: transparent; border: none; color: #fff; font-size: 2.2rem; text-align: center; letter-spacing: 2px; text-transform: uppercase; width: 100%; transition: font-size 0.2s ease-in-out; white-space: nowrap;
         }
 
         .action-row-sultan { display: flex; gap: 8px; padding: 0 10px; margin-bottom: 20px; justify-content: center; width: 100%; }
@@ -96,47 +81,41 @@
         .c-red { background-color: var(--neon-red); }
         .c-orange { background-color: var(--vibrant-orange); }
 
+        #adminBtn { display: none; }
+
         .kb-container { background: #000; padding: 10px 8px 40px 8px; border-top: 2px solid #111; flex-shrink: 0; }
         .kb-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 6px; }
         .kb-btn { background: #334155; border-radius: 8px; padding: var(--kb-height) 0; flex: 1; color: #fff; font-size: 18px; box-shadow: 0 4px 0 #000; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
         .kb-btn:active { transform: translateY(2px); box-shadow: none; background: #fff; color: #000; }
         .kb-orange-solid { background-color: var(--vibrant-orange) !important; color: #000 !important; }
 
-        /* PAGE 3: RESULT */
         .scroll-area-report { flex: 1; overflow-y: auto; background: #000; padding: 10px 15px; }
-        .report-box { background: #000; font-family: monospace !important; font-size: 13px; line-height: 1.6; color: #fff; white-space: pre-wrap; padding: 10px; border: 1px dashed #333; }
+        .report-box { background: #000; font-family: 'Courier New', Courier, monospace !important; font-size: 13px; line-height: 1.5; color: #fff; white-space: pre-wrap; padding: 15px; border: 1px dashed #444; }
         .footer-lux-result { background: #000; border-top: 2px solid #222; padding: 15px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
         .btn-sultan-big { width: 100%; height: 75px; border-radius: 20px; font-size: 16px; text-transform: uppercase; display: flex; align-items: center; justify-content: center; font-weight: 900; border: none; cursor: pointer; }
 
-        /* PAGE 4: ADMIN PANEL */
         .admin-header-lux { background: #000; padding: 15px 20px; border-bottom: 2px solid #333; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; min-height: 80px; }
-        .admin-scroll { flex: 1; overflow-y: auto; padding: 15px; background: #2d343f; padding-bottom: 120px; }
+        .admin-scroll { flex: 1; overflow-y: auto; padding: 15px; background: #0a0f18; padding-bottom: 120px; }
         
         .broadcast-editor-box { background: #111; border: 2.5px solid #444; border-radius: 25px; padding: 20px; margin-bottom: 25px; }
         .broadcast-input { width: 100%; background: #000; border: 2px solid #555; border-radius: 15px; padding: 15px; color: #fff; font-size: 14px; margin-bottom: 15px; resize: none; min-height: 80px; }
         .btn-broadcast-sultan { background: var(--vibrant-orange); color: #000; padding: 15px; border-radius: 15px; width: 100%; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; }
 
-        .agent-card-lux { background: #222; border-radius: 35px; padding: 25px; margin-bottom: 20px; border: 3px solid var(--vibrant-orange); position: relative; }
-        .agent-header-status { position: absolute; top: 15px; right: 20px; font-size: 10px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; gap: 4px; color: #fff; }
-        .agent-id-lux { font-size: 48px; color: var(--vibrant-orange); font-weight: 900; display: block; margin-top: 10px; letter-spacing: 2px; }
-        .agent-sisa-lux { font-size: 18px; color: var(--vibrant-orange); font-weight: 900; text-transform: uppercase; display: block; margin-bottom: 10px; }
-        .agent-last-active { font-size: 10px; color: #888; text-transform: uppercase; margin-bottom: 20px; display: block; }
+        .agent-card-lux { background: #1a1a1a; border-radius: 25px; padding: 20px; margin-bottom: 15px; border: 1.5px solid #333; }
+        .agent-id-lux { font-size: 22px; color: var(--vibrant-orange); font-weight: 900; display: block; margin-bottom: 5px; }
+        .agent-sisa-lux { font-size: 11px; color: #888; text-transform: uppercase; display: block; margin-bottom: 12px; }
         
-        .agent-actions-lux { display: flex; gap: 8px; align-items: center; }
-        .btn-act-sultan { 
-            height: 60px; border-radius: 18px; border: 3px solid #000; cursor: pointer; color: #000; 
-            display: flex; align-items: center; justify-content: center; font-weight: 900;
-            box-shadow: 0 4px 0 #000; flex: 1;
+        .agent-actions-lux { display: flex; gap: 8px; }
+        .btn-act-pro { 
+            flex: 1; padding: 12px 0; border-radius: 12px; font-size: 10px; font-weight: 900; 
+            text-transform: uppercase; text-align: center; cursor: pointer; border: none; 
+            color: #000; transition: 0.1s;
         }
-        .btn-act-sultan svg { width: 28px; height: 28px; stroke: #000; fill: none; stroke-width: 2.5; }
-        .btn-sekat-lux { background: var(--vibrant-orange); flex: 2.5; font-size: 16px; text-transform: uppercase; }
-        .btn-sekat-lux.blocked { background: var(--neon-red) !important; color: #fff !important; }
-        .btn-blue-lux { background: #2563eb; }
-        .btn-orange-lux { background: #ea580c; }
-        .btn-red-lux { background: #ef4444; }
-        .btn-green-lux { background: #22c55e; }
+        .btn-act-pro:active { transform: scale(0.95); opacity: 0.8; }
+        .bg-orange { background: var(--vibrant-orange); }
+        .bg-blue { background: #3b82f6; }
+        .bg-red { background: var(--neon-red); color: #fff; }
 
-        /* MODALS */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; display: none; align-items: center; justify-content: center; padding: 25px; }
         .modal-card { background: #111; border-radius: 45px; padding: 40px; width: 100%; max-width: 400px; text-align: center; border: 2px solid #334155; }
         .modal-input { width: 100%; background: #000; border: 2px solid #fff; border-radius: 15px; padding: 20px; text-align: center; font-size: 24px; margin: 20px 0; color: #fff; }
@@ -148,7 +127,7 @@
     
     <div id="loading-overlay">
         <div class="loader-ring"></div>
-        <p class="text-orange-500 font-black tracking-widest animate-pulse">SEDANG MEMUAT DATA...</p>
+        <p class="text-orange-500 font-black tracking-widest animate-pulse">LOADING...</p>
     </div>
 
     <div class="app-container">
@@ -189,16 +168,16 @@
                 </div>
                 <div class="broadcast-container"><div class="broadcast-content"><span id="broadcastTickerText" class="broadcast-text">MEMUAT PESAN BROADCAST TERBARU...</span></div></div>
                 <div class="flex-1 flex flex-col overflow-hidden">
-                    <div class="search-outer">
-                        <input type="text" id="plateDisplay" placeholder="KETIK DISINI ..." autocomplete="off" inputmode="none">
-                    </div>
+                    <div class="search-outer"><input type="text" id="plateDisplay" placeholder="KETIK DISINI ..." autocomplete="off" inputmode="none"></div>
                     <div class="px-8 text-center text-[10px] opacity-60 uppercase mb-4 leading-relaxed">PERINGATAN ⚠️<br>DILARANG KERAS MENYALAHGUNAKAN APLIKASI INI TANPA IZIN RESMI CSID.PRO</div>
                     <div class="action-row-sultan">
                         <button class="btn-sq-lux c-stabilo" onclick="window.adj(-2)"><svg stroke="#000" viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
                         <button class="btn-sq-lux c-stabilo" onclick="window.adj(2)"><svg stroke="#000" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
                         <button class="btn-sq-lux c-stabilo" onclick="window.showMsg('Kamera Sedang Diperbaiki')"><svg stroke="#000" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
                         <button class="btn-sq-lux c-stabilo" onclick="window.safeSwitch('pageResult')"><svg stroke="#000" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 12h6M9 16h6"/></svg></button>
-                        <button class="btn-sq-lux c-stabilo" onclick="window.showAdminIfMaster()"><svg stroke="#ef4444" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></button>
+                        
+                        <button id="adminBtn" class="btn-sq-lux c-stabilo" onclick="window.showAdminIfMaster()"><svg stroke="#ef4444" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></button>
+                        
                         <button class="btn-sq-lux c-red" onclick="window.doLogout()"><svg stroke="#fff" viewBox="0 0 24 24"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg></button>
                         <button class="btn-sq-lux c-orange" onclick="window.doSearch()"><svg stroke="#000" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
                     </div>
@@ -223,60 +202,46 @@
             <!-- PAGE 4: ADMIN PANEL -->
             <div id="pageAdmin" class="page">
                 <div class="admin-header-lux">
-                    <h2 class="text-white text-[16px] uppercase font-black">ADMIN PANEL</h2>
-                    <button onclick="window.safeSwitch('pageSearch')">
-                        <svg viewBox="0 0 24 24" style="width:30px; height:30px; stroke:var(--vibrant-orange); stroke-width:4; fill:none;"><path d="M18 6L6 18M6 6l12 12"/></svg>
-                    </button>
+                    <h2 class="text-white text-[16px] uppercase font-black">MASTER CONTROL</h2>
+                    <button onclick="window.safeSwitch('pageSearch')"><svg viewBox="0 0 24 24" style="width:30px; height:30px; stroke:var(--vibrant-orange); stroke-width:4; fill:none;"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
                 </div>
                 <div class="admin-scroll">
-                    <!-- STATS -->
                     <div class="grid grid-cols-3 gap-3 mb-6">
                         <div class="bg-black/50 p-4 rounded-2xl text-center border border-white/10"><span id="statTotal" class="text-xl text-orange-500">0</span><p class="text-[8px]">AGEN</p></div>
                         <div class="bg-black/50 p-4 rounded-2xl text-center border border-white/10"><span id="statActive" class="text-xl text-green-500">0</span><p class="text-[8px]">AKTIF</p></div>
                         <div class="bg-black/50 p-4 rounded-2xl text-center border border-white/10"><span id="statOnline" class="text-xl text-blue-500">0</span><p class="text-[8px]">ONLINE</p></div>
                     </div>
-
-                    <!-- BROADCAST EDITOR -->
                     <div class="broadcast-editor-box">
-                        <p class="text-[10px] text-gray-400 uppercase mb-2">BROADCAST CENTER :</p>
-                        <textarea id="broadcastMsgInput" class="broadcast-input" placeholder="KETIK PESAN BROADCAST DISINI..."></textarea>
+                        <textarea id="broadcastMsgInput" class="broadcast-input" placeholder="ISI PESAN BROADCAST TERBARU..."></textarea>
                         <button class="btn-broadcast-sultan" onclick="window.sendBroadcast()">KIRIM KE SEMUA AGEN</button>
                     </div>
-
-                    <button class="w-full bg-orange-500 text-black py-5 rounded-2xl mb-6 font-black uppercase text-lg" onclick="window.openAddAgentModal()">AKTIFKAN PIN BARU</button>
-                    <input type="number" id="adminSearchInput" class="w-full bg-black/40 border-2 border-orange-500 rounded-2xl p-4 text-center text-white mb-6" placeholder="CARI PIN..." oninput="window.filterAgents()">
+                    <button class="w-full bg-emerald-600 text-white py-5 rounded-2xl mb-6 font-black uppercase text-lg" onclick="window.openAddAgentModal()">TAMBAH PIN BARU</button>
+                    <input type="text" id="adminSearchInput" class="w-full bg-black/40 border-2 border-orange-500 rounded-2xl p-4 text-center text-white mb-6 uppercase" placeholder="CARI PIN..." oninput="window.filterAgents()">
                     <div id="agentListContainer"></div>
                 </div>
             </div>
 
             <!-- MODALS -->
-            <div id="adminGatewayModal" class="modal-overlay"><div class="modal-card"><h3 class="uppercase text-white font-black">AKSES MASTER ADMIN</h3><input type="number" id="masterPinInput" placeholder="PIN MASTER" class="modal-input"><div class="flex gap-4"><button onclick="document.getElementById('adminGatewayModal').style.display='none'" class="flex-1 bg-zinc-800 py-4 rounded-2xl text-white">BATAL</button><button onclick="window.confirmMaster()" class="flex-1 bg-white text-black py-4 rounded-2xl font-black">KONFIRMASI</button></div></div></div>
+            <div id="adminGatewayModal" class="modal-overlay"><div class="modal-card"><h3 class="uppercase text-white font-black">MASTER ACCESS</h3><input type="number" id="masterPinInput" placeholder="6-DIGIT PIN" class="modal-input"><div class="flex gap-4"><button onclick="document.getElementById('adminGatewayModal').style.display='none'" class="flex-1 bg-zinc-800 py-4 rounded-2xl text-white">BATAL</button><button onclick="window.confirmMaster()" class="flex-1 bg-white text-black py-4 rounded-2xl font-black">KONFIRMASI</button></div></div></div>
             
             <div id="addAgentModal" class="modal-overlay">
                 <div class="modal-card">
-                    <h3 class="uppercase font-black text-white">AKTIFKAN PIN AGEN</h3>
+                    <h3 class="uppercase font-black text-white">DAFTARKAN PIN AGEN</h3>
                     <input type="number" id="newAgentPin" placeholder="PIN (6 DIGIT)" class="modal-input">
                     <select id="newAgentDuration" class="modal-input text-sm">
-                        <option value="1 Jam">1 JAM</option>
-                        <option value="1 Hari">1 HARI</option>
-                        <option value="2 Hari">2 HARI</option>
-                        <option value="3 Hari">3 HARI</option>
-                        <option value="4 Hari">4 HARI</option>
-                        <option value="5 Hari">5 HARI</option>
-                        <option value="10 Hari">10 HARI</option>
-                        <option value="15 Hari">15 HARI</option>
-                        <option value="31 Hari">31 HARI</option>
-                        <option value="365 Hari">1 TAHUN</option>
+                        <option value="1 Jam">1 JAM</option><option value="1 Hari">1 HARI</option>
+                        <option value="2 Hari">2 HARI</option><option value="3 Hari">3 HARI</option>
+                        <option value="4 Hari">4 HARI</option><option value="5 Hari">5 HARI</option>
+                        <option value="7 Hari">7 HARI</option><option value="8 Hari">8 HARI</option>
+                        <option value="9 Hari">9 HARI</option><option value="10 Hari">10 HARI</option>
+                        <option value="15 Hari">15 HARI</option><option value="31 Hari">31 HARI</option>
                         <option value="NOLIMIT">NOLIMIT</option>
                     </select>
-                    <div class="flex gap-4">
-                        <button onclick="document.getElementById('addAgentModal').style.display='none'" class="flex-1 bg-zinc-800 py-4 rounded-2xl text-white">BATAL</button>
-                        <button onclick="window.processAddAgent()" class="flex-1 bg-orange-500 text-black py-4 rounded-2xl font-black">SIMPAN</button>
-                    </div>
+                    <div class="flex gap-4"><button onclick="document.getElementById('addAgentModal').style.display='none'" class="flex-1 bg-zinc-800 py-4 rounded-2xl text-white">BATAL</button><button onclick="window.processAddAgent()" class="flex-1 bg-orange-500 text-black py-4 rounded-2xl font-black">SIMPAN</button></div>
                 </div>
             </div>
-
-            <div id="msgModal" class="modal-overlay"><div class="modal-card"><h3 class="mb-4 text-orange-500 uppercase font-black" id="msgTitle">INFO</h3><p id="msgText" class="mb-8 text-white text-sm text-center px-4"></p><button onclick="document.getElementById('msgModal').style.display='none'" class="w-full bg-white text-black py-4 rounded-xl font-black">OKE</button></div></div>
+            
+            <div id="msgModal" class="modal-overlay"><div class="modal-card"><h3 class="mb-4 text-orange-500 uppercase font-black" id="msgTitle">INFO</h3><p id="msgText" class="mb-8 text-white text-sm text-center px-4"></p><button id="msgOkBtn" onclick="document.getElementById('msgModal').style.display='none'" class="w-full bg-white text-black py-4 rounded-xl font-black">OKE</button></div></div>
 
         </div>
     </div>
@@ -286,112 +251,102 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
-        // ✅ DATA MAPPING FIELD SAMSAT
+        // ✅ TURBO MAPPING SYSTEM
         const MAP = {
-            nama: ['NamaPemilik', 'nama_pemilik', 'nm_pmlk', 'nama'],
-            nik: ['NoKTP', 'nik', 'no_identitas'],
+            nama: ['NamaPemilik', 'nama_pemilik', 'nm_pmlk', 'nama', 'owner'],
+            nik: ['NoKTP', 'nik', 'no_identitas', 'ktp'],
             msisdn: ['NoHP', 'msisdn', 'phone', 'no_hp'],
-            email: ['Email', 'email_pmlk', 'email'],
-            pekerjaan: ['Pekerjaan', 'pekerjaan_pmlk', 'job'],
+            email: ['Email', 'email_pmlk'],
+            pekerjaan: ['Pekerjaan', 'job'],
             alamat: ['alamat', 'almt_pmlk', 'address', 'AlamatPemilik'],
-            nopol: ['nopol', 'no_polisi', 'nomor_polisi'],
-            merek: ['Merk', 'merek', 'merk', 'nm_merek'],
-            tipe: ['Type', 'tipe', 'type', 'model', 'nm_model'],
+            nopol: ['nopol', 'no_polisi', 'tnkb', 'NoPolisi'],
+            nopol_awal: ['prefix', 'wilayah', 'kd_wil', 'nopol_depan', 'KodeWilayah'],
+            nopol_nomor: ['angka', 'nomor', 'nopol_tengah', 'NoPol'],
+            nopol_akhir: ['suffix', 'seri', 'kd_seri', 'nopol_belakang', 'NoSeri'],
+            merek: ['Merk', 'merek', 'merk', 'NamaMerek'],
+            tipe: ['Type', 'tipe', 'type', 'model'],
             tahun: ['TahunPembuatan', 'tahun', 'thn_buat'],
             warna: ['Warna', 'warna', 'nm_warna'],
-            noka: ['NoRangka', 'no_rangka', 'noka', 'vin'],
-            nosin: ['NoMesin', 'no_mesin', 'nosin'],
+            noka: ['NoRangka', 'no_rangka', 'vin'],
+            nosin: ['NoMesin', 'no_mesin'],
             bpkb: ['NoBPKB', 'no_bpkb', 'nomor_bpkb'],
             stnk: ['NoSTNK', 'no_stnk', 'nomor_stnk'],
             silinder: ['IsiCylinder', 'isi_silinder', 'cc'],
-            bbm: ['BBM', 'bahan_bakar', 'bbm'],
-            tgl_daftar: ['TanggalDaftar', 'tgl_daftar', 'tgl_registrasi']
+            bbm: ['BBM', 'bahan_bakar'],
+            tgl_daftar: ['TanggalDaftar', 'tgl_daftar']
         };
 
         const deepFind = (obj, targetKeys) => {
             if (!obj) return null;
             if (Array.isArray(obj)) {
-                for (let item of obj) {
-                    const result = deepFind(item, targetKeys);
-                    if (result) return result;
+                for(let item of obj) {
+                    const res = deepFind(item, targetKeys);
+                    if (res) return res;
                 }
             }
-            if (typeof obj !== 'object') return null;
-            const currentKeys = Object.keys(obj);
-            for (let target of targetKeys) {
-                const foundKey = currentKeys.find(k => k.toLowerCase() === target.toLowerCase());
-                if (foundKey && obj[foundKey] !== null && obj[foundKey] !== undefined && obj[foundKey] !== "") return obj[foundKey];
+            const keys = Object.keys(obj);
+            for (let t of targetKeys) {
+                const found = keys.find(k => k.toLowerCase() === t.toLowerCase());
+                if (found && obj[found]) return obj[found].toString().trim();
             }
-            for (let key in obj) {
-                if (typeof obj[key] === 'object' && obj[key] !== null) {
-                    const result = deepFind(obj[key], targetKeys);
-                    if (result) return result;
-                }
+            for (let k in obj) { 
+                if (typeof obj[k] === 'object') { 
+                    const res = deepFind(obj[k], targetKeys); 
+                    if (res) return res; 
+                } 
             }
             return null;
         };
 
-        const getVal = (category) => {
-            if (!window.titanState || !window.titanState.lastResult) return '-';
-            const aliases = MAP[category] || [category];
-            const result = deepFind(window.titanState.lastResult, aliases);
-            return result || '-';
+        const getVal = (cat) => {
+            const val = deepFind(window.titanState.lastResult, MAP[cat] || [cat]);
+            return val || '-';
         };
 
-        // ✅ KONFIGURASI FIREBASE ASLI
-        const firebaseConfigFallback = {
-            apiKey: "AIzaSyBonuHp4nd-YZKWV5IM_2HRO",
-            authDomain: "gen-lang-client-0221970857.firebaseapp.com",
-            projectId: "gen-lang-client-0221970857",
-            storageBucket: "gen-lang-client-0221970857.appspot.com",
-            messagingSenderId: "483674298302",
-            appId: "1:483674298302:web:8c6ccf111af4de7bbecbef"
-        };
-
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : firebaseConfigFallback;
-        
-        let app, auth, db;
-        try {
-            app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-        } catch(e) { console.error("Firebase fail", e); }
-
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'csid-pro-live';
 
         window.titanState = { 
             isAdmin: false, hits: 0, allAgents: [],
             regCode: localStorage.getItem('csid_id') || Math.floor(100000 + Math.random() * 899999).toString(), 
             deviceId: localStorage.getItem('csid_dev_id') || crypto.randomUUID(),
-            agentData: null, lastResult: null, currentReport: "",
-            apiKey: 'KORLANTAS_250588ReALtimE'
+            agentData: null, lastResult: null, apiKey: 'KORLANTAS_250588ReALtimE',
+            currentAgentUnsub: null, abortController: null
         };
         localStorage.setItem('csid_id', window.titanState.regCode);
         localStorage.setItem('csid_dev_id', window.titanState.deviceId);
 
-        const hideSplash = () => {
-            const s = document.getElementById('splash-screen');
-            if(s) s.style.display = 'none';
+        window.updateDisplaySize = () => {
+            const dp = document.getElementById('plateDisplay'); if (!dp) return;
+            const len = dp.value.length;
+            dp.style.fontSize = len > 25 ? "0.9rem" : len > 15 ? "1.5rem" : "2.2rem";
         };
+
+        const hideSplash = () => { const s = document.getElementById('splash-screen'); if(s) s.style.display = 'none'; };
 
         async function initAuth() {
             try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else { await signInAnonymously(auth); }
-            } catch (err) { console.error("Auth fail", err); hideSplash(); }
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(auth, __initial_auth_token); 
+                else await signInAnonymously(auth);
+            } catch (err) { hideSplash(); }
         }
 
-        window.showMsg = (text, title = "INFO") => {
+        window.showMsg = (text, title = "INFO", cb = null) => {
             document.getElementById('msgTitle').innerText = title;
             document.getElementById('msgText').innerText = text;
             document.getElementById('msgModal').style.display = 'flex';
+            document.getElementById('msgOkBtn').onclick = () => { document.getElementById('msgModal').style.display = 'none'; if (cb) cb(); };
         };
 
         window.safeSwitch = (id) => {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            window.syncHeaders();
+            requestAnimationFrame(() => {
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+                window.syncHeaders();
+            });
         };
 
         window.syncHeaders = () => {
@@ -399,6 +354,8 @@
             const exp = window.titanState.isAdmin ? "NOLIMIT" : (window.titanState.agentData?.expired || "--");
             document.getElementById('uName').innerText = "PIN : " + pin;
             document.getElementById('uExp').innerText = "SISA: " + exp;
+            const ab = document.getElementById('adminBtn');
+            if(ab) ab.style.display = window.titanState.isAdmin ? 'flex' : 'none';
         };
 
         window.adj = (v) => {
@@ -406,36 +363,52 @@
             document.documentElement.style.setProperty('--kb-height', Math.max(10, cur + v) + 'px');
         };
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                initAdminStats();
-                initBroadcastListener();
-                checkAutoLogin();
-            }
-        });
+        onAuthStateChanged(auth, (user) => { if (user) { initAdminStats(); initBroadcastListener(); checkAutoLogin(); } });
+
+        const checkExpiry = (data) => {
+            if (data.expired === "NOLIMIT" || !data.expiryTimestamp) return false;
+            return Date.now() > data.expiryTimestamp;
+        };
 
         const checkAutoLogin = async () => {
             try {
                 const agentRef = doc(db, 'artifacts', appId, 'public', 'data', 'agents', window.titanState.regCode);
                 const snap = await getDoc(agentRef);
-                if (snap.exists()) {
+                if (snap.exists() && snap.data().status === 'active') {
                     const data = snap.data();
-                    if (data.status === 'active') {
-                        await updateDoc(agentRef, { lastActive: new Date().toLocaleString('id-ID'), deviceId: window.titanState.deviceId });
-                        window.titanState.agentData = data;
-                        window.safeSwitch('pageSearch');
-                    }
+                    if (checkExpiry(data)) { hideSplash(); return; }
+                    await updateDoc(agentRef, { lastActive: new Date().toLocaleString('id-ID'), deviceId: window.titanState.deviceId });
+                    window.titanState.agentData = data;
+                    startAgentListener(window.titanState.regCode);
+                    window.safeSwitch('pageSearch');
                 }
             } catch(e) {} finally { hideSplash(); }
+        };
+
+        const startAgentListener = (pin) => {
+            if (window.titanState.currentAgentUnsub) window.titanState.currentAgentUnsub();
+            window.titanState.currentAgentUnsub = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'agents', pin), (snap) => {
+                if (snap.exists()) {
+                    const data = snap.data();
+                    if (data.status !== 'active' || checkExpiry(data)) window.doLogout("MASA AKTIF ANDA HABIS. HUBUNGI ADMIN.");
+                } else window.doLogout();
+            });
         };
 
         window.handleLogin = async () => {
             const agentRef = doc(db, 'artifacts', appId, 'public', 'data', 'agents', window.titanState.regCode);
             const snap = await getDoc(agentRef);
-            if(snap.exists() && snap.data().status === 'active') {
-                window.titanState.agentData = snap.data();
-                window.safeSwitch('pageSearch');
-            } else window.showMsg("PIN BELUM AKTIF. DAFTAR VIA WA.");
+            if(snap.exists()) {
+                const d = snap.data();
+                if (d.status !== 'active') return window.showMsg("AKUN DIBLOKIR.");
+                if (checkExpiry(d)) return window.showMsg("MASA AKTIF HABIS.");
+                if (!d.deviceId || d.deviceId === window.titanState.deviceId) {
+                    await updateDoc(agentRef, { lastActive: new Date().toLocaleString('id-ID'), deviceId: window.titanState.deviceId });
+                    window.titanState.agentData = d;
+                    startAgentListener(window.titanState.regCode);
+                    window.safeSwitch('pageSearch');
+                } else window.showMsg("ID TERIKAT PADA HP LAIN.");
+            } else window.showMsg("PIN BELUM AKTIF.");
         };
 
         const initBroadcastListener = () => {
@@ -446,136 +419,155 @@
 
         window.sendBroadcast = async () => {
             const msg = document.getElementById('broadcastMsgInput').value.trim();
-            if(msg) await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'broadcast'), { message: msg });
+            if(!msg) return window.showMsg("ISI PESAN!");
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'broadcast'), { message: msg, updatedAt: new Date().toISOString() });
+                window.showMsg("BROADCAST BERHASIL!", "SUKSES");
+                document.getElementById('broadcastMsgInput').value = "";
+            } catch(e) { window.showMsg("GAGAL."); }
         };
 
         const initAdminStats = () => {
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'agents'), (snap) => {
-                const agents = [];
-                let total = 0, active = 0, online = 0;
+                const agents = []; let total = 0, active = 0, online = 0;
                 snap.forEach(d => {
-                    const data = d.data();
-                    agents.push({id: d.id, ...data});
-                    total++;
-                    if(data.status === 'active') active++;
-                    if(data.deviceId) online++;
+                    const data = d.data(); agents.push({id: d.id, ...data});
+                    total++; if(data.status === 'active') active++; if(data.deviceId) online++;
                 });
                 window.titanState.allAgents = agents;
-                const st = document.getElementById('statTotal'), sa = document.getElementById('statActive'), so = document.getElementById('statOnline');
-                if(st) st.innerText = total; if(sa) sa.innerText = active; if(so) so.innerText = online;
+                document.getElementById('statTotal').innerText = total;
+                document.getElementById('statActive').innerText = active;
+                document.getElementById('statOnline').innerText = online;
                 window.renderAgentList(agents);
             });
         };
 
         window.renderAgentList = (agents) => {
-            const container = document.getElementById('agentListContainer');
-            if(!container) return;
+            const container = document.getElementById('agentListContainer'); if(!container) return;
             container.innerHTML = agents.map(a => `
                 <div class="agent-card-lux">
-                    <div class="agent-header-status">LOCKED ✅ ${a.deviceId ? '📱 ONLINE' : ''}</div>
-                    <span class="agent-id-lux">ID: ${a.id}</span>
-                    <span class="agent-sisa-lux">SISA: ${a.expired || 'HABIS'}</span>
-                    <span class="agent-last-active">LOG: ${a.lastActive || 'BELUM PERNAH MASUK'}</span>
+                    <span class="agent-id-lux">${a.id}</span>
+                    <span class="agent-sisa-lux">DURASI: ${a.expired || 'HABIS'} | AKTIF: ${a.lastActive || '-'}</span>
                     <div class="agent-actions-lux">
-                        <button class="btn-act-sultan btn-sekat-lux ${a.status === 'dead' ? 'blocked' : ''}" onclick="window.toggleAgent('${a.id}','${a.status}')">
-                            ${a.status === 'dead' ? 'MATI' : 'SEKAT'}
-                        </button>
-                        <button class="btn-act-sultan btn-green-lux"><svg stroke="#000" viewBox="0 0 24 24" style="width:28px; height:28px; fill:none; stroke-width:2.5;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></button>
-                        <button class="btn-act-sultan btn-blue-lux"><svg stroke="#000" viewBox="0 0 24 24" style="width:28px; height:28px; fill:none; stroke-width:2.5;"><path d="M19 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V6"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M12 11v4M10 13h4"/></svg></button>
-                        <button class="btn-act-sultan btn-orange-lux" onclick="window.resetDevice('${a.id}')"><svg stroke="#000" viewBox="0 0 24 24" style="width:28px; height:28px; fill:none; stroke-width:2.5;"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>
-                        <button class="btn-act-sultan btn-red-lux" onclick="window.deleteAgent('${a.id}')"><svg stroke="#000" viewBox="0 0 24 24" style="width:28px; height:28px; fill:none; stroke-width:2.5;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>
+                        <button class="btn-act-pro bg-orange" onclick="window.toggleAgent('${a.id}','${a.status}')">${a.status === 'active' ? 'SEKAT' : 'AKTIFKAN'}</button>
+                        <button class="btn-act-pro bg-blue" onclick="window.confirmReset('${a.id}')">RESET HP</button>
+                        <button class="btn-act-pro bg-red" onclick="window.confirmDelete('${a.id}')">HAPUS</button>
                     </div>
                 </div>`).join('');
         };
 
         window.toggleAgent = async (id, s) => { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', id), {status: s === 'active' ? 'dead' : 'active'}); };
-        window.resetDevice = async (id) => { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', id), {deviceId: null}); window.showMsg("RESET HP SUKSES!"); };
-        window.deleteAgent = async (id) => { if(confirm('HAPUS PERMANEN?')) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', id)); };
+        window.confirmReset = async (id) => { if(confirm('RESET HP PIN ' + id + '?')) { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', id), {deviceId: null}); window.showMsg("RESET SUKSES!"); } };
+        window.confirmDelete = async (id) => { if(confirm('HAPUS PIN ' + id + '?')) { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', id)); window.showMsg("HAPUS SUKSES!"); } };
 
         window.hitMaster = () => { if(++window.titanState.hits >= 5) { window.titanState.hits = 0; document.getElementById('adminGatewayModal').style.display = 'flex'; } };
-        window.confirmMaster = () => {
-            if(document.getElementById('masterPinInput').value === "280189") {
-                window.titanState.isAdmin = true;
-                window.safeSwitch('pageSearch');
-                document.getElementById('adminGatewayModal').style.display = 'none';
-            } else window.showMsg("PIN SALAH!");
-        };
-
-        window.showAdminIfMaster = () => { if(window.titanState.isAdmin) window.safeSwitch('pageAdmin'); else window.showMsg("KHUSUS MASTER!"); };
-        window.doLogout = () => { window.titanState.isAdmin = false; window.safeSwitch('pageLogin'); };
         
-        window.handleWaReg = () => {
-            const pesan = "HALO ADMIN, AKTIFKAN ID CSID.PRO SAYA : " + window.titanState.regCode;
-            window.open("https://wa.me/628136900872?text=" + encodeURIComponent(pesan));
+        window.confirmMaster = () => {
+            if(document.getElementById('masterPinInput').value === "280189") { 
+                window.titanState.isAdmin = true; 
+                document.getElementById('adminBtn').style.display = 'flex';
+                window.safeSwitch('pageSearch'); 
+                document.getElementById('adminGatewayModal').style.display = 'none'; 
+                document.getElementById('masterPinInput').value = "";
+            } else window.showMsg("PIN MASTER SALAH!");
         };
 
-        window.updateDisplaySize = () => {
-            const dp = document.getElementById('plateDisplay');
-            if(!dp) return;
-            const len = dp.value.length;
-            if (len > 25) dp.style.fontSize = "0.9rem";
-            else if (len > 15) dp.style.fontSize = "1.5rem";
-            else dp.style.fontSize = "2.2rem";
+        window.showAdminIfMaster = () => { if(window.titanState.isAdmin) window.safeSwitch('pageAdmin'); };
+        
+        window.doLogout = (msg = null) => { 
+            if (window.titanState.currentAgentUnsub) window.titanState.currentAgentUnsub();
+            window.titanState.isAdmin = false; window.titanState.agentData = null;
+            document.getElementById('adminBtn').style.display = 'none';
+            if (msg) window.showMsg(msg, "PERINGATAN", () => window.safeSwitch('pageLogin'));
+            else window.safeSwitch('pageLogin'); 
         };
+
+        window.handleWaReg = () => { window.open("https://wa.me/628136900872?text=AKTIFKAN%20ID%20" + window.titanState.regCode); };
 
         window.doSearch = async () => {
             const val = document.getElementById('plateDisplay').value.trim();
             if(!val) return;
+            
+            if (window.titanState.abortController) window.titanState.abortController.abort();
+            window.titanState.abortController = new AbortController();
+            
+            document.getElementById('resultArea').innerHTML = "";
             document.getElementById('loading-overlay').style.display = 'flex';
+            
             try {
-                const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent('http://202.155.143.156/tnkb_api_key.php?q='+val.replace(/\s/g,'')+'&apikey='+window.titanState.apiKey)}`);
+                const targetUrl = `http://202.155.143.156/tnkb_api_key.php?q=${val.replace(/\s/g,'')}&apikey=${window.titanState.apiKey}`;
+                const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`, { signal: window.titanState.abortController.signal });
                 const json = await res.json();
-                document.getElementById('loading-overlay').style.display = 'none';
-                if(json && Object.keys(json).length > 0) {
-                    window.titanState.lastResult = json;
-                    window.renderResult();
-                    window.safeSwitch('pageResult');
-                } else window.showMsg("DATA TIDAK DITEMUKAN.");
-            } catch(e) { document.getElementById('loading-overlay').style.display = 'none'; }
+                
+                if(json && Object.keys(json).length > 0) { 
+                    window.titanState.lastResult = json; 
+                    window.renderResult(); 
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    window.safeSwitch('pageResult'); 
+                } else {
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    window.showMsg("DATA TIDAK DITEMUKAN.");
+                }
+            } catch(e) { 
+                if (e.name !== 'AbortError') {
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    window.showMsg("KONEKSI GAGAL.");
+                }
+            }
         };
 
         window.renderResult = () => {
-            const area = document.getElementById('resultArea');
-            if(!area) return;
-            const report = `🔊 SUMBER : APLIKASI CSID.PRO\n\n` +
-            `🚻 IDENTITAS PEMILIK :\n------------------------------------------\n` +
-            `NAMA : ${getVal('nama').toUpperCase()}\n` +
-            `NIK : ${getVal('nik')}\n` +
-            `MSSDN : ${getVal('msisdn')}\n` +
-            `EMAIL : ${getVal('email')}\n` +
-            `PEKERJAAN : ${getVal('pekerjaan')}\n` +
-            `ALAMAT : ${getVal('alamat').toUpperCase()}\n\n` +
-            `🚘 DATA KENDARAAN :\n------------------------------------------\n` +
-            `NOPOL : ${getVal('nopol').toUpperCase()}\n` +
-            `MEREK : ${getVal('merek').toUpperCase()}\n` +
-            `TYPE : ${getVal('tipe').toUpperCase()}\n` +
-            `TAHUN : ${getVal('tahun')}\n` +
-            `WARNA : ${getVal('warna').toUpperCase()}\n` +
-            `CYLINDER : ${getVal('silinder')}\n` +
-            `JENIS BBM : ${getVal('bbm').toUpperCase()}\n\n` +
-            `📙 DOKUMEN RESMI :\n------------------------------------------\n` +
-            `NOKA : ${getVal('noka').toUpperCase()}\n` +
-            `NOSIN : ${getVal('nosin').toUpperCase()}\n` +
-            `NO. BPKB : ${getVal('bpkb')}\n` +
-            `NO. STNK : ${getVal('stnk')}\n` +
-            `TGL DAFTAR : ${getVal('tgl_daftar')}\n` +
-            `------------------------------------------\n` +
-            `🔊 LINK DAFTAR APLIKASI : CSID.PRO https://wa.me/628136900872\n\n` +
-            `✍️ NOTE :\n------------------------------------------\n` +
-            `APLIKASI CSID.PRO INI DI BUAT UNTUK MENGAKSES IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH, SESUAI TNKB YANG TERDAFTAR PADA KENDARAAN, DAN BERDASARKAN KETENTUAN UNDANG-UNDANG YANG BERLAKU ⚖️.`;
-            area.innerHTML = `<div class="report-box">${report}</div>`;
-            window.titanState.currentReport = report;
+            const area = document.getElementById('resultArea'); if(!area) return;
+            
+            // ✅ PERBAIKAN LOGIKA NOPOL RAPAT (BK1108DT)
+            let p = getVal('nopol_awal').replace(/[^A-Z]/g, '').toUpperCase();
+            let n = getVal('nopol_nomor').replace(/[^0-9]/g, '').toUpperCase();
+            let s = getVal('nopol_akhir').replace(/[^A-Z]/g, '').toUpperCase();
+            
+            // Jika salah satu bagian hilang, coba ambil dari field 'nopol' utama
+            let r = getVal('nopol').replace(/\s/g, '').replace(/-/g, '').toUpperCase();
+            
+            let plate = "";
+            
+            // Prioritas 1: Gabungkan Prefiks + Nomor + Sufiks jika tersedia
+            if (p !== '-' && p !== "" && n !== '-' && n !== "") {
+                plate = p + n + (s !== '-' && s !== "" ? s : "");
+            } 
+            // Prioritas 2: Gunakan field nopol utama yang sudah dirapatkan
+            else if (r !== '-' && r !== "" && /[A-Z]/.test(r) && /[0-9]/.test(r)) {
+                plate = r;
+            }
+            // Prioritas 3: Jika r hanya berisi angka atau huruf, coba gabungkan dengan input pencarian
+            else {
+                const inputUser = document.getElementById('plateDisplay').value.replace(/\s/g,'').toUpperCase();
+                // Jika data API (r) cuma angka "1108", tambahkan huruf dari input depan "BK"
+                if (/^\d+$/.test(r)) {
+                    const lettersOnly = inputUser.match(/^[A-Z]+/);
+                    plate = (lettersOnly ? lettersOnly[0] : "") + r + (s !== '-' ? s : "");
+                } else if (/^[A-Z]+$/.test(r)) {
+                    // Jika data API cuma huruf "BKDT", tambahkan angka dari input
+                    const numbersOnly = inputUser.match(/\d+/);
+                    plate = r.slice(0,2) + (numbersOnly ? numbersOnly[0] : "") + r.slice(2);
+                } else {
+                    plate = r !== '-' ? r : inputUser;
+                }
+            }
+
+            const rpt = `🔊 SUMBER : APLIKASI CSID.PRO\n\nIDENTITAS PEMILIK :\n------------------------------------------\nNAMA         : ${getVal('nama').toUpperCase()}\nNIK          : ${getVal('nik')}\nMSSDN        : ${getVal('msisdn')}\nEMAIL        : ${getVal('email')}\nPEKERJAAN    : ${getVal('pekerjaan').toUpperCase()}\nALAMAT       : ${getVal('alamat').toUpperCase()}\n\n🚘 DATA KENDARAAN :\n------------------------------------------\nNOPOL        : ${plate}\nMEREK        : ${getVal('merek').toUpperCase()}\nTYPE         : ${getVal('tipe').toUpperCase()}\nTAHUN        : ${getVal('tahun')}\nWARNA        : ${getVal('warna').toUpperCase()}\nCYLINDER     : ${getVal('silinder')}\nJENIS BBM    : ${getVal('bbm').toUpperCase()}\n\n📙 DOKUMEN RESMI :\n------------------------------------------\nNOKA         : ${getVal('noka').toUpperCase()}\nNOSIN        : ${getVal('nosin').toUpperCase()}\nNO. BPKB     : ${getVal('bpkb')}\nNO. STNK     : ${getVal('stnk')}\nTGL DAFTAR   : ${getVal('tgl_daftar')}\n------------------------------------------\n🔊 LINK DAFTAR APLIKASI : CSID.PRO https://wa.me/628136900872\n\n✍️ NOTE :\n------------------------------------------\nAPLIKASI CSID.PRO INI DI BUAT UNTUK MENGAKSES IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH, SESUAI TNKB YANG TERDAFTAR PADA KENDARAAN, DAN BERDASARKAN KETENTUAN UNDANG-UNDANG YANG BERLAKU ⚖️.`;
+            
+            area.innerHTML = `<div class="report-box">${rpt}</div>`;
+            window.titanState.currentReport = rpt;
         };
 
         window.copyReport = () => {
             const el = document.createElement('textarea'); el.value = window.titanState.currentReport; document.body.appendChild(el); el.select();
-            document.execCommand('copy'); document.body.removeChild(el); window.showMsg("SALIN SUKSES!");
+            document.execCommand('copy'); document.body.removeChild(el); window.showMsg("LAPORAN BERHASIL DISALIN!");
         };
         window.shareReport = () => window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(window.titanState.currentReport)}`);
 
         window.buildKB = () => {
             const layout = [["1","2","3","DEL","CLR"],["4","5","6","0"],["7","8","9"],["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["Z","X","C","V","B","N","M"]];
-            const box = document.getElementById('keyboard'); if(!box) return; box.innerHTML = '';
+            const box = document.getElementById('keyboard'); if(!box) return;
             layout.forEach(row => {
                 const d = document.createElement('div'); d.className = "kb-row";
                 row.forEach(k => {
@@ -595,26 +587,41 @@
         };
 
         window.filterAgents = () => {
-            const q = document.getElementById('adminSearchInput').value.trim();
-            window.renderAgentList(window.titanState.allAgents.filter(a => a.id.includes(q)));
+            const q = document.getElementById('adminSearchInput').value.trim().toUpperCase();
+            const f = window.titanState.allAgents.filter(a => a.id.includes(q));
+            window.renderAgentList(f);
         };
 
         window.openAddAgentModal = () => document.getElementById('addAgentModal').style.display='flex';
+        
+        const getMs = (label) => {
+            const map = {
+                "1 Jam": 3600000, "1 Hari": 86400000, "2 Hari": 172800000, "3 Hari": 259200000,
+                "4 Hari": 345600000, "5 Hari": 432000000, "7 Hari": 604800000, "8 Hari": 691200000,
+                "9 Hari": 777600000, "10 Hari": 864000000, "15 Hari": 1296000000, "31 Hari": 2678400000
+            };
+            return map[label] || 0;
+        };
+
         window.processAddAgent = async () => {
             const p = document.getElementById('newAgentPin').value;
-            const d = document.getElementById('newAgentDuration').value;
+            const dLabel = document.getElementById('newAgentDuration').value;
             if(p.length >= 6) {
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', p), { status:'active', expired: d, createdAt: new Date().toISOString() });
+                const expiryTs = dLabel === "NOLIMIT" ? null : Date.now() + getMs(dLabel);
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', p), { 
+                    status: 'active', expired: dLabel, expiryTimestamp: expiryTs, 
+                    createdAt: new Date().toISOString(), deviceId: null, lastActive: null
+                });
                 document.getElementById('addAgentModal').style.display='none';
+                window.showMsg("PIN BERHASIL DIDAFTARKAN!");
             }
         };
 
         window.addEventListener('load', () => {
             document.getElementById('myOnlineID').innerText = window.titanState.regCode;
-            initAuth();
-            window.buildKB();
+            initAuth(); window.buildKB();
             document.getElementById('plateDisplay').addEventListener('input', window.updateDisplaySize);
-            setTimeout(hideSplash, 3000);
+            setTimeout(hideSplash, 1000); 
         });
     </script>
 </body>
