@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CSID.PRO - Vehicle Intelligence</title>
+    <title>CSID.PRO - Universal Intelligence</title>
     
+    <!-- React & Tailwind CDN -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Firebase SDK (Compat Mode for stability in single file) -->
+    <!-- Firebase SDK Compat -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -18,18 +19,8 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         
-        body {
-            background-color: #050505;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
+        body { background-color: #050505; margin: 0; padding: 0; font-family: 'Inter', sans-serif; overflow: hidden; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        
         @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes keyPop { 0% { transform: scale(1); } 50% { transform: scale(0.92); } 100% { transform: scale(1); } }
         @keyframes glowPulse { 0% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.2); } 50% { box-shadow: 0 0 25px rgba(255, 255, 255, 0.6); } 100% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.2); } }
@@ -39,25 +30,20 @@
         .glow-white { animation: glowPulse 2.5s infinite; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         
+        /* Mobile Shell Logic - Anti Stretch */
         .mobile-shell {
-            width: 100%;
-            max-width: 400px;
-            height: 100%;
-            max-height: 820px;
-            background: black;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 0 100px rgba(0,0,0,1);
-            border-left: 1px solid rgba(255,255,255,0.05);
-            border-right: 1px solid rgba(255,255,255,0.05);
+            width: 100%; max-width: 400px; height: 100%; max-height: 820px;
+            background: black; position: relative; display: flex; flex-direction: column;
+            overflow: hidden; box-shadow: 0 0 100px rgba(0,0,0,1);
+            border-left: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.05);
         }
 
         @media (min-width: 640px) {
-            .mobile-shell {
-                border: 10px solid #1a1a1a;
-                border-radius: 3.5rem;
+            .mobile-shell { border: 10px solid #1a1a1a; border-radius: 3.5rem; }
+            .mobile-shell::after {
+                content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+                width: 120px; height: 25px; background: #1a1a1a;
+                border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 50;
             }
         }
     </style>
@@ -109,14 +95,14 @@
             const [plate, setPlate] = useState('');
             const [kbHeight, setKbHeight] = useState(22); 
             const [broadcast, setBroadcast] = useState("MEMUAT BROADCAST...");
-            const [loading, setLoading] = useState(false);
+            const [loading, setLoading] = useState(true);
             const [searchResult, setSearchResult] = useState(null);
             const [notification, setNotification] = useState(null);
             const [managedPins, setManagedPins] = useState([]);
             const [adminTapCount, setAdminTapCount] = useState(0);
-            
             const [showAddPinForm, setShowAddPinForm] = useState(false);
             const [extendingPin, setExtendingPin] = useState(null);
+            const [searchTerm, setSearchTerm] = useState('');
 
             useEffect(() => {
                 let savedId = localStorage.getItem('csid_reg_id');
@@ -126,7 +112,9 @@
                 }
                 setRegistrationId(savedId);
 
-                auth.signInAnonymously().catch(e => console.error("Firebase Auth Fail", e));
+                auth.signInAnonymously().then(() => {
+                    handleAutoLogin(savedId);
+                }).catch(() => setLoading(false));
 
                 const unsubBroadcast = db.collection('csid_pro').doc('settings').onSnapshot(doc => {
                     if (doc.exists) setBroadcast(doc.data().text || "SELAMAT DATANG DI CSID.PRO");
@@ -151,45 +139,48 @@
                 return id;
             };
 
+            const handleAutoLogin = async (id) => {
+                const savedPin = localStorage.getItem('csid_active_session_pin');
+                const myDeviceId = getDeviceId();
+                try {
+                    const targetId = savedPin || id;
+                    const pinSnap = await db.collection('csid_pro_pins').doc(targetId).get();
+                    if (pinSnap.exists) {
+                        const data = pinSnap.data();
+                        if (!data.isBlocked && (data.expiry === 'UNLIMITED' || Date.now() < data.expiry)) {
+                            if (!data.deviceId || data.deviceId === myDeviceId) {
+                                setUserRole(data.role || 'user');
+                                setUserExpiry(data.expiry);
+                                setActivePin(targetId);
+                                setCurrentPage('search');
+                            }
+                        }
+                    }
+                } catch (e) {} finally { setLoading(false); }
+            };
+
             const handleLoginOnline = async () => {
                 setLoading(true);
                 const myDeviceId = getDeviceId();
                 try {
-                    const snap = await db.collection('csid_pro_pins').doc(registrationId).get();
-                    if (!snap.exists()) throw new Error("ID BELUM DIAKTIFKAN ADMIN");
-                    
-                    const data = snap.data();
+                    const pinSnap = await db.collection('csid_pro_pins').doc(registrationId).get();
+                    if (!pinSnap.exists) throw new Error("ID BELUM DIAKTIFKAN ADMIN");
+                    const data = pinSnap.data();
                     if (data.isBlocked) throw new Error("AKSES DISEKAT / DIBLOKIR");
                     if (data.expiry !== 'UNLIMITED' && Date.now() > data.expiry) throw new Error("MASA AKTIF HABIS");
                     if (data.deviceId && data.deviceId !== myDeviceId) throw new Error("ID TERIKAT DI HP LAIN");
-
-                    if (!data.deviceId) {
-                        await db.collection('csid_pro_pins').doc(registrationId).update({ deviceId: myDeviceId });
-                    }
-
-                    setUserRole('user');
-                    setUserExpiry(data.expiry);
-                    setActivePin(registrationId);
-                    setCurrentPage('search');
-                } catch (e) {
-                    showMsg(e.message);
-                } finally {
-                    setLoading(false);
-                }
+                    if (!data.deviceId) await db.collection('csid_pro_pins').doc(registrationId).update({ deviceId: myDeviceId });
+                    localStorage.setItem('csid_active_session_pin', registrationId);
+                    setUserRole('user'); setUserExpiry(data.expiry); setActivePin(registrationId); setCurrentPage('search');
+                } catch (e) { showMsg(e.message); } finally { setLoading(false); }
             };
 
             const handleMasterLogin = () => {
                 if (pinInput === MASTER_PIN) {
-                    setUserRole('master');
-                    setUserExpiry('UNLIMITED');
-                    setActivePin('MASTER');
-                    setCurrentPage('search');
-                    setShowPinModal(false);
-                    setPinInput('');
-                } else {
-                    showMsg("PIN SALAH");
-                    setPinInput('');
-                }
+                    setUserRole('master'); setUserExpiry('UNLIMITED'); setActivePin('MASTER');
+                    localStorage.setItem('csid_active_session_pin', MASTER_PIN);
+                    setCurrentPage('search'); setShowPinModal(false); setPinInput('');
+                } else { showMsg("PIN SALAH"); setPinInput(''); }
             };
 
             const fetchData = async () => {
@@ -201,17 +192,9 @@
                 try {
                     const res = await fetch(proxy);
                     const json = await res.json();
-                    if (json && !json.error && Object.keys(json).length > 0) {
-                        setSearchResult(json);
-                        setCurrentPage('result');
-                    } else {
-                        showMsg("DATA TIDAK DITEMUKAN");
-                    }
-                } catch (e) {
-                    showMsg("SERVER SIBUK");
-                } finally {
-                    setLoading(false);
-                }
+                    if (json && !json.error && Object.keys(json).length > 0) { setSearchResult(json); setCurrentPage('result'); }
+                    else { showMsg("DATA TIDAK DITEMUKAN"); }
+                } catch (e) { showMsg("SERVER SIBUK / ERROR"); } finally { setLoading(false); }
             };
 
             const getVal = (cat) => {
@@ -223,7 +206,6 @@
                     BBM: ['BBM', 'bbm'], Noka: ['NoRangka', 'noka'], Nosin: ['NoMesin', 'nosin'],
                     BPKB: ['NoBPKB', 'bpkb'], STNK: ['NoSTNK', 'stnk'], Tgl: ['TanggalDaftar', 'tgl_daftar']
                 };
-                const targets = keys[cat] || [cat];
                 const find = (obj, aliases) => {
                     if(!obj) return null;
                     for (let a of aliases) {
@@ -235,15 +217,17 @@
                     }
                     return null;
                 };
-                return find(searchResult, targets) || "-";
+                return find(searchResult, keys[cat] || [cat]) || "-";
             };
 
             const formatExpiry = (exp) => {
+                if (!exp) return 'N/A';
                 if (exp === 'UNLIMITED') return 'NOLIMIT';
-                const d = exp - Date.now();
-                if (d <= 0) return 'EXPIRED';
-                const h = Math.floor(d / 3600000);
-                return h > 24 ? `${Math.floor(h/24)}H` : `${h}J`;
+                const diff = exp - Date.now();
+                if (diff <= 0) return 'EXPIRED';
+                const days = Math.floor(diff / 86400000);
+                const hours = Math.floor((diff % 86400000) / 3600000);
+                return days > 0 ? `${days}H ${hours}J` : `${hours}J`;
             };
 
             const renderWelcome = () => (
@@ -261,103 +245,198 @@
                             <p className="text-[10px] font-black uppercase mb-3 opacity-70">ID Pendaftaran Anda :</p>
                             <p className="text-6xl font-black tracking-widest">{registrationId}</p>
                         </div>
-                        <button onClick={handleLoginOnline} className="w-full bg-white text-black py-6 rounded-2xl font-black flex items-center justify-center gap-3 active:scale-95 text-lg key-press-effect">
+                        <button onClick={handleLoginOnline} className="w-full bg-white text-black py-6 rounded-2xl font-black flex items-center justify-center gap-3 active:scale-95 text-lg key-press-effect shadow-xl">
                             <Icons.Shield /> LOGIN ONLINE
                         </button>
                     </div>
-                    <button onClick={() => window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(`Halo Admin CSID.PRO mohon aktivasi ID pendaftaran saya: ${registrationId}`)}`)} className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-6 rounded-[2.5rem] font-black flex items-center justify-center gap-3 active:scale-95 text-lg">
+                    <button onClick={() => window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(`Halo Admin CSID.PRO mohon aktivasi ID pendaftaran saya: ${registrationId}`)}`)} className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-6 rounded-[2.5rem] font-black flex items-center justify-center gap-3 active:scale-95 text-lg shadow-2xl">
                         DAFTAR VIA WHATSAPP
                     </button>
                 </div>
             );
 
-            const renderSearch = () => (
-                <div className="flex-1 flex flex-col h-full bg-black">
-                    <header className="px-5 py-4 flex items-center justify-between border-b border-white/5 shrink-0">
-                        <div className="flex items-center gap-2 text-white"><Icons.ShieldCheck /><span className="font-black text-xl">CSID.PRO</span></div>
-                        <div className="text-right">
-                            <p className="text-[10px] font-black text-orange-500 uppercase">PIN : {userRole === 'master' ? 'MASTER' : activePin}</p>
-                            <p className="text-[9px] font-black text-slate-400">SISA : {formatExpiry(userExpiry)}</p>
+            const renderSearch = () => {
+                const getFontSize = () => {
+                    if (plate.length <= 8) return 'text-3xl';
+                    if (plate.length <= 12) return 'text-2xl';
+                    if (plate.length <= 15) return 'text-xl';
+                    return 'text-lg';
+                };
+
+                return (
+                    <div className="flex-1 flex flex-col h-full bg-black">
+                        <header className="px-5 py-4 flex items-center justify-between border-b border-white/5 shrink-0 bg-black z-50">
+                            <div className="flex items-center gap-2 text-white"><Icons.ShieldCheck /><span className="font-black text-xl">CSID.PRO</span></div>
+                            <div className="text-right">
+                                <p className="text-[10px] font-black text-orange-500 uppercase">PIN : {userRole === 'master' ? 'MASTER' : activePin}</p>
+                                <p className="text-[9px] font-black text-slate-400">SISA : {formatExpiry(userExpiry)}</p>
+                            </div>
+                        </header>
+                        <div className="h-8 bg-[#111] overflow-hidden flex items-center border-b border-white/5 shrink-0">
+                            <div className="animate-marquee px-4 text-[10px] font-black uppercase tracking-widest text-white">{broadcast}</div>
                         </div>
-                    </header>
-                    <div className="h-8 bg-[#111] overflow-hidden flex items-center border-b border-white/5 shrink-0">
-                        <div className="animate-marquee px-4 text-[10px] font-black uppercase tracking-widest text-white">{broadcast}</div>
+                        <main className="flex-1 flex flex-col p-4 relative overflow-hidden">
+                            <div className="w-full h-20 border-2 border-[#2e3b4e] rounded-[2rem] flex items-center justify-center px-6 mb-4 mt-2">
+                                <input 
+                                    type="text" 
+                                    inputMode="none" 
+                                    value={plate} 
+                                    onChange={(e) => setPlate(e.target.value.toUpperCase().replace(/\s/g, ''))}
+                                    onPaste={(e) => {
+                                        e.preventDefault();
+                                        const paste = e.clipboardData.getData('text');
+                                        setPlate(paste.toUpperCase().replace(/\s/g, ''));
+                                    }}
+                                    placeholder="KETIK DISINI ..." 
+                                    className={`bg-transparent w-full text-center outline-none font-black tracking-[0.2em] uppercase ${getFontSize()} text-white placeholder:text-slate-800 cursor-text`} 
+                                />
+                            </div>
+                            <div className="flex-1 flex flex-col items-center justify-center text-center px-4">
+                                <p className="text-orange-500 text-sm font-black uppercase leading-tight">PERINGATAN ⚠️<br/>DILARANG KERAS MENYALAHGUNAKAN APLIKASI INI TANPA IZIN RESMI CSID.PRO</p>
+                            </div>
+                            <div className="mt-auto">
+                                <div className={`grid ${userRole === 'master' ? 'grid-cols-7' : 'grid-cols-6'} gap-1 px-1 mb-1`}>
+                                    <button onClick={() => setKbHeight(h => Math.max(14, h-2))} className="bg-[#e2ff00] h-12 flex items-center justify-center rounded-2xl text-black font-black key-press-effect"><Icons.Minus /></button>
+                                    <button onClick={() => setKbHeight(h => Math.min(32, h+2))} className="bg-[#e2ff00] h-12 flex items-center justify-center rounded-2xl text-black font-black key-press-effect"><Icons.Plus /></button>
+                                    <button className="bg-[#e2ff00] h-12 flex items-center justify-center rounded-2xl text-black font-black key-press-effect"><Icons.Camera /></button>
+                                    <button onClick={async () => { try { const t = await navigator.clipboard.readText(); setPlate(t.toUpperCase().replace(/\s/g,'')); } catch(e){} }} className="bg-[#e2ff00] h-12 flex items-center justify-center rounded-2xl text-black font-black key-press-effect"><Icons.Clipboard /></button>
+                                    {userRole === 'master' && <button onClick={() => setCurrentPage('admin')} className="bg-red-600 h-12 flex items-center justify-center rounded-2xl text-white font-black key-press-effect"><Icons.Shield /></button>}
+                                    <button onClick={() => { localStorage.removeItem('csid_active_session_pin'); setCurrentPage('welcome'); }} className="bg-red-600 h-12 flex items-center justify-center rounded-2xl text-white font-black key-press-effect"><Icons.Power /></button>
+                                    <button onClick={fetchData} className="bg-orange-500 h-12 flex items-center justify-center rounded-2xl text-white font-black key-press-effect"><Icons.Search /></button>
+                                </div>
+                                <div className="flex flex-col gap-1 px-1 pb-4">
+                                    <div className="grid grid-cols-5 gap-1">
+                                        {['1','2','3'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 3}px`}} className="bg-[#2e3b4e] text-white rounded-2xl text-3xl font-black key-press-effect">{n}</button>)}
+                                        <button onClick={() => setPlate(p => p.slice(0,-1))} style={{height: `${kbHeight * 3}px`}} className="bg-orange-500 text-white font-black text-xl rounded-2xl key-press-effect text-white">DEL</button>
+                                        <button onClick={() => setPlate('')} style={{height: `${kbHeight * 3}px`}} className="bg-orange-500 text-white font-black text-xl rounded-2xl key-press-effect text-white">CLR</button>
+                                    </div>
+                                    <div className="grid grid-cols-4 gap-1">
+                                        {['4','5','6','0'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 3}px`}} className="bg-[#2e3b4e] text-white rounded-2xl text-3xl font-black key-press-effect">{n}</button>)}
+                                    </div>
+                                    <div className="grid grid-cols-3 gap-1">
+                                        {['7','8','9'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 3}px`}} className="bg-[#2e3b4e] text-white rounded-2xl text-3xl font-black key-press-effect">{n}</button>)}
+                                    </div>
+                                    <div className="flex flex-col gap-1">
+                                        {['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'].map((row, i) => (
+                                            <div key={i} className="flex gap-1">
+                                                {row.split('').map(char => <button key={char} onClick={() => setPlate(p => p+char)} style={{height: `${kbHeight * 2.5}px`}} className="flex-1 bg-[#2e3b4e] text-white rounded-xl text-lg font-black key-press-effect">{char}</button>)}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </main>
                     </div>
-                    <main className="flex-1 flex flex-col p-4 relative overflow-hidden">
-                        <div className="w-full h-20 border-2 border-[#2e3b4e] rounded-[2rem] flex items-center justify-center px-6 mb-4 mt-2">
-                            <input type="text" inputMode="none" value={plate} readOnly placeholder="KETIK DISINI ..." className="bg-transparent w-full text-center outline-none font-black tracking-[0.2em] uppercase text-3xl text-white placeholder:text-slate-800" />
-                        </div>
-                        <div className="flex-1 flex flex-col items-center justify-center text-center px-4">
-                            <p className="text-orange-500 text-sm font-black uppercase leading-tight">PERINGATAN ⚠️<br/>DILARANG KERAS MENYALAHGUNAKAN APLIKASI INI TANPA IZIN RESMI CSID.PRO</p>
-                        </div>
-                        <div className="mt-auto">
-                            <div className="grid grid-cols-7 gap-1 px-1 mb-1">
-                                <button onClick={() => setKbHeight(h => Math.max(14, h-2))} className="bg-[#e2ff00] h-12 flex items-center justify-center rounded-2xl text-black font-black key-press-effect"><Icons.Minus /></button>
-                                <button onClick={() => setKbHeight(h => Math.min(32, h+2))} className="bg-[#e2ff00] h-12 flex items-center justify-center rounded-2xl text-black font-black key-press-effect"><Icons.Plus /></button>
-                                <button className="bg-[#e2ff00] h-12 flex items-center justify-center rounded-2xl text-black font-black key-press-effect"><Icons.Camera /></button>
-                                <button onClick={async () => { try { const t = await navigator.clipboard.readText(); setPlate(t.toUpperCase().replace(/\s/g,'')); } catch(e){} }} className="bg-[#e2ff00] h-12 flex items-center justify-center rounded-2xl text-black font-black key-press-effect"><Icons.Clipboard /></button>
-                                {userRole === 'master' && <button onClick={() => setCurrentPage('admin')} className="bg-red-600 h-12 flex items-center justify-center rounded-2xl text-white font-black key-press-effect"><Icons.Shield /></button>}
-                                <button onClick={() => { localStorage.removeItem('csid_device_id'); setCurrentPage('welcome'); }} className="bg-red-600 h-12 flex items-center justify-center rounded-2xl text-white font-black key-press-effect"><Icons.Power /></button>
-                                <button onClick={fetchData} className="bg-orange-500 h-12 flex items-center justify-center rounded-2xl text-white font-black key-press-effect"><Icons.Search /></button>
+                );
+            };
+
+            const renderAdmin = () => {
+                const durationOptions = [
+                    { label: '1 JAM', ms: 3600000 },
+                    { label: '1 HARI', ms: 86400000 },
+                    ...Array.from({length: 30}, (_, i) => ({ label: `${i+2} HARI`, ms: (i+2) * 86400000 })),
+                    { label: 'UNLIMITED', ms: 'UNLIMITED' }
+                ];
+
+                return (
+                    <div className="flex-1 flex flex-col p-4 bg-black text-white overflow-hidden h-full">
+                        <header className="flex items-center gap-4 mb-4 shrink-0">
+                            <button onClick={() => setCurrentPage('search')} className="p-2 bg-zinc-800 rounded-full text-white"><Icons.ChevronLeft /></button>
+                            <h2 className="font-black text-xl uppercase text-white">Master Panel</h2>
+                        </header>
+                        <div className="flex-1 overflow-y-auto scrollbar-hide space-y-4 pb-12">
+                            <div className="bg-zinc-900 p-6 rounded-[2rem] border border-white/5">
+                                <p className="text-[10px] font-bold text-slate-500 mb-2 uppercase tracking-widest">Update Broadcast</p>
+                                <textarea value={broadcast} onChange={e => setBroadcast(e.target.value)} className="w-full bg-black border border-white/10 rounded-2xl p-4 text-xs text-white outline-none h-16 mb-4" />
+                                <button onClick={async () => { await db.collection('csid_pro').doc('settings').set({ text: broadcast }); showMsg("UPDATE BERHASIL"); }} className="w-full bg-orange-500 py-4 rounded-2xl font-black text-xs uppercase text-white shadow-xl">Simpan Pesan</button>
                             </div>
-                            <div className="flex flex-col gap-1 px-1 pb-4">
-                                <div className="grid grid-cols-5 gap-1">
-                                    {['1','2','3'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 3}px`}} className="bg-[#2e3b4e] text-white rounded-2xl text-3xl font-black key-press-effect">{n}</button>)}
-                                    <button key="del" onClick={() => setPlate(p => p.slice(0,-1))} style={{height: `${kbHeight * 3}px`}} className="bg-orange-500 text-white font-black text-xl rounded-2xl key-press-effect">DEL</button>
-                                    <button key="clr" onClick={() => setPlate('')} style={{height: `${kbHeight * 3}px`}} className="bg-orange-500 text-white font-black text-xl rounded-2xl key-press-effect">CLR</button>
+                            <div className="bg-zinc-900 p-4 rounded-3xl border border-white/10">
+                                <div className="flex items-center gap-3 bg-black rounded-2xl px-4 py-3 border border-white/5">
+                                    <Icons.Search cls="w-4 h-4 text-slate-500" />
+                                    <input type="text" placeholder="CARI PIN..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="bg-transparent border-none outline-none text-xs font-bold w-full text-white placeholder:text-slate-700" />
                                 </div>
-                                <div className="grid grid-cols-4 gap-1">
-                                    {['4','5','6','0'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 3}px`}} className="bg-[#2e3b4e] text-white rounded-2xl text-3xl font-black key-press-effect">{n}</button>)}
-                                </div>
-                                <div className="grid grid-cols-3 gap-1">
-                                    {['7','8','9'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 3}px`}} className="bg-[#2e3b4e] text-white rounded-2xl text-3xl font-black key-press-effect">{n}</button>)}
-                                </div>
-                                <div className="flex flex-col gap-1">
-                                    {['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'].map((row, i) => (
-                                        <div key={i} className="flex gap-1">
-                                            {row.split('').map(char => <button key={char} onClick={() => setPlate(p => p+char)} style={{height: `${kbHeight * 2.5}px`}} className="flex-1 bg-[#2e3b4e] text-white rounded-xl text-lg font-black key-press-effect">{char}</button>)}
+                            </div>
+                            <button onClick={() => setShowAddPinForm(true)} className="w-full bg-emerald-600 py-6 rounded-[2rem] font-black text-lg shadow-xl uppercase">Tambah Pin Baru</button>
+                            <div className="space-y-4">
+                                {managedPins.filter(p => p.id.includes(searchTerm)).map(p => (
+                                    <div key={p.id} className="bg-zinc-900 p-5 rounded-[2.5rem] border border-white/5 relative">
+                                        <p className="text-3xl font-black text-orange-500 tracking-widest">{p.id}</p>
+                                        <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase">SISA: {formatExpiry(p.expiry)}</p>
+                                        <p className="text-[8px] text-slate-600 font-bold mb-3 uppercase">HP: {p.deviceId || 'BELUM TERIKAT'}</p>
+                                        <div className="grid grid-cols-3 gap-2">
+                                            <button onClick={() => db.collection('csid_pro_pins').doc(p.id).update({ isBlocked: !p.isBlocked })} className="py-3 bg-orange-600 rounded-xl text-[9px] font-black uppercase text-white">{p.isBlocked ? 'Buka' : 'Sekat'}</button>
+                                            <button onClick={() => setExtendingPin(p)} className="py-3 bg-emerald-600 rounded-xl text-[9px] font-black uppercase text-white">Durasi</button>
+                                            <button onClick={() => db.collection('csid_pro_pins').doc(p.id).update({ deviceId: null })} className="py-3 bg-blue-600 rounded-xl text-[9px] font-black uppercase text-white">Reset HP</button>
                                         </div>
-                                    ))}
-                                </div>
+                                        <button onClick={() => db.collection('csid_pro_pins').doc(p.id).delete()} className="w-full mt-2 py-3 bg-red-600/10 text-red-600 rounded-xl text-[9px] font-black uppercase">Hapus PIN</button>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                    </main>
-                </div>
-            );
 
-            const generateFullReport = () => {
-                return `🇲🇨 SUMBER : APLIKASI CSID.PRO
+                        {showAddPinForm && (
+                            <div className="absolute inset-0 bg-black/95 z-[500] flex items-center justify-center p-6 backdrop-blur-xl">
+                                <div className="bg-[#121212] w-full max-w-[320px] rounded-[3rem] p-8 border border-white/10 shadow-2xl">
+                                <h3 className="text-white text-center font-black text-xs uppercase mb-6 tracking-widest">Daftarkan PIN Baru</h3>
+                                <input id="new_pin_id" type="text" maxLength={6} placeholder="6-DIGIT PIN" className="w-full bg-black border border-white/10 p-5 rounded-2xl text-center text-2xl font-black text-white mb-4 outline-none" />
+                                <select id="new_pin_dur" className="w-full bg-black border border-white/10 p-4 rounded-xl text-xs text-white mb-6 uppercase font-bold">
+                                    {durationOptions.map(d => <option key={d.label} value={d.ms}>{d.label}</option>)}
+                                </select>
+                                <div className="flex gap-3">
+                                    <button onClick={() => setShowAddPinForm(false)} className="flex-1 bg-slate-900 text-white py-4 rounded-xl font-black text-[10px] uppercase">Batal</button>
+                                    <button onClick={async () => {
+                                        const id = document.getElementById('new_pin_id').value;
+                                        const dur = document.getElementById('new_pin_dur').value;
+                                        if (id.length < 4) return;
+                                        const expiry = dur === 'UNLIMITED' ? 'UNLIMITED' : Date.now() + (dur === '3600000' ? 3600000 : parseInt(dur));
+                                        await db.collection('csid_pro_pins').doc(id).set({ expiry, role: 'user', isBlocked: false, deviceId: null });
+                                        setShowAddPinForm(false); showMsg("PIN BERHASIL AKTIF");
+                                    }} className="flex-1 bg-emerald-600 text-white py-4 rounded-xl font-black text-[10px] uppercase">Aktifkan</button>
+                                </div>
+                                </div>
+                            </div>
+                        )}
 
-🚻 IDENTITAS PEMILIK :
-----------------------------------------
-NAMA : ${getVal('Nama')}
-NIK : ${getVal('NIK')}
-MSSDN : ${getVal('HP')}
-ALAMAT : ${getVal('Alamat')}
+                        {extendingPin && (
+                            <div className="absolute inset-0 bg-black/95 z-[500] flex items-center justify-center p-6 backdrop-blur-xl">
+                                <div className="bg-[#121212] w-full max-w-[320px] rounded-[3rem] p-8 border border-white/10 shadow-2xl">
+                                <h3 className="text-white text-center font-black text-xs uppercase mb-6 tracking-widest">Tambah Masa Aktif</h3>
+                                <select id="ext_pin_dur" className="w-full bg-black border border-white/10 p-4 rounded-xl text-xs text-white mb-6 uppercase font-bold">
+                                    {durationOptions.map(d => <option key={d.label} value={d.ms}>{d.label}</option>)}
+                                </select>
+                                <div className="flex gap-3">
+                                    <button onClick={() => setExtendingPin(null)} className="flex-1 bg-slate-900 text-white py-4 rounded-xl font-black text-[10px] uppercase">Batal</button>
+                                    <button onClick={async () => {
+                                        const dur = document.getElementById('ext_pin_dur').value;
+                                        const curExp = (extendingPin.expiry === 'UNLIMITED' || isNaN(extendingPin.expiry)) ? Date.now() : extendingPin.expiry;
+                                        const baseTime = Math.max(curExp, Date.now());
+                                        const expiry = dur === 'UNLIMITED' ? 'UNLIMITED' : baseTime + parseInt(dur);
+                                        await db.collection('csid_pro_pins').doc(extendingPin.id).update({ expiry });
+                                        setExtendingPin(null); showMsg("DURASI DIPERPANJANG");
+                                    }} className="flex-1 bg-blue-600 text-white py-4 rounded-xl font-black text-[10px] uppercase">Proses</button>
+                                </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                );
+            };
 
-🚘 DATA KENDARAAN :
-----------------------------------------
-NOPOL : ${plate.toUpperCase()}
-MEREK : ${getVal('Merk')}
-TYPE : ${getVal('Tipe')}
-TAHUN : ${getVal('Tahun')}
-WARNA : ${getVal('Warna')}
-CYLINDER : ${getVal('CC')}
-JENIS BBM : ${getVal('BBM')}
-
-📙 DOKUMEN RESMI :
-----------------------------------------
-NOKA : ${getVal('Noka')}
-NOSIN : ${getVal('Nosin')}
-NO. BPKB : ${getVal('BPKB')}
-NO. STNK : ${getVal('STNK')}
-TGL DAFTAR : ${getVal('Tgl')}
-----------------------------------------
-🔊 LINK DAFTAR APLIKASI : CSID.PRO
-📞 Hub: https://wa.me/628136900872
-
-✍️ NOTE :
-DATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG BERLAKU PADA KENDARAAN. MENURUT UU YANG BERLAKU ⚖️`;
+            const renderResult = () => {
+                const report = `🇲🇨 SUMBER : APLIKASI CSID.PRO\n\n🚻 IDENTITAS PEMILIK :\n----------------------------------------\nNAMA : ${getVal('Nama')}\nNIK : ${getVal('NIK')}\nMSSDN : ${getVal('HP')}\nALAMAT : ${getVal('Alamat')}\n\n🚘 DATA KENDARAAN :\n----------------------------------------\nNOPOL : ${plate.toUpperCase()}\nMEREK : ${getVal('Merk')}\nTYPE : ${getVal('Tipe')}\nTAHUN : ${getVal('Tahun')}\nWARNA : ${getVal('Warna')}\nCYLINDER : ${getVal('CC')}\nJENIS BBM : ${getVal('BBM')}\n\n📙 DOKUMEN RESMI :\n----------------------------------------\nNOKA : ${getVal('Noka')}\nNOSIN : ${getVal('Nosin')}\nNO. BPKB : ${getVal('BPKB')}\nNO. STNK : ${getVal('STNK')}\nTGL DAFTAR : ${getVal('Tgl')}\n----------------------------------------\n🔊 LINK DAFTAR APLIKASI : CSID.PRO\n📞 Hub: https://wa.me/628136900872\n\n✍️ NOTE :\nDATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG BERLAKU PADA KENDARAAN. MENURUT UU YANG BERLAKU ⚖️`;
+                return (
+                    <div className="flex-1 flex flex-col p-4 bg-black text-white h-full overflow-hidden">
+                        <header className="flex items-center gap-4 mb-4 shrink-0">
+                            <button onClick={() => setCurrentPage('search')} className="p-2 bg-zinc-800 rounded-full text-white"><Icons.ChevronLeft /></button>
+                            <h2 className="font-black text-xl text-white uppercase">Hasil Resmi</h2>
+                        </header>
+                        <div className="flex-1 overflow-y-auto scrollbar-hide bg-[#0f0f0f] p-4 rounded-2xl font-mono text-[11px] leading-relaxed whitespace-pre select-text text-white">{report}</div>
+                        <div className="mt-4 flex flex-col gap-2 shrink-0">
+                            <button onClick={() => { const el = document.createElement('textarea'); el.value = report; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); showMsg("LAPORAN DISALIN"); }} className="w-full bg-orange-500 py-5 rounded-[2rem] font-black uppercase text-xs text-white shadow-xl">Salin Laporan</button>
+                            <button onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(report)}`)} className="w-full bg-emerald-600 py-5 rounded-[2rem] font-black uppercase text-xs text-white shadow-xl">Kirim ke WhatsApp</button>
+                        </div>
+                    </div>
+                );
             };
 
             return (
@@ -365,115 +444,9 @@ DATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG
                     <div className="mobile-shell">
                         {currentPage === 'welcome' && renderWelcome()}
                         {currentPage === 'search' && renderSearch()}
-                        
-                        {currentPage === 'admin' && (
-                            <div className="flex-1 flex flex-col p-4 bg-black text-white overflow-hidden">
-                                <div className="flex items-center gap-4 mb-4 shrink-0">
-                                    <button onClick={() => setCurrentPage('search')} className="p-2 bg-zinc-800 rounded-full"><Icons.ChevronLeft /></button>
-                                    <h2 className="font-black text-xl uppercase text-white">Master Panel</h2>
-                                </div>
-                                <div className="flex-1 overflow-y-auto scrollbar-hide space-y-4 pb-12">
-                                    <div className="bg-zinc-900 p-6 rounded-[2rem] border border-white/5">
-                                        <p className="text-[10px] font-bold text-slate-500 mb-2 uppercase tracking-widest">Update Broadcast</p>
-                                        <textarea value={broadcast} onChange={e => setBroadcast(e.target.value)} className="w-full bg-black border border-white/10 rounded-2xl p-4 text-xs text-white outline-none h-16 mb-4" />
-                                        <button onClick={async () => { await db.collection('csid_pro').doc('settings').set({ text: broadcast }); showMsg("UPDATE BERHASIL"); }} className="w-full bg-orange-500 py-4 rounded-2xl font-black text-xs uppercase text-white">Simpan Pesan</button>
-                                    </div>
-                                    <button onClick={() => setShowAddPinForm(true)} className="w-full bg-emerald-600 py-6 rounded-[2rem] font-black text-lg">TAMBAH PIN BARU</button>
-                                    <div className="space-y-4">
-                                        {managedPins.map(p => (
-                                            <div key={p.id} className="bg-zinc-900 p-5 rounded-[2.5rem] border border-white/5 relative">
-                                                <p className="text-3xl font-black text-orange-500 tracking-widest">{p.id}</p>
-                                                <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase">SISA: {formatExpiry(p.expiry)}</p>
-                                                <p className="text-[8px] text-slate-600 font-bold mb-3 uppercase">HP: {p.deviceId || 'BELUM TERIKAT'}</p>
-                                                <div className="grid grid-cols-3 gap-2">
-                                                    <button onClick={() => db.collection('csid_pro_pins').doc(p.id).update({ isBlocked: !p.isBlocked })} className="py-3 bg-orange-600 rounded-xl text-[9px] font-black uppercase text-white">{p.isBlocked ? 'Buka' : 'Sekat'}</button>
-                                                    <button onClick={() => setExtendingPin(p)} className="py-3 bg-emerald-600 rounded-xl text-[9px] font-black uppercase text-white">Durasi</button>
-                                                    <button onClick={() => db.collection('csid_pro_pins').doc(p.id).update({ deviceId: null })} className="py-3 bg-blue-600 rounded-xl text-[9px] font-black uppercase text-white">Reset HP</button>
-                                                </div>
-                                                <button onClick={() => db.collection('csid_pro_pins').doc(p.id).delete()} className="w-full mt-2 py-3 bg-red-600/10 text-red-600 rounded-xl text-[9px] font-black uppercase">Hapus PIN</button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {currentPage === 'result' && (
-                            <div className="flex-1 flex flex-col p-4 bg-black text-white overflow-hidden">
-                                <div className="flex items-center gap-4 mb-4 shrink-0">
-                                    <button onClick={() => setCurrentPage('search')} className="p-2 bg-zinc-800 rounded-full"><Icons.ChevronLeft /></button>
-                                    <h2 className="font-black text-xl text-white">HASIL RESMI</h2>
-                                </div>
-                                <div className="flex-1 overflow-y-auto scrollbar-hide bg-[#0f0f0f] p-4 rounded-2xl font-mono text-[11px] leading-relaxed whitespace-pre select-text text-white">
-                                    {generateFullReport()}
-                                </div>
-                                <div className="mt-4 flex flex-col gap-2 shrink-0">
-                                    <button onClick={() => {
-                                        const el = document.createElement('textarea');
-                                        el.value = generateFullReport();
-                                        document.body.appendChild(el); el.select(); document.execCommand('copy');
-                                        document.body.removeChild(el); showMsg("LAPORAN DISALIN");
-                                    }} className="w-full bg-orange-500 py-5 rounded-[2rem] font-black uppercase text-xs text-white">Salin Laporan</button>
-                                    <button onClick={() => {
-                                        const txt = generateFullReport();
-                                        window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`);
-                                    }} className="w-full bg-emerald-600 py-5 rounded-[2rem] font-black uppercase text-xs text-white">Kirim ke WhatsApp</button>
-                                </div>
-                            </div>
-                        )}
+                        {currentPage === 'admin' && renderAdmin()}
+                        {currentPage === 'result' && renderResult()}
                     </div>
-
-                    {}
-                    {showAddPinForm && (
-                        <div className="absolute inset-0 bg-black/95 z-[500] flex items-center justify-center p-6 backdrop-blur-sm">
-                            <div className="bg-[#121212] w-full max-w-[320px] rounded-[3rem] p-8 border border-white/10">
-                                <h3 className="text-white text-center font-black text-xs uppercase mb-6 tracking-widest">Daftar PIN Baru</h3>
-                                <input id="new_pin_id" type="text" maxLength={6} placeholder="6-DIGIT PIN" className="w-full bg-black border border-white/10 p-5 rounded-2xl text-center text-2xl font-black text-white mb-4 outline-none" />
-                                <select id="new_pin_dur" className="w-full bg-black border border-white/10 p-4 rounded-xl text-xs text-white mb-6 uppercase font-bold outline-none">
-                                    <option value={3600000}>1 JAM</option>
-                                    <option value={86400000}>1 HARI</option>
-                                    {[...Array(30)].map((_,i) => <option key={i} value={(i+2)*86400000}>{i+2} HARI</option>)}
-                                    <option value="UNLIMITED">UNLIMITED</option>
-                                </select>
-                                <div className="flex gap-3">
-                                    <button onClick={() => setShowAddPinForm(false)} className="flex-1 bg-zinc-800 py-4 rounded-xl font-black text-[10px] uppercase text-white">Batal</button>
-                                    <button onClick={async () => {
-                                        const id = document.getElementById('new_pin_id').value;
-                                        const dur = document.getElementById('new_pin_dur').value;
-                                        if (id.length < 4) return;
-                                        const expiry = dur === 'UNLIMITED' ? 'UNLIMITED' : Date.now() + parseInt(dur);
-                                        await db.collection('csid_pro_pins').doc(id).set({ expiry, role: 'user', isBlocked: false, deviceId: null });
-                                        setShowAddPinForm(false); showMsg("PIN AKTIF");
-                                    }} className="flex-1 bg-emerald-600 py-4 rounded-xl font-black text-[10px] uppercase text-white">Aktifkan</button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {extendingPin && (
-                        <div className="absolute inset-0 bg-black/95 z-[500] flex items-center justify-center p-6 backdrop-blur-sm">
-                            <div className="bg-[#121212] w-full max-w-[320px] rounded-[3rem] p-8 border border-white/10">
-                                <h3 className="text-white text-center font-black text-xs uppercase mb-6 tracking-widest">Perpanjang Durasi</h3>
-                                <select id="ext_pin_dur" className="w-full bg-black border border-white/10 p-4 rounded-xl text-xs text-white mb-6 uppercase font-bold outline-none">
-                                    <option value={3600000}>+1 JAM</option>
-                                    <option value={86400000}>+1 HARI</option>
-                                    {[...Array(30)].map((_,i) => <option key={i} value={(i+2)*86400000}>+{i+2} HARI</option>)}
-                                    <option value="UNLIMITED">UNLIMITED</option>
-                                </select>
-                                <div className="flex gap-3">
-                                    <button onClick={() => setExtendingPin(null)} className="flex-1 bg-zinc-800 py-4 rounded-xl font-black text-[10px] uppercase text-white">Batal</button>
-                                    <button onClick={async () => {
-                                        const dur = document.getElementById('ext_pin_dur').value;
-                                        const base = (extendingPin.expiry === 'UNLIMITED') ? Date.now() : Math.max(extendingPin.expiry || Date.now(), Date.now());
-                                        const expiry = dur === 'UNLIMITED' ? 'UNLIMITED' : base + parseInt(dur);
-                                        await db.collection('csid_pro_pins').doc(extendingPin.id).update({ expiry });
-                                        setExtendingPin(null); showMsg("DURASI DIPERPANJANG");
-                                    }} className="flex-1 bg-blue-600 py-4 rounded-xl font-black text-[10px] uppercase text-white">Proses</button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
                     {showPinModal && (
                         <div className="absolute inset-0 bg-black/95 z-[500] flex items-center justify-center p-6 backdrop-blur-sm">
                             <div className="bg-[#121212] w-full max-w-[320px] rounded-[3rem] p-8 border border-white/10 text-center shadow-2xl">
@@ -486,9 +459,8 @@ DATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG
                             </div>
                         </div>
                     )}
-                    
-                    {notification && <div className="fixed top-8 left-1/2 -translate-x-1/2 bg-orange-500 text-white px-6 py-3 rounded-full font-black text-[10px] z-[1000] shadow-2xl animate-bounce uppercase tracking-widest">{notification}</div>}
-                    {loading && <div className="fixed inset-0 bg-black/80 z-[1000] flex items-center justify-center flex-col"><div className="w-12 h-12 border-4 border-white/10 border-t-orange-500 rounded-full animate-spin mb-4"></div><p className="text-white text-[10px] font-black tracking-widest uppercase">Memproses...</p></div>}
+                    {notification && <div className="fixed top-8 left-1/2 -translate-x-1/2 bg-orange-500 text-white px-6 py-3 rounded-full font-black text-[10px] z-[1000] shadow-2xl animate-bounce uppercase tracking-widest border-2 border-white/20">{notification}</div>}
+                    {loading && <div className="fixed inset-0 bg-black/80 z-[1000] flex items-center justify-center flex-col"><div className="w-12 h-12 border-4 border-white/10 border-t-orange-500 rounded-full animate-spin mb-4"></div><p className="text-white text-[10px] font-black tracking-widest uppercase">Sinkronisasi Sistem...</p></div>}
                 </div>
             );
         };
