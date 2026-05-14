@@ -1,552 +1,520 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CSID.PRO - Master V51000 Sultan Edition</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <style>
-        /* */
-        * { 
-            box-sizing: border-box; 
-            margin: 0; padding: 0; 
-            -webkit-tap-highlight-color: transparent; 
-            outline: none; 
-            font-family: 'Arial', sans-serif !important; 
-            font-weight: 900 !important; 
-            touch-action: manipulation;
-        }
+import React, { useState, useEffect, useRef } from 'react';
+import { initializeApp } from "firebase/app";
+import { getAuth, signInAnonymously } from "firebase/auth";
+import { getFirestore, doc, setDoc, onSnapshot, collection, updateDoc, getDoc, deleteDoc } from "firebase/firestore";
 
-        :root {
-            --vibrant-orange: #ff8c00; 
-            --neon-red: #ff3131;
-            --kuning-stabilo: #ccff00;
-            --neon-green: #10b981;
-            --kb-height: 22px; 
-        }
+// Konfigurasi Firebase Asli
+const firebaseConfig = {
+  apiKey: "AIzaSyBonuHp4nd-YZKWV5IM_2HRCfJ2TQ4zJaY",
+  authDomain: "gen-lang-client-0221970857.firebaseapp.com",
+  projectId: "gen-lang-client-0221970857",
+  storageBucket: "gen-lang-client-0221970857.firebasestorage.app",
+  messagingSenderId: "483674298302",
+  appId: "1:483674298302:web:8c6ccf111af4de7bbecbef",
+  measurementId: "G-KSVJJWZZVP"
+};
 
-        html, body { width: 100%; height: 100%; overflow: hidden; background-color: #000; color: #fff; }
-        .app-container { width: 100vw; height: 100dvh; background-color: #000; display: flex; justify-content: center; align-items: center; position: relative; }
-        
-        @media (min-width: 450px) { 
-            .mobile-frame { width: 420px; height: 850px; border: 12px solid #1e293b; border-radius: 50px; box-shadow: 0 0 100px rgba(255, 140, 0, 0.2); position: relative; overflow: hidden; background-color: #000; } 
-        }
-        @media (max-width: 449px) { 
-            .mobile-frame { width: 100%; height: 100%; position: relative; overflow: hidden; background-color: #000; } 
-        }
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const MASTER_PIN = "280189"; 
+const ADMIN_WA = "628136900872";
 
-        .page { position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; z-index: 100; background-color: #000; overflow: hidden; }
-        .page.active { display: flex !important; }
+const Icons = {
+  Shield: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>,
+  Power: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>,
+  Search: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+  Camera: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>,
+  Clipboard: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>,
+  ChevronLeft: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><polyline points="15 18 9 12 15 6"/></svg>,
+  Plus: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+  Minus: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-5"><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+  Backspace: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>
+};
 
-        #splash-screen { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .splash-logo { font-size: 56px; color: var(--vibrant-orange); letter-spacing: 8px; text-shadow: 0 0 30px var(--vibrant-orange); font-weight: 900; animation: pulse 1s infinite ease-in-out; }
-        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.95); } }
+const GlobalStyles = () => (
+  <style>{`
+    @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+    @keyframes glowPulse { 0% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.2); } 50% { box-shadow: 0 0 25px rgba(255, 255, 255, 0.6); } 100% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.2); } }
+    .animate-marquee { display: inline-block; white-space: nowrap; animation: scrollText 18s linear infinite; }
+    .key-press-effect:active { transform: scale(0.92); opacity: 0.8; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .glow-white { animation: glowPulse 2.5s infinite; }
+  `}</style>
+);
 
-        #loading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 99998; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .loader-ring { width: 60px; height: 60px; border: 6px solid #fff; border-top: 6px solid var(--vibrant-orange); border-radius: 50%; animation: spin 0.5s linear infinite; margin-bottom: 15px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* HALAMAN LOGIN PERSIS GAMBAR 2 */
-        .login-scroll-system { flex: 1; overflow-y: auto; width: 100%; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; justify-content: center; }
-        .welcome-title { text-align: center; color: #fff; font-size: 14px; line-height: 1.6; text-transform: uppercase; margin-bottom: 40px; letter-spacing: 2px; opacity: 0.8; }
-        .welcome-title span { color: var(--vibrant-orange); display: block; font-size: 18px; margin-top: 5px; }
-        .login-card-v9100 { background: #0a0a0a; border: 2.5px solid #222; border-radius: 50px; padding: 45px 30px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,1); position: relative; border-top: 3px solid var(--vibrant-orange); }
-        .login-card-v9100 h1 { color: #fff; font-size: 58px; font-weight: 900; letter-spacing: 4px; margin-bottom: 20px; cursor: pointer; user-select: none; text-shadow: 0 0 20px rgba(255, 140, 0, 0.5); }
-        .id-dashboard-box { background: #000; border: 2px solid var(--vibrant-orange); border-radius: 35px; padding: 30px 15px; margin: 35px 0; box-shadow: inset 0 0 20px rgba(255, 140, 0, 0.2); }
-        .id-label-lux { color: #888; font-size: 10px; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 2px; font-weight: 900; }
-        .id-value-lux { color: var(--vibrant-orange); font-size: 46px; letter-spacing: 8px; font-weight: 900; text-shadow: 0 0 10px var(--vibrant-orange); }
-        .btn-login-online-lux { background: linear-gradient(180deg, var(--vibrant-orange) 0%, #cc7a00 100%); color: #000; width: 100%; padding: 25px; border-radius: 22px; font-size: 22px; font-weight: 900; text-transform: uppercase; border: 4px solid #000; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 18px; box-shadow: 0 8px 0 #000; transition: all 0.1s; }
-        .btn-wa-reg { background: linear-gradient(90deg, #25D366 0%, #128C7E 100%); color: #fff; width: 100%; max-width: 380px; padding: 22px; border-radius: 35px; font-size: 15px; font-weight: 900; text-transform: uppercase; border: 3px solid #000; margin-top: 35px; display: flex; align-items: center; justify-content: center; gap: 15px; cursor: pointer; box-shadow: 0 6px 0 #000; }
-
-        /* HALAMAN PENCARIAN */
-        .lux-header { background: #000; padding: 12px 18px; border-bottom: 2px solid #222; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; min-height: 70px; }
-        .banner-info-box { text-align: right; line-height: 1.2; }
-        .banner-pin-label { font-size: 11px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
-        .banner-time-label { font-size: 11px; color: var(--vibrant-orange); text-transform: uppercase; }
-        .broadcast-container { background: #111; border-bottom: 1.5px solid #333; height: 35px; display: flex; align-items: center; overflow: hidden; position: relative; width: 100%; }
-        .broadcast-content { flex: 1; white-space: nowrap; overflow: hidden; position: relative; width: 100%; }
-        .broadcast-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; color: #fff; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
-        @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
-        .search-outer { background: #000; border: 3px solid #334155; border-radius: 20px; margin: 15px; padding: 10px 15px; min-height: 90px; display: flex; align-items: center; position: relative; gap: 10px; overflow: hidden; }
-        #plateDisplay { flex: 1; background: transparent; border: none; color: #fff; font-size: 2.2rem; text-align: center; letter-spacing: 2px; text-transform: uppercase; width: 100%; transition: font-size 0.2s ease-in-out; white-space: nowrap; }
-        .action-row-sultan { display: flex; gap: 8px; padding: 0 10px; margin-bottom: 20px; justify-content: center; width: 100%; }
-        .btn-sq-lux { flex: 1; height: 62px; border-radius: 15px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2.5px solid #000; box-shadow: 0 5px 0 #000; transition: all 0.1s; }
-        .btn-sq-lux svg { width: 30px; height: 30px; stroke-width: 2.5; fill: none; }
-        .c-stabilo { background-color: var(--kuning-stabilo); }
-        .c-red { background-color: var(--neon-red); }
-        .c-orange { background-color: var(--vibrant-orange); }
-        .kb-container { background: #000; padding: 10px 8px 40px 8px; border-top: 2px solid #111; flex-shrink: 0; }
-        .kb-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 6px; }
-        .kb-btn { background: #334155; border-radius: 8px; padding: var(--kb-height) 0; flex: 1; color: #fff; font-size: 18px; box-shadow: 0 4px 0 #000; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
-        .kb-btn:active { transform: translateY(2px); box-shadow: none; background: #fff; color: #000; }
-        .kb-orange-solid { background-color: var(--vibrant-orange) !important; color: #000 !important; }
-
-        /* HALAMAN ADMIN */
-        .admin-header-lux { background: #000; padding: 15px 20px; border-bottom: 2px solid #333; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; min-height: 80px; }
-        .admin-scroll { flex: 1; overflow-y: auto; padding: 15px; background: #0a0f18; padding-bottom: 120px; }
-        .agent-card-lux { background: #1a1a1a; border-radius: 25px; padding: 20px; margin-bottom: 15px; border: 1.5px solid #333; }
-        .agent-id-lux { font-size: 22px; color: var(--vibrant-orange); font-weight: 900; display: block; margin-bottom: 5px; }
-        .agent-sisa-lux { font-size: 11px; color: #888; text-transform: uppercase; display: block; margin-bottom: 4px; }
-        .agent-actions-lux { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-        .btn-act-pro { flex: 1; min-width: 80px; padding: 12px 0; border-radius: 12px; font-size: 10px; font-weight: 900; text-transform: uppercase; text-align: center; cursor: pointer; border: none; color: #000; transition: 0.1s; }
-        .bg-orange { background: var(--vibrant-orange); }
-        .bg-blue { background: #3b82f6; }
-        .bg-red { background: var(--neon-red); color: #fff; }
-        .bg-green { background: var(--neon-green); }
-
-        /* HALAMAN HASIL (BLACK MODE SULTAN) */
-        .scroll-area-report { flex: 1; overflow-y: auto; background: #000; padding: 10px 15px; }
-        .report-box { background: #000; font-family: 'Courier New', Courier, monospace !important; font-size: 13px; line-height: 1.5; color: #fff; white-space: pre-wrap; padding: 15px; border: 1px dashed #444; }
-        .footer-lux-result { background: #000; border-top: 2px solid #222; padding: 15px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
-        .btn-sultan-big { width: 100%; height: 75px; border-radius: 20px; font-size: 16px; text-transform: uppercase; display: flex; align-items: center; justify-content: center; font-weight: 900; border: none; cursor: pointer; }
-
-        /* MODALS */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; display: none; align-items: center; justify-content: center; padding: 25px; }
-        .modal-card { background: #111; border-radius: 45px; padding: 40px; width: 100%; max-width: 400px; text-align: center; border: 2px solid #334155; }
-        .modal-input { width: 100%; background: #000; border: 2px solid #fff; border-radius: 15px; padding: 20px; text-align: center; font-size: 24px; margin: 20px 0; color: #fff; }
-    </style>
-</head>
-<body>
-
-    <!-- OVERLAYS -->
-    <div id="splash-screen"><div class="splash-logo">CSID.PRO</div></div>
-    <div id="loading-overlay">
-        <div class="loader-ring"></div>
-        <p class="text-orange-500 font-black tracking-widest animate-pulse">LOADING DATABASE...</p>
+const AppWrapper = ({ children }) => (
+  <div className="fixed inset-0 bg-[#050505] flex items-center justify-center p-0 overflow-hidden font-sans select-none text-slate-200">
+    <GlobalStyles />
+    <div className="relative w-full max-w-[400px] h-full max-h-[820px] bg-black shadow-2xl flex flex-col sm:border-[10px] sm:border-[#1a1a1a] sm:rounded-[3.5rem] overflow-hidden">
+      {children}
     </div>
+  </div>
+);
 
-    <!-- MAIN APP CONTAINER -->
-    <div class="app-container">
-        <div class="mobile-frame">
-            
-            <!-- HALAMAN 1: LOGIN -->
-            <div id="pageLogin" class="page active">
-                <div class="login-scroll-system">
-                    <h2 class="welcome-title">SELAMAT DATANG DI APLIKASI<span>CEK SAMSAT RANMOR INDONESIA</span></h2>
-                    <div class="login-card-v9100">
-                        <h1 id="logoMaster" onclick="window.hitMaster()">CSID.PRO</h1>
-                        <div class="id-dashboard-box">
-                            <p class="id-label-lux">ID PENDAFTARAN ANDA :</p>
-                            <h2 id="myOnlineID" class="id-value-lux">------</h2>
-                        </div>
-                        <button id="btnLogin" class="btn-login-online-lux" onclick="window.handleLogin()">
-                            <svg viewBox="0 0 24 24" style="stroke:#000; width:30px; height:30px; fill:none; stroke-width:3;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-                            LOGIN ONLINE
-                        </button>
-                    </div>
-                    <button class="btn-wa-reg" onclick="window.handleWaReg()">
-                        <svg viewBox="0 0 24 24" style="width:28px; height:28px; fill:#fff;"><path d="M12.011 2c-5.511 0-9.989 4.478-9.989 9.989 0 1.761.462 3.47 1.336 4.977l-1.417 5.176 5.302-1.391c1.455.792 3.09 1.209 4.757 1.209 5.511 0 9.989-4.478 9.989-9.989 0-5.511-4.478-9.989-9.989-9.989zm5.221 14.15c-.227.639-1.301 1.232-1.785 1.282-.483.048-.96.223-3.136-.632-2.784-1.096-4.581-3.924-4.721-4.11-.139-.187-1.139-1.513-1.139-2.887 0-1.374.72-2.051.977-2.327.257-.276.559-.345.746-.345.186 0 .372.001.534.009.171.008.402-.065.63.488.227.554.779 1.901.848 2.039.069.138.115.3.023.485-.093.186-.139.3-.279.462-.14.161-.293.36-.419.483-.139.138-.284.288-.123.565.161.277.716 1.181 1.54 1.916.823.734 1.519.963 1.834 1.102.314.138.498.115.684-.092.186-.208.79-.922.999-1.244.21-.322.419-.276.706-.171.288.106 1.821.859 2.135 1.016.314.157.523.23.6.36.077.13.077.755-.15 1.394z"/></svg> DAFTAR VIA WHATSAPP
-                    </button>
-                </div>
+const App = () => {
+  const [currentPage, setCurrentPage] = useState('welcome');
+  const [showPinModal, setShowPinModal] = useState(false);
+  const [pinInput, setPinInput] = useState('');
+  const [userRole, setUserRole] = useState(null);
+  const [userExpiry, setUserExpiry] = useState(null);
+  const [activePin, setActivePin] = useState('');
+  const [plate, setPlate] = useState('');
+  const [kbHeight, setKbHeight] = useState(22); 
+  const [broadcast, setBroadcast] = useState("MEMUAT BROADCAST...");
+  const [loading, setLoading] = useState(false);
+  const [searchResult, setSearchResult] = useState(null);
+  const [notification, setNotification] = useState(null);
+  const [managedPins, setManagedPins] = useState([]);
+  const [showAddPinForm, setShowAddPinForm] = useState(false);
+  const [extendingPin, setExtendingPin] = useState(null);
+  const [registrationId, setRegistrationId] = useState('');
+  const [adminTapCount, setAdminTapCount] = useState(0);
+
+  useEffect(() => {
+    let savedRegId = localStorage.getItem('csid_reg_id');
+    if (!savedRegId) {
+      savedRegId = Math.floor(100000 + Math.random() * 900000).toString();
+      localStorage.setItem('csid_reg_id', savedRegId);
+    }
+    setRegistrationId(savedRegId);
+
+    const initAuth = async () => {
+      try { await signInAnonymously(auth); } catch (e) {}
+    };
+    initAuth();
+
+    const broadcastRef = doc(db, 'csid_pro', 'settings');
+    const unsubBroadcast = onSnapshot(broadcastRef, (doc) => {
+      if (doc.exists()) setBroadcast(doc.data().text || "SELAMAT DATANG DI CSID.PRO");
+    });
+
+    const pinsRef = collection(db, 'csid_pro_pins');
+    const unsubPins = onSnapshot(pinsRef, (snapshot) => {
+      const pins = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      setManagedPins(pins);
+    });
+
+    return () => { unsubBroadcast(); unsubPins(); };
+  }, []);
+
+  const showMsg = (text) => {
+    setNotification(text);
+    setTimeout(() => setNotification(null), 3000);
+  };
+
+  const getDeviceId = () => {
+    let id = localStorage.getItem('csid_device_id');
+    if (!id) {
+        id = 'DEV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        localStorage.setItem('csid_device_id', id);
+    }
+    return id;
+  };
+
+  const handleAdminLogin = () => {
+    if (pinInput === MASTER_PIN) {
+        setUserRole('master');
+        setUserExpiry('UNLIMITED');
+        setActivePin('MASTER');
+        setCurrentPage('search');
+        setShowPinModal(false);
+        setPinInput('');
+        showMsg("AKSES MASTER DIBUKA");
+    } else {
+        showMsg("PIN MASTER SALAH");
+        setPinInput('');
+    }
+  };
+
+  const handleLoginOnline = async () => {
+    setLoading(true);
+    const myDeviceId = getDeviceId();
+    try {
+        const pinDoc = await getDoc(doc(db, 'csid_pro_pins', registrationId));
+        if (!pinDoc.exists()) throw new Error("ID BELUM DIAKTIFKAN ADMIN");
+        
+        const data = pinDoc.data();
+        if (data.isBlocked) throw new Error("AKSES DISEKAT / DIBLOKIR");
+        if (data.expiry !== 'UNLIMITED' && Date.now() > data.expiry) throw new Error("MASA AKTIF HABIS");
+        if (data.deviceId && data.deviceId !== myDeviceId) throw new Error("ID TERIKAT DI HP LAIN");
+
+        if (!data.deviceId) {
+            await updateDoc(doc(db, 'csid_pro_pins', registrationId), { deviceId: myDeviceId });
+        }
+
+        setUserRole('user');
+        setUserExpiry(data.expiry);
+        setActivePin(registrationId);
+        setCurrentPage('search');
+    } catch (err) {
+        showMsg(err.message);
+    } finally {
+        setLoading(false);
+    }
+  };
+
+  const fetchData = async () => {
+    const targetPlate = plate.replace(/\s/g, '').toUpperCase();
+    if (!targetPlate) { showMsg("KETIK PLAT NOMOR"); return; }
+    setLoading(true);
+
+    const apiKey = "KORLANTAS_250588ReALtimE";
+    const url = `http://202.155.143.156/tnkb_api_key.php?q=${targetPlate}&apikey=${apiKey}`;
+    const proxy = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`;
+
+    try {
+      const res = await fetch(proxy);
+      const json = await res.json();
+      if (json && Object.keys(json).length > 0 && !json.error) {
+        setSearchResult(json);
+        setCurrentPage('result');
+      } else { showMsg("DATA TIDAK DITEMUKAN"); }
+    } catch (err) { showMsg("SERVER SIBUK / ERROR"); } finally { setLoading(false); }
+  };
+
+  const getVal = (cat) => {
+    if (!searchResult) return "-";
+    const keys = {
+      Nama: ['NamaPemilik', 'nama', 'nm_pmlk'], NIK: ['NoKTP', 'nik', 'no_ktp'], HP: ['NoHP', 'msisdn', 'hp'],
+      Alamat: ['AlamatPemilik', 'alamat'], Merk: ['Merk', 'merk', 'merek'], Tipe: ['Type', 'type', 'tipe'],
+      Tahun: ['TahunPembuatan', 'tahun'], Warna: ['Warna', 'warna'], CC: ['IsiCylinder', 'cc'],
+      BBM: ['BBM', 'bahan_bakar'], Noka: ['NoRangka', 'noka', 'vin'], Nosin: ['NoMesin', 'nosin'],
+      BPKB: ['NoBPKB', 'bpkb'], STNK: ['NoSTNK', 'stnk'], Tgl: ['TanggalDaftar', 'tgl_daftar']
+    };
+    const targets = keys[cat] || [cat];
+    const find = (obj, aliases) => {
+        for (let a of aliases) {
+            const k = Object.keys(obj).find(key => key.toLowerCase() === a.toLowerCase());
+            if (k && obj[k]) return obj[k];
+        }
+        for (let k in obj) if (typeof obj[k] === 'object' && obj[k]) {
+            const res = find(obj[k], aliases); if (res) return res;
+        }
+        return null;
+    };
+    return find(searchResult, targets) || "-";
+  };
+
+  const formatExpiry = (exp) => {
+    if (exp === 'UNLIMITED') return 'NOLIMIT';
+    const diff = exp - Date.now();
+    if (diff <= 0) return 'EXPIRED';
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    return days > 0 ? `${days}H ${hours}J` : `${hours}J`;
+  };
+
+  if (currentPage === 'welcome') {
+    return (
+      <AppWrapper>
+        <div className="flex-1 flex flex-col items-center p-8 justify-between pb-16 bg-black text-white">
+          <div className="text-center mt-12">
+            <p className="text-2xl font-black tracking-widest uppercase mb-1 text-white">SELAMAT DATANG DI APLIKASI</p>
+            <h2 className="font-black text-2xl tracking-tight uppercase leading-tight max-w-[320px] mx-auto text-white">
+              CEK SAMSAT RANMOR INDONESIA
+            </h2>
+          </div>
+          <div className="w-full flex flex-col items-center">
+            <h1 
+              onClick={() => {
+                const count = adminTapCount + 1;
+                setAdminTapCount(count);
+                if (count === 5) { setShowPinModal(true); setAdminTapCount(0); }
+              }}
+              className="text-7xl font-black tracking-tighter mb-12 cursor-pointer active:scale-95 transition-transform text-white" 
+              style={{ textShadow: '0 0 25px rgba(255,255,255,0.7)' }}
+            >
+              CSID.PRO
+            </h1>
+            <div className="w-full bg-black border-2 border-white rounded-[2.5rem] p-8 text-center mb-10 glow-white">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-3 text-white opacity-80">ID Pendaftaran Anda :</p>
+              <p className="text-6xl font-black tracking-widest text-white">{registrationId}</p>
             </div>
-
-            <!-- HALAMAN 2: PENCARIAN -->
-            <div id="pageSearch" class="page">
-                <div class="lux-header">
-                    <div class="flex items-center gap-2">
-                        <svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2.5;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-                        <h2 class="text-[14px] text-white tracking-widest uppercase">CSID.PRO</h2>
-                    </div>
-                    <div class="banner-info-box">
-                        <p class="banner-pin-label" id="uName">PIN : -</p>
-                        <p class="banner-time-label" id="uExp">SISA: --</p>
-                    </div>
-                </div>
-                <div class="broadcast-container"><div class="broadcast-content"><span id="broadcastTickerText" class="broadcast-text">MEMUAT PESAN BROADCAST TERBARU...</span></div></div>
-                <div class="flex-1 flex flex-col overflow-hidden">
-                    <div class="search-outer"><input type="text" id="plateDisplay" placeholder="KETIK DISINI ..." autocomplete="off" inputmode="none"></div>
-                    <div class="px-8 text-center text-[10px] opacity-60 uppercase mb-4 leading-relaxed">PERINGATAN ⚠️<br>DILARANG KERAS MENYALAHGUNAKAN APLIKASI INI TANPA IZIN RESMI CSID.PRO</div>
-                    <div class="action-row-sultan">
-                        <button class="btn-sq-lux c-stabilo" onclick="window.adj(-2)"><svg stroke="#000" viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
-                        <button class="btn-sq-lux c-stabilo" onclick="window.adj(2)"><svg stroke="#000" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
-                        <button class="btn-sq-lux c-stabilo" onclick="window.showMsg('Kamera Sedang Diperbaiki')"><svg stroke="#000" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
-                        <button class="btn-sq-lux c-stabilo" onclick="window.safeSwitch('pageResult')"><svg stroke="#000" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 12h6M9 16h6"/></svg></button>
-                        <button id="adminBtn" class="btn-sq-lux c-stabilo" onclick="window.showAdminIfMaster()"><svg stroke="#ef4444" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></button>
-                        <button class="btn-sq-lux c-red" onclick="window.doLogout()"><svg stroke="#fff" viewBox="0 0 24 24"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg></button>
-                        <button class="btn-sq-lux c-orange" onclick="window.doSearch()"><svg stroke="#000" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
-                    </div>
-                    <div id="keyboard" class="kb-container p-2"></div>
-                </div>
-            </div>
-
-            <!-- HALAMAN 3: MASTER CONTROL -->
-            <div id="pageAdmin" class="page">
-                <div class="admin-header-lux">
-                    <h2 class="text-white text-[16px] uppercase font-black">MASTER CONTROL</h2>
-                    <button onclick="window.safeSwitch('pageSearch')"><svg viewBox="0 0 24 24" style="width:30px; height:30px; stroke:var(--vibrant-orange); stroke-width:4; fill:none;"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
-                </div>
-                <div class="admin-scroll">
-                    <div class="grid grid-cols-3 gap-3 mb-6">
-                        <div class="bg-black/50 p-4 rounded-2xl text-center border border-white/10"><span id="statTotal" class="text-xl text-orange-500">0</span><p class="text-[8px]">AGEN</p></div>
-                        <div class="bg-black/50 p-4 rounded-2xl text-center border border-white/10"><span id="statActive" class="text-xl text-green-500">0</span><p class="text-[8px]">AKTIF</p></div>
-                        <div class="bg-black/50 p-4 rounded-2xl text-center border border-white/10"><span id="statOnline" class="text-xl text-blue-500">0</span><p class="text-[8px]">ONLINE</p></div>
-                    </div>
-                    <div class="mb-4">
-                        <textarea id="broadcastMsgInput" class="w-full bg-black border-2 border-gray-700 rounded-xl p-4 text-white text-sm" placeholder="PESAN BROADCAST..."></textarea>
-                        <button class="w-full bg-orange-500 p-4 rounded-xl mt-2 text-black font-black" onclick="window.sendBroadcast()">UPDATE BROADCAST</button>
-                    </div>
-                    <button class="w-full bg-emerald-600 text-white py-5 rounded-2xl mb-6 font-black uppercase text-lg" onclick="window.openAddAgentModal()">TAMBAH PIN BARU</button>
-                    <input type="text" id="adminSearchInput" class="w-full bg-black/40 border-2 border-orange-500 rounded-2xl p-4 text-center text-white mb-6 uppercase" placeholder="CARI PIN..." oninput="window.filterAgents()">
-                    <div id="agentListContainer"></div>
-                </div>
-            </div>
-
-            <!-- HALAMAN 4: HASIL (SULTAN BLACK FIX) -->
-            <div id="pageResult" class="page">
-                <div class="lux-header">
-                    <button class="p-4" onclick="window.safeSwitch('pageSearch')"><svg stroke="#fff" viewBox="0 0 24 24" style="width:24px; height:24px; fill:none; stroke-width:3;"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
-                    <span class="text-[11px] text-white uppercase font-black tracking-widest">HASIL RESMI CSID.PRO</span>
-                    <div class="banner-info-box"><p id="resPin" class="banner-pin-label">PIN: -</p></div>
-                </div>
-                <div id="resultArea" class="scroll-area-report"></div>
-                <div class="footer-lux-result">
-                    <button class="btn-sultan-big bg-orange-500 text-black mb-2" onclick="window.copyReport()">SALIN LAPORAN</button>
-                    <button class="btn-sultan-big bg-emerald-600 text-white" onclick="window.shareReport()">KIRIM KE WHATSAPP</button>
-                </div>
-            </div>
-
-            <!-- MODALS -->
-            <div id="adminGatewayModal" class="modal-overlay"><div class="modal-card"><h3 class="uppercase text-white font-black">MASTER ACCESS</h3><input type="number" id="masterPinInput" placeholder="6-DIGIT PIN" class="modal-input"><div class="flex gap-4"><button onclick="document.getElementById('adminGatewayModal').style.display='none'" class="flex-1 bg-zinc-800 py-4 rounded-2xl text-white">BATAL</button><button onclick="window.confirmMaster()" class="flex-1 bg-white text-black py-4 rounded-2xl font-black">KONFIRMASI</button></div></div></div>
-            <div id="addAgentModal" class="modal-overlay"><div class="modal-card"><h3 class="uppercase font-black text-white">DAFTARKAN PIN AGEN</h3><input type="number" id="newAgentPin" placeholder="PIN (6 DIGIT)" class="modal-input"><select id="newAgentDuration" class="modal-input text-sm"></select><div class="flex gap-4"><button onclick="document.getElementById('addAgentModal').style.display='none'" class="flex-1 bg-zinc-800 py-4 rounded-2xl text-white">BATAL</button><button onclick="window.processAddAgent()" class="flex-1 bg-orange-500 text-black py-4 rounded-2xl font-black">SIMPAN</button></div></div></div>
-            <div id="extendAgentModal" class="modal-overlay"><div class="modal-card"><h3 class="uppercase font-black text-white">PERPANJANG MASA AKTIF</h3><p id="extendPinLabel" class="text-orange-500 font-black text-xl my-2"></p><select id="extendDurationSelect" class="modal-input text-sm"></select><div class="flex gap-4"><button onclick="document.getElementById('extendAgentModal').style.display='none'" class="flex-1 bg-zinc-800 py-4 rounded-2xl text-white">BATAL</button><button onclick="window.processExtendAgent()" class="flex-1 bg-green-600 text-white py-4 rounded-2xl font-black">PROSES</button></div></div></div>
-            <div id="msgModal" class="modal-overlay"><div class="modal-card"><h3 class="mb-4 text-orange-500 uppercase font-black" id="msgTitle">INFO</h3><p id="msgText" class="mb-8 text-white text-sm text-center px-4"></p><button id="msgOkBtn" onclick="document.getElementById('msgModal').style.display='none'" class="w-full bg-white text-black py-4 rounded-xl font-black">OKE</button></div></div>
-
+            <button onClick={handleLoginOnline} className="w-full bg-white text-black py-6 rounded-2xl font-black flex items-center justify-center gap-3 active:scale-95 shadow-xl key-press-effect text-lg">
+              <Icons.Shield /> LOGIN ONLINE
+            </button>
+          </div>
+          <button onClick={() => window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(`Halo Admin CSID.PRO mohon aktivasi ID pendaftaran saya: ${registrationId}`)}`)} className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-6 rounded-[2.5rem] font-black flex items-center justify-center gap-3 active:scale-95 shadow-2xl key-press-effect text-lg">
+            DAFTAR VIA WHATSAPP
+          </button>
         </div>
-    </div>
+        {showPinModal && (
+          <div className="absolute inset-0 bg-black/95 backdrop-blur-xl z-[200] flex items-center justify-center p-6">
+            <div className="bg-[#121212] w-full max-w-[320px] rounded-[3rem] border border-white/10 p-8 shadow-2xl text-center">
+              <h3 className="text-white font-black text-xs tracking-widest uppercase mb-10 opacity-70">Akses Master Admin</h3>
+              <input autoFocus type="password" value={pinInput} onChange={(e) => setPinInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAdminLogin()} placeholder="PIN MASTER" className="w-full bg-black border border-white/10 rounded-2xl p-5 text-center text-2xl font-black text-white tracking-[0.6em] outline-none mb-8" />
+              <div className="flex gap-3">
+                <button onClick={() => setShowPinModal(false)} className="flex-1 py-4 bg-slate-900 text-white rounded-xl font-black text-[10px] uppercase tracking-widest key-press-effect text-white">Batal</button>
+                <button onClick={handleAdminLogin} className="flex-1 py-4 bg-white text-black rounded-xl font-black text-[10px] uppercase tracking-widest key-press-effect">Masuk</button>
+              </div>
+            </div>
+          </div>
+        )}
+      </AppWrapper>
+    );
+  }
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+  if (currentPage === 'search') {
+    return (
+      <AppWrapper>
+        <header className="px-5 py-4 flex items-center justify-between border-b border-white/5 bg-black z-50">
+          <div className="flex items-center gap-2">
+            <Icons.Shield />
+            <span className="font-black tracking-tighter text-xl text-white">CSID.PRO</span>
+          </div>
+          <div className="text-right">
+            <p className="text-[10px] font-black uppercase text-[#f97316]">PIN : {userRole === 'master' ? 'MASTER' : activePin}</p>
+            <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">SISA : {formatExpiry(userExpiry)}</p>
+          </div>
+        </header>
 
-        /* */
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "AIzaSyBonuHp4nd-YZKW5IM_2HRCG5wW9IM_I",
-            authDomain: "gen-lang-client-0221970857.firebaseapp.com",
-            projectId: "gen-lang-client-0221970857",
-            storageBucket: "gen-lang-client-0221970857.firebasestorage.app",
-            messagingSenderId: "483674298302",
-            appId: "1:483674298302:web:8c6ccf111af4de7bbecbef"
-        };
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'csid-pro-live'; 
+        <div className="h-8 bg-[#111] overflow-hidden flex items-center border-b border-white/5 shrink-0">
+          <div className="animate-marquee px-4 text-[10px] font-black text-white uppercase tracking-widest">{broadcast}</div>
+        </div>
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        <main className="flex-1 flex flex-col p-4 bg-black overflow-hidden relative">
+          <div className="w-full h-20 border-2 border-[#2e3b4e] rounded-[2rem] bg-black flex items-center justify-center px-6 mb-4 mt-2 overflow-hidden">
+             <input type="text" inputMode="none" value={plate} onChange={(e) => setPlate(e.target.value.toUpperCase().replace(/\s/g,''))} placeholder="KETIK DISINI ..." className={`bg-transparent w-full text-center outline-none font-black tracking-[0.2em] uppercase transition-all placeholder:text-slate-700 ${plate.length > 8 ? 'text-xl' : 'text-3xl'} text-white cursor-text`} />
+          </div>
 
-        const MAP = {
-            nama: ['NamaPemilik', 'nama_pemilik', 'nm_pmlk', 'nama'],
-            nik: ['NoKTP', 'nik', 'no_identitas'],
-            msisdn: ['NoHP', 'msisdn', 'phone', 'no_hp'],
-            email: ['Email', 'email_pmlk'],
-            pekerjaan: ['Pekerjaan', 'job'],
-            alamat: ['alamat', 'almt_pmlk', 'address', 'AlamatPemilik'],
-            nopol: ['nopol', 'no_polisi', 'tnkb', 'NoPolisi'],
-            nopol_awal: ['prefix', 'wilayah', 'kd_wil', 'nopol_depan'],
-            nopol_nomor: ['angka', 'nomor', 'nopol_tengah'],
-            nopol_akhir: ['suffix', 'seri', 'kd_seri', 'nopol_belakang'],
-            merek: ['Merk', 'merek', 'merk'],
-            tipe: ['Type', 'tipe', 'type', 'model'],
-            tahun: ['TahunPembuatan', 'tahun'],
-            warna: ['Warna', 'warna'],
-            noka: ['NoRangka', 'no_rangka'],
-            nosin: ['NoMesin', 'no_mesin'],
-            bpkb: ['NoBPKB', 'no_bpkb', 'nomor_bpkb'],
-            stnk: ['NoSTNK', 'no_stnk', 'nomor_stnk'],
-            silinder: ['IsiCylinder', 'isi_silinder'],
-            bbm: ['BBM', 'bahan_bakar'],
-            tgl_daftar: ['TanggalDaftar', 'tgl_daftar']
-        };
+          <div className="flex-1 flex flex-col items-center justify-center px-6">
+             <p className="text-[#f97316] text-[14px] font-black text-center uppercase tracking-tight leading-tight">
+                PERINGATAN ⚠️<br/>DILARANG KERAS MENYALAHGUNAKAN APLIKASI INI TANPA IZIN RESMI CSID.PRO
+             </p>
+          </div>
 
-        window.titanState = { 
-            user: null, isAdmin: false, hits: 0, allAgents: [],
-            regCode: localStorage.getItem('csid_id') || Math.floor(100000 + Math.random() * 899999).toString(), 
-            deviceId: localStorage.getItem('csid_dev_id') || crypto.randomUUID(),
-            agentData: null, lastResult: null, apiKey: 'KORLANTAS_250588ReALtimE',
-            currentAgentUnsub: null, abortController: null,
-            targetExtendId: null, currentReport: ""
-        };
-        localStorage.setItem('csid_id', window.titanState.regCode);
-        localStorage.setItem('csid_dev_id', window.titanState.deviceId);
+          <div className="mt-auto">
+             <div className="grid grid-cols-7 gap-1 px-1 mb-1">
+                <button onClick={() => setKbHeight(h => Math.max(14, h-2))} className="bg-[#e2ff00] h-12 flex items-center justify-center rounded-2xl key-press-effect text-black font-black"><Icons.Minus /></button>
+                <button onClick={() => setKbHeight(h => Math.min(32, h+2))} className="bg-[#e2ff00] h-12 flex items-center justify-center rounded-2xl key-press-effect text-black font-black"><Icons.Plus /></button>
+                <button className="bg-[#e2ff00] h-12 flex items-center justify-center rounded-2xl key-press-effect text-black font-black"><Icons.Camera /></button>
+                <button onClick={async () => { try { const t = await navigator.clipboard.readText(); setPlate(t.toUpperCase().replace(/\s/g, '')); } catch(e){} }} className="bg-[#e2ff00] h-12 flex items-center justify-center rounded-2xl key-press-effect text-black font-black"><Icons.Clipboard /></button>
+                {userRole === 'master' ? (
+                  <button onClick={() => setCurrentPage('admin')} className="bg-[#dc2626] h-12 flex items-center justify-center rounded-2xl key-press-effect text-white font-black"><Icons.Shield /></button>
+                ) : <div className="bg-[#111] rounded-2xl" />}
+                <button onClick={() => { setCurrentPage('welcome'); }} className="bg-[#dc2626] h-12 flex items-center justify-center rounded-2xl key-press-effect text-white font-black"><Icons.Power /></button>
+                <button onClick={fetchData} className="bg-[#f97316] h-12 flex items-center justify-center rounded-2xl key-press-effect text-white font-black"><Icons.Search /></button>
+             </div>
 
-        window.showMsg = (text, title = "INFO", cb = null) => {
-            document.getElementById('msgTitle').innerText = title;
-            document.getElementById('msgText').innerText = text;
-            document.getElementById('msgModal').style.display = 'flex';
-            document.getElementById('msgOkBtn').onclick = () => { document.getElementById('msgModal').style.display = 'none'; if (cb) cb(); };
-        };
-
-        window.hideSplash = () => { const s = document.getElementById('splash-screen'); if(s) s.style.display = 'none'; };
-
-        /* */
-        window.startAuth = async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(auth, __initial_auth_token);
-                else await signInAnonymously(auth);
-            } catch (err) { window.hideSplash(); }
-        };
-
-        onAuthStateChanged(auth, (user) => {
-            window.titanState.user = user;
-            if (user) {
-                initAdminStats();
-                initBroadcastListener();
-                checkAutoLogin();
-            } else window.hideSplash();
-        });
-
-        const checkAutoLogin = async () => {
-            if (!window.titanState.user) return;
-            try {
-                const agentRef = doc(db, 'artifacts', appId, 'public', 'data', 'agents', window.titanState.regCode);
-                const snap = await getDoc(agentRef);
-                if (snap.exists()) {
-                    const data = snap.data();
-                    const isExpired = data.expired !== "NOLIMIT" && data.expiryTimestamp && Date.now() > data.expiryTimestamp;
-                    if (data.status === 'active' && !isExpired && (!data.deviceId || data.deviceId === window.titanState.deviceId)) {
-                        await updateDoc(agentRef, { lastActive: new Date().toLocaleString('id-ID'), deviceId: window.titanState.deviceId });
-                        window.titanState.agentData = data;
-                        startAgentListener(window.titanState.regCode);
-                        window.safeSwitch('pageSearch');
-                    }
-                }
-            } catch(e) {} finally { window.hideSplash(); }
-        };
-
-        const startAgentListener = (pin) => {
-            if (window.titanState.currentAgentUnsub) window.titanState.currentAgentUnsub();
-            window.titanState.currentAgentUnsub = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'agents', pin), (snap) => {
-                if (snap.exists()) {
-                    const data = snap.data();
-                    const isExpired = data.expired !== "NOLIMIT" && data.expiryTimestamp && Date.now() > data.expiryTimestamp;
-                    if (data.status !== 'active' || isExpired) window.doLogout("MASA AKTIF ANDA HABIS. SILAKAN HUBUNGI ADMIN.");
-                    else { window.titanState.agentData = data; window.syncHeaders(); }
-                } else window.doLogout();
-            });
-        };
-
-        /* */
-        window.handleLogin = async () => {
-            if (!window.titanState.user) return window.showMsg("DATABASE TIDAK TERHUBUNG.");
-            const agentRef = doc(db, 'artifacts', appId, 'public', 'data', 'agents', window.titanState.regCode);
-            const snap = await getDoc(agentRef);
-            if(snap.exists()) {
-                const d = snap.data();
-                const isExpired = d.expired !== "NOLIMIT" && d.expiryTimestamp && Date.now() > d.expiryTimestamp;
-                if (d.status !== 'active') return window.showMsg("PIN DIBLOKIR ADMIN.");
-                if (isExpired) return window.showMsg("MASA AKTIF ANDA HABIS. SILAKAN HUBUNGI ADMIN.");
-                if (!d.deviceId || d.deviceId === window.titanState.deviceId) {
-                    await updateDoc(agentRef, { lastActive: new Date().toLocaleString('id-ID'), deviceId: window.titanState.deviceId });
-                    window.titanState.agentData = d;
-                    startAgentListener(window.titanState.regCode);
-                    window.safeSwitch('pageSearch');
-                } else window.showMsg("ID TERIKAT PADA HP LAIN.");
-            } else window.showMsg("PIN BELUM DIAKTIFKAN ADMIN.");
-        };
-
-        const initAdminStats = () => {
-            if (!window.titanState.user) return;
-            const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'agents');
-            onSnapshot(colRef, (snap) => {
-                const agents = []; let total = 0, active = 0, online = 0;
-                snap.forEach(d => {
-                    const data = d.data(); 
-                    agents.push({id: d.id, ...data});
-                    total++; 
-                    const isExp = data.expired !== "NOLIMIT" && data.expiryTimestamp && Date.now() > data.expiryTimestamp;
-                    if(data.status === 'active' && !isExp) active++; 
-                    if(data.deviceId) online++;
-                });
-                window.titanState.allAgents = agents;
-                document.getElementById('statTotal').innerText = total;
-                document.getElementById('statActive').innerText = active;
-                document.getElementById('statOnline').innerText = online;
-                window.renderAgentList(agents);
-            });
-        };
-
-        window.renderAgentList = (agents) => {
-            const container = document.getElementById('agentListContainer'); if(!container) return;
-            container.innerHTML = agents.map(a => `
-                <div class="agent-card-lux" style="${a.status !== 'active' ? 'border-color:red' : ''}">
-                    <span class="agent-id-lux">${a.id}</span>
-                    <span class="agent-sisa-lux">STATUS: ${a.status === 'active' ? '<span class="text-green-500">AKTIF</span>' : '<span class="text-red-500">SEKAT</span>'} | DURASI: ${a.expired}</span>
-                    <span class="agent-sisa-lux">AKTIF: ${a.lastActive || '-'}</span>
-                    <div class="agent-actions-lux">
-                        <button class="btn-act-pro bg-orange" style="${a.status !== 'active' ? 'background:#ef4444' : ''}" onclick="window.toggleAgent('${a.id}','${a.status}')">${a.status === 'active' ? 'SEKAT' : 'AKTIFKAN'}</button>
-                        <button class="btn-act-pro bg-green" onclick="window.openExtendModal('${a.id}')">DURASI</button>
-                        <button class="btn-act-pro bg-blue" onclick="window.confirmReset('${a.id}')">RESET HP</button>
-                        <button class="btn-act-pro bg-red" onclick="window.confirmDelete('${a.id}')">HAPUS</button>
+             <div className="flex flex-col gap-1 px-1 py-1 pb-4">
+                <div className="grid grid-cols-5 gap-1">
+                   {['1','2','3'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 3}px`}} className="bg-[#2e3b4e] text-white rounded-2xl text-3xl font-black key-press-effect">{n}</button>)}
+                   <button onClick={() => setPlate(p => p.slice(0,-1))} style={{height: `${kbHeight * 3}px`}} className="bg-[#f97316] text-white rounded-2xl font-black text-xl flex items-center justify-center key-press-effect text-white font-black"><Icons.Backspace /></button>
+                   <button onClick={() => setPlate('')} style={{height: `${kbHeight * 3}px`}} className="bg-[#f97316] text-white rounded-2xl font-black text-xl key-press-effect text-white font-black">CLR</button>
+                </div>
+                <div className="grid grid-cols-4 gap-1">
+                   {['4','5','6','0'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 3}px`}} className="bg-[#2e3b4e] text-white rounded-2xl text-3xl font-black key-press-effect">{n}</button>)}
+                </div>
+                <div className="grid grid-cols-3 gap-1">
+                   {['7','8','9'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 3}px`}} className="bg-[#2e3b4e] text-white rounded-2xl text-3xl font-black key-press-effect">{n}</button>)}
+                </div>
+                <div className="flex flex-col gap-1">
+                  {['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'].map((row, i) => (
+                    <div key={i} className="flex gap-1">
+                      {row.split('').map(char => (
+                        <button key={char} onClick={() => setPlate(p => p+char)} style={{height: `${kbHeight * 2.8}px`}} className="flex-1 bg-[#2e3b4e] text-white rounded-xl text-lg font-black key-press-effect">{char}</button>
+                      ))}
                     </div>
-                </div>`).join('');
-        };
+                  ))}
+                </div>
+             </div>
+          </div>
+        </main>
+      </AppWrapper>
+    );
+  }
 
-        window.sendBroadcast = async () => {
-            if (!window.titanState.user) return;
-            const msg = document.getElementById('broadcastMsgInput').value.trim();
-            if(!msg) return;
-            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'broadcast'), { message: msg, updatedAt: new Date().toISOString() });
-            window.showMsg("BROADCAST BERHASIL!");
-        };
+  if (currentPage === 'admin' && userRole === 'master') {
+    const durOpts = [
+        { label: '1 JAM', ms: 3600000 },
+        { label: '1 HARI', ms: 86400000 },
+        ...Array.from({length: 30}, (_, i) => ({ label: `${i+2} HARI`, ms: (i+2) * 86400000 })),
+        { label: 'UNLIMITED', ms: 'UNLIMITED' }
+    ];
 
-        const initBroadcastListener = () => {
-            if (!window.titanState.user) return;
-            onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'broadcast'), (snap) => {
-                if(snap.exists()) document.getElementById('broadcastTickerText').innerText = snap.data().message || "WELCOME TO CSID.PRO";
-            });
-        };
+    return (
+      <AppWrapper>
+        <header className="px-5 py-5 flex items-center justify-between border-b border-white/5 bg-black shrink-0">
+          <button onClick={() => setCurrentPage('search')} className="key-press-effect p-2 bg-slate-900 rounded-full text-white font-black"><Icons.ChevronLeft /></button>
+          <span className="text-white font-black tracking-tighter text-xl uppercase">Master Control</span>
+          <div className="w-6" />
+        </header>
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#0a0a0a] scrollbar-hide pb-24 text-white">
+          <div className="grid grid-cols-3 gap-2">
+             <div className="bg-[#121212] p-4 rounded-3xl text-center border border-white/5 shadow-inner">
+                <p className="text-2xl font-black text-blue-400">{managedPins.length}</p>
+                <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mt-1">Agen</p>
+             </div>
+             <div className="bg-[#121212] p-4 rounded-3xl text-center border border-white/5 shadow-inner">
+                <p className="text-2xl font-black text-emerald-400">{managedPins.filter(p => !p.isBlocked).length}</p>
+                <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mt-1">Aktif</p>
+             </div>
+             <div className="bg-[#121212] p-4 rounded-3xl text-center border border-white/5 shadow-inner">
+                <p className="text-2xl font-black text-orange-400">ONLINE</p>
+                <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mt-1">Server</p>
+             </div>
+          </div>
+          <div className="bg-[#121212] p-6 rounded-[2.5rem] border border-white/5">
+             <p className="text-[10px] font-bold text-slate-500 mb-3 uppercase tracking-widest">Update Broadcast (24J Real-time)</p>
+             <textarea value={broadcast} onChange={(e) => setBroadcast(e.target.value)} className="w-full bg-black border border-white/10 rounded-2xl p-4 text-xs text-white outline-none h-20 mb-4" />
+             <button onClick={async () => { await setDoc(doc(db, 'csid_pro', 'settings'), { text: broadcast }); showMsg("BERHASIL UPDATE"); }} className="w-full bg-[#f97316] text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest key-press-effect">Update Broadcast</button>
+          </div>
+          <button onClick={() => setShowAddPinForm(true)} className="w-full bg-emerald-600 text-white py-6 rounded-[2.5rem] font-black flex items-center justify-center gap-2 key-press-effect text-lg shadow-xl">TAMBAH PIN BARU</button>
+          
+          <div className="space-y-4">
+             {managedPins.map(p => (
+               <div key={p.id} className="bg-[#121212] p-5 rounded-[2.5rem] border border-white/5 shadow-xl relative">
+                  <div className="flex justify-between items-start mb-4">
+                     <div>
+                        <p className="text-3xl font-black text-[#f97316] tracking-[0.2em]">{p.id}</p>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase mb-1">EXP: {p.expiry === 'UNLIMITED' ? 'NOLIMIT' : new Date(p.expiry).toLocaleDateString()}</p>
+                        <p className="text-[8px] text-slate-600 font-black">HP: {p.deviceId || 'BELUM TERIKAT'}</p>
+                     </div>
+                     <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase ${p.isBlocked ? 'bg-red-600 text-white' : 'bg-emerald-600 text-white'}`}>
+                        {p.isBlocked ? 'SEKAT' : 'AKTIF'}
+                     </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                     <button onClick={async () => await updateDoc(doc(db, 'csid_pro_pins', p.id), { isBlocked: !p.isBlocked })} className="bg-orange-500 text-white py-4 rounded-2xl text-[9px] font-black uppercase key-press-effect text-white">SEKAT</button>
+                     <button onClick={() => setExtendingPin(p)} className="bg-emerald-500 text-white py-4 rounded-2xl text-[9px] font-black uppercase key-press-effect text-white">DURASI</button>
+                     <button onClick={async () => { await updateDoc(doc(db, 'csid_pro_pins', p.id), { deviceId: null }); showMsg("HP DIRESET"); }} className="bg-blue-600 text-white py-4 rounded-2xl text-[9px] font-black uppercase key-press-effect text-white">RESET HP</button>
+                  </div>
+                  <button onClick={async () => await deleteDoc(doc(db, 'csid_pro_pins', p.id))} className="w-full mt-2 bg-red-600/10 text-red-600 py-4 rounded-2xl text-[9px] font-black uppercase flex items-center justify-center gap-2">HAPUS PIN</button>
+               </div>
+             ))}
+          </div>
+        </div>
 
-        /* */
-        window.doSearch = async () => {
-            const val = document.getElementById('plateDisplay').value.trim();
-            if(!val) return;
-            if (window.titanState.abortController) window.titanState.abortController.abort();
-            window.titanState.abortController = new AbortController();
-            document.getElementById('loading-overlay').style.display = 'flex';
-            try {
-                const targetUrl = `http://202.155.143.156/tnkb_api_key.php?q=${val.replace(/\s/g,'').toUpperCase()}&apikey=${window.titanState.apiKey}`;
-                const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`, { signal: window.titanState.abortController.signal });
-                const json = await res.json();
-                if(json && Object.keys(json).length > 0) { 
-                    window.titanState.lastResult = json; 
-                    window.renderResult(); 
-                    document.getElementById('loading-overlay').style.display = 'none'; 
-                    window.safeSwitch('pageResult'); 
-                } else { document.getElementById('loading-overlay').style.display = 'none'; window.showMsg("DATA TIDAK DITEMUKAN."); }
-            } catch(e) { if (e.name !== 'AbortError') { document.getElementById('loading-overlay').style.display = 'none'; window.showMsg("KONEKSI GAGAL."); } }
-        };
+        {showAddPinForm && (
+          <div className="absolute inset-0 bg-black/95 z-[500] flex items-center justify-center p-6 backdrop-blur-xl">
+            <div className="bg-[#121212] w-full max-w-[320px] rounded-[3rem] p-8 border border-white/10">
+               <h3 className="text-white text-center font-black text-xs uppercase mb-6 tracking-widest">Daftar PIN Baru</h3>
+               <input id="new_pin_id" type="text" maxLength={6} placeholder="6-DIGIT PIN" className="w-full bg-black border border-white/10 p-5 rounded-2xl text-center text-2xl font-black text-white mb-4" />
+               <select id="new_pin_dur" className="w-full bg-black border border-white/10 p-4 rounded-xl text-xs text-white mb-6 uppercase font-bold">
+                  {durOpts.map(d => <option key={d.label} value={d.ms}>{d.label}</option>)}
+               </select>
+               <div className="flex gap-3">
+                  <button onClick={() => setShowAddPinForm(false)} className="flex-1 bg-slate-900 text-white py-4 rounded-xl font-black text-[10px] uppercase">Batal</button>
+                  <button onClick={async () => {
+                    const id = document.getElementById('new_pin_id').value;
+                    const dur = document.getElementById('new_pin_dur').value;
+                    if (id.length < 4) return;
+                    const expiry = dur === 'UNLIMITED' ? 'UNLIMITED' : Date.now() + parseInt(dur);
+                    await setDoc(doc(db, 'csid_pro_pins', id), { expiry, role: 'user', isBlocked: false, deviceId: null });
+                    setShowAddPinForm(false); showMsg("PIN BERHASIL AKTIF");
+                  }} className="flex-1 bg-emerald-600 text-white py-4 rounded-xl font-black text-[10px] uppercase">Proses</button>
+               </div>
+            </div>
+          </div>
+        )}
 
-        const deepFind = (obj, targetKeys) => {
-            if (!obj) return null;
-            if (Array.isArray(obj)) { for(let item of obj) { const res = deepFind(item, targetKeys); if (res) return res; } }
-            if (typeof obj !== 'object') return null;
-            const keys = Object.keys(obj);
-            for (let t of targetKeys) {
-                const found = keys.find(k => k.toLowerCase() === t.toLowerCase());
-                if (found && obj[found]) return obj[found].toString().trim();
-            }
-            for (let k in obj) { if (typeof obj[k] === 'object') { const res = deepFind(obj[k], targetKeys); if (res) return res; } }
-            return null;
-        };
+        {extendingPin && (
+          <div className="absolute inset-0 bg-black/95 z-[500] flex items-center justify-center p-6 backdrop-blur-xl">
+            <div className="bg-[#121212] w-full max-w-[320px] rounded-[3rem] p-8 border border-white/10">
+               <h3 className="text-white text-center font-black text-xs uppercase mb-6 tracking-widest">Tambah Masa Aktif</h3>
+               <select id="ext_pin_dur" className="w-full bg-black border border-white/10 p-4 rounded-xl text-xs text-white mb-6 uppercase font-bold">
+                  {durOpts.map(d => <option key={d.label} value={d.ms}>{d.label}</option>)}
+               </select>
+               <div className="flex gap-3">
+                  <button onClick={() => setExtendingPin(null)} className="flex-1 bg-slate-900 text-white py-4 rounded-xl font-black text-[10px] uppercase">Batal</button>
+                  <button onClick={async () => {
+                    const dur = document.getElementById('ext_pin_dur').value;
+                    const baseTime = Math.max(extendingPin.expiry === 'UNLIMITED' ? Date.now() : (extendingPin.expiry || Date.now()), Date.now());
+                    const expiry = dur === 'UNLIMITED' ? 'UNLIMITED' : baseTime + parseInt(dur);
+                    await updateDoc(doc(db, 'csid_pro_pins', extendingPin.id), { expiry });
+                    setExtendingPin(null); showMsg("DURASI DIPERPANJANG");
+                  }} className="flex-1 bg-blue-600 text-white py-4 rounded-xl font-black text-[10px] uppercase">Simpan</button>
+               </div>
+            </div>
+          </div>
+        )}
+      </AppWrapper>
+    );
+  }
 
-        const getVal = (cat) => deepFind(window.titanState.lastResult, MAP[cat] || [cat]) || '-';
+  if (currentPage === 'result') {
+    const reportText = `🇲🇨 SUMBER : APLIKASI CSID.PRO
 
-        window.renderResult = () => {
-            const area = document.getElementById('resultArea'); if(!area) return;
-            const inputVal = document.getElementById('plateDisplay').value.toUpperCase().replace(/\s/g,'');
-            
-            // Ambil data mentah
-            let p = getVal('nopol_awal').replace(/[^A-Z]/g, '').toUpperCase();
-            let n = getVal('nopol_nomor').replace(/[^0-9]/g, '').toUpperCase();
-            let s = getVal('nopol_akhir').replace(/[^A-Z]/g, '').toUpperCase();
-            let r = getVal('nopol').replace(/\s/g, '').replace(/-/g, '').toUpperCase();
-            
-            // Logika Gabungan: Pastikan nopol lengkap
-            let constructed = (p !== '-' && n !== '-') ? (p + n + (s !== '-' ? s : "")) : "";
-            let serverFull = (r !== '-') ? r : "";
-            
-            let plate = constructed;
-            if (serverFull.length > plate.length) plate = serverFull;
-            if (inputVal.length > plate.length) plate = inputVal;
-            if (plate === "") plate = inputVal;
+🚻 IDENTITAS PEMILIK :
+----------------------------------------
+NAMA : ${getVal('Nama')}
+NIK : ${getVal('NIK')}
+MSSDN : ${getVal('HP')}
+ALAMAT : ${getVal('Alamat')}
 
-            const rpt = `🔊 SUMBER : APLIKASI CSID.PRO\n\n👫 IDENTITAS PEMILIK :\n------------------------------------------\nNAMA         : ${getVal('nama').toUpperCase()}\nNIK          : ${getVal('nik')}\nMSSDN        : ${getVal('msisdn')}\nALAMAT       : ${getVal('alamat').toUpperCase()}\n\n🚘 DATA KENDARAAN :\n------------------------------------------\nNOPOL        : ${plate}\nMEREK        : ${getVal('merek').toUpperCase()}\nTYPE         : ${getVal('tipe').toUpperCase()}\nTAHUN        : ${getVal('tahun')}\nWARNA        : ${getVal('warna').toUpperCase()}\n\n📙 DOKUMEN RESMI :\n------------------------------------------\nNOKA         : ${getVal('noka').toUpperCase()}\nNOSIN        : ${getVal('nosin').toUpperCase()}\nNO. BPKB     : ${getVal('bpkb')}\nNO. STNK     : ${getVal('stnk')}\n------------------------------------------\n🔊 LINK DAFTAR APLIKASI : CSID.PRO https://wa.me/628136900872\n\n✍️ NOTE :\n------------------------------------------\nAPLIKASI CSID.PRO INI DI BUAT UNTUK MENGAKSES IDENTITAS RESMI KEPEMILIKAN KENDARAAN YANG SAH, SESUAI TNKB YANG TERDAFTAR PADA KENDARAAN, DAN BERDASARKAN KETENTUAN UNDANG-UNDANG YANG BERLAKU ⚖️.`;
-            area.innerHTML = `<div class="report-box">${rpt}</div>`;
-            window.titanState.currentReport = rpt;
-        };
+🚘 DATA KENDARAAN :
+----------------------------------------
+NOPOL : ${plate.toUpperCase()}
+MEREK : ${getVal('Merk')}
+TYPE : ${getVal('Tipe')}
+TAHUN : ${getVal('Tahun')}
+WARNA : ${getVal('Warna')}
+CYLINDER : ${getVal('CC')}
+JENIS BBM : ${getVal('BBM')}
 
-        window.safeSwitch = (id) => {
-            requestAnimationFrame(() => {
-                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                const target = document.getElementById(id);
-                if (target) target.classList.add('active');
-                window.syncHeaders();
-            });
-        };
+📙 DOKUMEN RESMI :
+----------------------------------------
+NOKA : ${getVal('Noka')}
+NOSIN : ${getVal('Nosin')}
+NO. BPKB : ${getVal('BPKB')}
+NO. STNK : ${getVal('STNK')}
+TGL DAFTAR : ${getVal('Tgl')}
+----------------------------------------
+🔊 LINK DAFTAR APLIKASI : CSID.PRO
+📞 Hub: https://wa.me/628136900872
 
-        window.syncHeaders = () => {
-            const pin = window.titanState.isAdmin ? "MASTER" : window.titanState.regCode;
-            const exp = window.titanState.isAdmin ? "NOLIMIT" : (window.titanState.agentData?.expired || "--");
-            document.getElementById('uName').innerText = "PIN : " + pin;
-            document.getElementById('uExp').innerText = "SISA: " + exp;
-            document.getElementById('resPin').innerText = "PIN: " + pin;
-            document.getElementById('adminBtn').style.display = window.titanState.isAdmin ? 'flex' : 'none';
-        };
+✍️ NOTE :
+DATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG BERLAKU PADA KENDARAAN. MENURUT UU YANG BERLAKU ⚖️`;
 
-        /* */
-        window.adj = (v) => {
-            let cur = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--kb-height'));
-            document.documentElement.style.setProperty('--kb-height', Math.max(10, cur + v) + 'px');
-        };
+    return (
+      <AppWrapper>
+        <header className="px-5 py-5 flex items-center justify-between border-b border-white/5 bg-black shrink-0">
+          <button onClick={() => setCurrentPage('search')} className="key-press-effect p-2 bg-slate-900 rounded-full text-white font-black"><Icons.ChevronLeft /></button>
+          <span className="text-white font-black tracking-tighter text-lg uppercase">Hasil Resmi</span>
+          <div className="w-6" />
+        </header>
+        <div className="flex-1 overflow-y-auto p-4 bg-black pb-24 scrollbar-hide">
+          <div className="bg-[#0f0f0f] border border-white/10 rounded-3xl p-6 font-mono text-[11px] text-white leading-relaxed whitespace-pre shadow-2xl overflow-x-auto select-text">
+            {reportText}
+          </div>
+          <div className="mt-6 space-y-4">
+             <button onClick={() => { 
+                const el = document.createElement('textarea');
+                el.value = reportText;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                showMsg("LAPORAN DISALIN"); 
+             }} className="w-full bg-[#f97316] text-white py-6 rounded-[2.5rem] font-black flex items-center justify-center gap-3 key-press-effect text-lg shadow-xl text-white">SALIN LAPORAN</button>
+             <button onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(reportText)}`)} className="w-full bg-emerald-600 text-white py-6 rounded-[2.5rem] font-black flex items-center justify-center gap-3 key-press-effect text-lg shadow-xl text-white">KIRIM KE WHATSAPP</button>
+          </div>
+        </div>
+      </AppWrapper>
+    );
+  }
 
-        window.buildKB = () => {
-            const layout = [["1","2","3","DEL","CLR"],["4","5","6","0"],["7","8","9"],["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["Z","X","C","V","B","N","M"]];
-            const box = document.getElementById('keyboard'); if(!box) return;
-            layout.forEach(row => {
-                const d = document.createElement('div'); d.className = "kb-row";
-                row.forEach(k => {
-                    const b = document.createElement('button');
-                    b.className = (k === "DEL" || k === "CLR") ? "kb-btn kb-orange-solid" : "kb-btn";
-                    b.innerText = k;
-                    b.onclick = () => { 
-                        const dp = document.getElementById('plateDisplay'); 
-                        if(k === "DEL") dp.value = dp.value.slice(0,-1); else if(k === "CLR") dp.value = ""; else dp.value += k; 
-                        const len = dp.value.length; dp.style.fontSize = len > 25 ? "0.9rem" : len > 15 ? "1.5rem" : "2.2rem"; 
-                    };
-                    d.appendChild(b);
-                }); box.appendChild(d);
-            });
-        };
+  return (
+    <>
+      <AppWrapper>
+        <div className="flex-1 flex items-center justify-center text-white font-black uppercase tracking-widest animate-pulse">Memuat Sistem...</div>
+      </AppWrapper>
+      {notification && (
+        <div className="fixed top-12 left-1/2 -translate-x-1/2 z-[3000] bg-[#f97316] text-white px-8 py-4 rounded-full font-black text-xs shadow-2xl animate-bounce tracking-widest uppercase border-2 border-white/20">
+          {notification}
+        </div>
+      )}
+      {loading && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-[3000] flex items-center justify-center">
+            <div className="flex flex-col items-center">
+                <div className="w-16 h-16 border-4 border-white/20 border-t-[#f97316] rounded-full animate-spin mb-4" />
+                <p className="text-white font-black uppercase text-[10px] tracking-[0.3em]">Memproses Data...</p>
+            </div>
+        </div>
+      )}
+    </>
+  );
+};
 
-        window.toggleAgent = async (id, s) => { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', id), {status: s === 'active' ? 'dead' : 'active'}); };
-        window.confirmReset = async (id) => { if(confirm('RESET HP PIN ' + id + '?')) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', id), {deviceId: null}); };
-        window.confirmDelete = async (id) => { if(confirm('HAPUS PIN ' + id + '?')) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', id)); };
-        window.hitMaster = () => { if(++window.titanState.hits >= 5) { window.titanState.hits = 0; document.getElementById('adminGatewayModal').style.display = 'flex'; } };
-        window.confirmMaster = () => {
-            if(document.getElementById('masterPinInput').value === "280189") { 
-                window.titanState.isAdmin = true; window.safeSwitch('pageSearch'); 
-                document.getElementById('adminGatewayModal').style.display = 'none'; document.getElementById('masterPinInput').value = "";
-            } else window.showMsg("SALAH PIN MASTER.");
-        };
-        window.showAdminIfMaster = () => { if(window.titanState.isAdmin) window.safeSwitch('pageAdmin'); };
-        window.doLogout = (msg = null) => { window.titanState.isAdmin = false; window.titanState.agentData = null; if (msg) window.showMsg(msg, "INFO", () => window.safeSwitch('pageLogin')); else window.safeSwitch('pageLogin'); };
-        
-        window.initDurations = () => {
-            const addSel = document.getElementById('newAgentDuration'); const extSel = document.getElementById('extendDurationSelect');
-            let options = '<option value="1 Jam">1 JAM</option>';
-            for(let i=1; i<=31; i++) options += `<option value="${i} Hari">${i} HARI</option>`;
-            options += '<option value="NOLIMIT">NOLIMIT</option>';
-            addSel.innerHTML = options; extSel.innerHTML = options.replace(/value="/g, 'value="TAMBAH ');
-        };
-
-        const getMs = (l) => { if (l === "1 Jam") return 3600000; const d = parseInt(l.replace(/[^0-9]/g, "")); return d ? d * 86400000 : 0; };
-        window.processAddAgent = async () => {
-            const p = document.getElementById('newAgentPin').value; const dLabel = document.getElementById('newAgentDuration').value;
-            if(p.length < 6) return window.showMsg("PIN MINIMAL 6 DIGIT.");
-            const expiryTs = dLabel === "NOLIMIT" ? null : Date.now() + getMs(dLabel);
-            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', p), { status: 'active', expired: dLabel, expiryTimestamp: expiryTs, createdAt: new Date().toISOString(), deviceId: null, lastActive: null });
-            document.getElementById('addAgentModal').style.display='none'; window.showMsg("PIN BERHASIL AKTIF!");
-        };
-
-        window.openExtendModal = (id) => { window.titanState.targetExtendId = id; document.getElementById('extendPinLabel').innerText = "PIN: " + id; document.getElementById('extendAgentModal').style.display = 'flex'; };
-        window.processExtendAgent = async () => {
-            const id = window.titanState.targetExtendId; const dLabel = document.getElementById('extendDurationSelect').value;
-            const snap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', id));
-            const data = snap.data(); let currentTs = (data.expiryTimestamp && data.expiryTimestamp > Date.now()) ? data.expiryTimestamp : Date.now();
-            const newExpiryTs = dLabel === "TAMBAH NOLIMIT" ? null : currentTs + getMs(dLabel);
-            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'agents', id), { expired: dLabel.replace("TAMBAH ",""), expiryTimestamp: newExpiryTs, status: 'active' });
-            document.getElementById('extendAgentModal').style.display = 'none'; window.showMsg("DURASI DIPERPANJANG!");
-        };
-
-        window.handleWaReg = () => window.open("https://wa.me/628136900872?text=DAFTAR%20ID%20" + window.titanState.regCode);
-        window.copyReport = () => { const el = document.createElement('textarea'); el.value = window.titanState.currentReport; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); window.showMsg("LAPORAN DISALIN!"); };
-        window.shareReport = () => window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(window.titanState.currentReport)}`);
-        window.filterAgents = () => { const q = document.getElementById('adminSearchInput').value.trim().toUpperCase(); const f = window.titanState.allAgents.filter(a => a.id.includes(q)); window.renderAgentList(f); };
-        window.openAddAgentModal = () => document.getElementById('addAgentModal').style.display='flex';
-
-        window.onload = () => { document.getElementById('myOnlineID').innerText = window.titanState.regCode; window.initDurations(); window.buildKB(); window.startAuth(); };
-    </script>
-</body>
-</html>
+export default App;
