@@ -14,14 +14,12 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --brand-primary: #f97316;
-            --brand-secondary: #e2ff00;
             --bg-dark: #000000;
         }
 
@@ -80,14 +78,6 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-        .press-feedback {
-            transition: all 0.2s;
-        }
-        .press-feedback:active {
-            background-color: rgba(249, 115, 22, 0.15);
-            transform: scale(0.98);
-        }
-
         input:focus { outline: none; }
     </style>
 </head>
@@ -107,16 +97,12 @@
             projectId: "gen-lang-client-0221970857",
             storageBucket: "gen-lang-client-0221970857.firebasestorage.app",
             messagingSenderId: "483674298302",
-            appId: "1:483674298302:web:8c6ccf111af4de7bbecbef",
-            measurementId: "G-KSVJJWZZVP"
+            appId: "1:483674298302:web:8c6ccf111af4de7bbecbef"
         };
 
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const auth = firebase.auth();
-        const analytics = firebase.analytics();
 
         const Icons = {
             Shield: ({cls}) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={cls || "w-6 h-6"}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>,
@@ -153,7 +139,6 @@
             const [newPinDuration, setNewPinDuration] = useState(86400000); 
             const inputRef = useRef(null);
 
-            // Perangkat ID unik (Device Binding)
             const getDeviceId = () => {
                 let id = localStorage.getItem('csid_device_token');
                 if (!id) {
@@ -197,7 +182,6 @@
                 const initAuth = async () => {
                     try {
                         await auth.signInAnonymously();
-                        // AUTO LOGIN: Cek status pendaftaran saat aplikasi terbuka
                         handleAutoLogin(savedId);
                         
                         db.doc(paths.settings + '/main').onSnapshot(doc => {
@@ -207,12 +191,9 @@
                         db.collection(paths.pins).onSnapshot(snap => {
                             const pins = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                             setManagedPins(pins);
-                        }, err => console.error("Firestore Error:", err));
+                        }, err => console.error(err));
 
-                    } catch (e) { 
-                        console.error("Auth init error:", e); 
-                        setLoading(false); 
-                    }
+                    } catch (e) { console.error(e); setLoading(false); }
                 };
                 initAuth();
             }, []);
@@ -223,10 +204,7 @@
                     if (pinSnap.exists) {
                         const data = pinSnap.data();
                         const currentDeviceId = getDeviceId();
-                        
-                        // Cek Validitas Sesi
-                        if (data.isBlocked) return;
-                        if (data.expiry !== 'UNLIMITED' && Date.now() > data.expiry) return;
+                        if (data.isBlocked || (data.expiry !== 'UNLIMITED' && Date.now() > data.expiry)) return;
                         if (data.deviceId && data.deviceId !== currentDeviceId) return;
 
                         setUserRole(data.role || 'user');
@@ -234,7 +212,7 @@
                         setActivePin(id);
                         setCurrentPage('search');
                     }
-                } catch (e) { console.error("Auto login failed:", e); } finally { setLoading(false); }
+                } catch (e) { console.error(e); } finally { setLoading(false); }
             };
 
             const handleLoginOnline = async () => {
@@ -248,32 +226,18 @@
 
                     if (data.isBlocked) throw new Error("AKSES DIBLOKIR");
                     if (data.expiry !== 'UNLIMITED' && Date.now() > data.expiry) throw new Error("MASA AKTIF HABIS");
-                    
-                    // Keamanan: 1 PIN 1 HP
-                    if (data.deviceId && data.deviceId !== currentDeviceId) {
-                        throw new Error("PIN TERDAFTAR DI HP LAIN");
-                    }
+                    if (data.deviceId && data.deviceId !== currentDeviceId) throw new Error("PIN TERDAFTAR DI HP LAIN");
 
-                    // Tautkan perangkat jika baru
-                    if (!data.deviceId) {
-                        await db.doc(`${paths.pins}/${registrationId}`).update({ deviceId: currentDeviceId });
-                    }
+                    if (!data.deviceId) await db.doc(`${paths.pins}/${registrationId}`).update({ deviceId: currentDeviceId });
                     
-                    setUserRole('user'); 
-                    setUserExpiry(data.expiry); 
-                    setActivePin(registrationId); 
-                    setCurrentPage('search');
+                    setUserRole('user'); setUserExpiry(data.expiry); setActivePin(registrationId); setCurrentPage('search');
                 } catch (e) { showMsg(e.message); } finally { setLoading(false); }
             };
 
             const handleMasterLogin = () => {
                 if (pinInput === MASTER_PIN) {
-                    setUserRole('master'); 
-                    setUserExpiry('UNLIMITED'); 
-                    setActivePin('MASTER');
-                    setCurrentPage('search'); 
-                    setShowPinModal(false); 
-                    setPinInput('');
+                    setUserRole('master'); setUserExpiry('UNLIMITED'); setActivePin('MASTER');
+                    setCurrentPage('search'); setShowPinModal(false); setPinInput('');
                 } else { showMsg("PIN SALAH"); setPinInput(''); }
             };
 
@@ -283,56 +247,25 @@
                 setLoading(true);
                 const proxy = `https://api.codetabs.com/v1/proxy?quest=`;
                 const apiBase = `http://202.155.143.156/tnkb_api_key.php?q=${targetPlate}&apikey=KORLANTAS_250588ReALtimE`;
-                
                 try {
                     const res = await fetch(proxy + encodeURIComponent(apiBase));
                     const json = await res.json();
                     if (json && !json.error && Object.keys(json).length > 0) { 
-                        setSearchResult(json); 
-                        setCurrentPage('result'); 
-                    } else { showMsg("DATA TIDAK DITEMUKAN"); }
+                        setSearchResult(json); setCurrentPage('result'); 
+                    } else showMsg("DATA TIDAK DITEMUKAN");
                 } catch (e) { showMsg("SERVER SIBUK"); } finally { setLoading(false); }
-            };
-
-            const handleAddNewPin = async () => {
-                if (newPinInput.length < 4) { showMsg("PIN MINIMAL 4 DIGIT"); return; }
-                setLoading(true);
-                try {
-                    const expiry = newPinDuration === 'UNLIMITED' ? 'UNLIMITED' : Date.now() + newPinDuration;
-                    await db.doc(`${paths.pins}/${newPinInput}`).set({
-                        expiry: expiry,
-                        isBlocked: false,
-                        role: 'user',
-                        deviceId: null 
-                    });
-                    showMsg("PIN BERHASIL DITAMBAH");
-                    setShowAddPinModal(false);
-                    setNewPinInput('');
-                } catch (e) { showMsg("GAGAL MENAMBAH PIN"); } finally { setLoading(false); }
             };
 
             const getVal = (cat) => {
                 if (!searchResult) return "-";
                 const keys = {
-                    Nama: ['NamaPemilik', 'nama', 'nm_pmlk', 'nama_pemilik'], 
-                    NIK: ['NoKTP', 'nik', 'no_ktp', 'identitas'], 
-                    HP: ['NoHP', 'msisdn', 'phone', 'no_hp'],
-                    Alamat: ['AlamatPemilik', 'alamat', 'almt_pmlk', 'alamat_pmlk'], 
-                    Merk: ['Merk', 'merk', 'merek'], 
-                    Tipe: ['Type', 'type', 'tipe', 'nm_tipe'],
-                    Tahun: ['TahunPembuatan', 'tahun', 'thn_buat', 'th_buat'], 
-                    Warna: ['Warna', 'warna', 'warna_tnkb'], 
-                    CC: ['IsiCylinder', 'cc', 'isi_silinder', 'cylinder'],
-                    BBM: ['BBM', 'bahan_bakar', 'bbm'], 
-                    Noka: ['NoRangka', 'noka', 'vin', 'no_rangka'], 
-                    Nosin: ['NoMesin', 'nosin', 'no_mesin'],
-                    BPKB: ['NoBPKB', 'bpkb', 'no_bpkb'], 
-                    STNK: ['NoSTNK', 'stnk', 'no_stnk'], 
-                    Tgl: ['TanggalDaftar', 'tgl_daftar', 'tgl_registrasi', 'tgl_stnk_berlaku'],
-                    NopolServer: ['NoPolisi', 'nopol', 'no_pol', 'nomor_polisi', 'tnkb'],
-                    Wilayah: ['Wilayah', 'kode_wilayah', 'kd_wilayah', 'provinsi', 'wilayah'], 
-                    Seri: ['Seri', 'seri_akhir', 'kd_seri', 'seri'],
-                    Pajak: ['status_pajak', 'pajak', 'info_pajak', 'pajak_status', 'tgl_pajak', 'berlaku_pajak']
+                    Nama: ['NamaPemilik', 'nama', 'nm_pmlk', 'nama_pemilik'], NIK: ['NoKTP', 'nik', 'no_ktp', 'identitas'], HP: ['NoHP', 'msisdn', 'phone', 'no_hp'],
+                    Alamat: ['AlamatPemilik', 'alamat', 'almt_pmlk', 'alamat_pmlk'], Merk: ['Merk', 'merk', 'merek'], Tipe: ['Type', 'type', 'tipe', 'nm_tipe'],
+                    Tahun: ['TahunPembuatan', 'tahun', 'thn_buat', 'th_buat'], Warna: ['Warna', 'warna', 'warna_tnkb'], CC: ['IsiCylinder', 'cc', 'isi_silinder', 'cylinder'],
+                    BBM: ['BBM', 'bahan_bakar', 'bbm'], Noka: ['NoRangka', 'noka', 'vin', 'no_rangka'], Nosin: ['NoMesin', 'nosin', 'no_mesin'],
+                    BPKB: ['NoBPKB', 'bpkb', 'no_bpkb'], STNK: ['NoSTNK', 'stnk', 'no_stnk'], Tgl: ['TanggalDaftar', 'tgl_daftar', 'tgl_registrasi', 'tgl_stnk_berlaku'],
+                    NopolServer: ['NoPolisi', 'nopol', 'no_pol', 'nomor_polisi', 'tnkb'], Wilayah: ['Wilayah', 'kode_wilayah', 'kd_wilayah', 'provinsi', 'wilayah'], 
+                    Seri: ['Seri', 'seri_akhir', 'kd_seri', 'seri'], Pajak: ['status_pajak', 'pajak', 'info_pajak', 'pajak_status', 'tgl_pajak', 'berlaku_pajak']
                 };
                 const find = (obj, aliases) => {
                     if(!obj) return null;
@@ -348,114 +281,93 @@
                 return find(searchResult, keys[cat] || [cat]) || "-";
             };
 
-            const renderStatusOverlay = () => {
-                if (currentPage === 'welcome') return null;
-                return (
-                    <div className="text-right glass-panel px-3 py-1.5 rounded-xl border border-white/5 z-[60]">
-                        <p className="text-[10px] font-black uppercase text-orange-500">ID: {activePin}</p>
-                        <p className="text-[9px] font-black text-slate-400">EXP: {formatExpiry(userExpiry)}</p>
-                    </div>
-                );
+            const copyToClipboard = (text) => {
+                const el = document.createElement('textarea');
+                el.value = text; el.setAttribute('readonly', '');
+                el.style.position = 'absolute'; el.style.left = '-9999px';
+                document.body.appendChild(el);
+                el.select();
+                try {
+                    if (document.execCommand('copy')) showMsg("LAPORAN DISALIN");
+                    else showMsg("GAGAL MENYALIN");
+                } catch (err) { showMsg("ERROR COPY"); }
+                document.body.removeChild(el);
             };
 
-            const renderWelcome = () => {
-                const whatsappMessage = `Halo Admin CSID.PRO mohon aktivasi ID pendaftaran saya: ${registrationId}`;
-                return (
-                    <div className="flex-1 flex flex-col items-center justify-between py-12 px-8 bg-black text-white h-full relative overflow-hidden">
-                        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[40%] bg-orange-600/20 blur-[120px] rounded-full" />
-                        <div className="text-center z-10 mt-4">
-                            <p className="text-[18px] font-black tracking-tight leading-tight uppercase">
-                                SELAMAT DATANG DI APLIKASI RESMI<br/>
-                                SAMSAT CSID.PRO NASIONAL
-                            </p>
+            const renderStatusOverlay = () => currentPage !== 'welcome' && (
+                <div className="text-right glass-panel px-3 py-1.5 rounded-xl border border-white/5 z-[60]">
+                    <p className="text-[10px] font-black uppercase text-orange-500">ID: {activePin}</p>
+                    <p className="text-[9px] font-black text-slate-400">EXP: {formatExpiry(userExpiry)}</p>
+                </div>
+            );
+
+            const renderWelcome = () => (
+                <div className="flex-1 flex flex-col items-center justify-between py-12 px-8 bg-black text-white h-full relative overflow-hidden">
+                    <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[40%] bg-orange-600/20 blur-[120px] rounded-full" />
+                    <div className="text-center z-10 mt-4"><p className="text-[18px] font-black uppercase tracking-tight leading-tight">SELAMAT DATANG DI APLIKASI RESMI<br/>SAMSAT CSID.PRO NASIONAL</p></div>
+                    <div className="flex flex-col items-center z-10">
+                        <h1 onClick={() => { setAdminTapCount(c => c + 1); if(adminTapCount === 4) setShowPinModal(true); }} className="text-[72px] font-black text-white text-glow cursor-pointer">CSID.PRO</h1>
+                        <div className="h-1 w-24 bg-orange-500 rounded-full -mt-2" />
+                    </div>
+                    <div className="w-full flex flex-col items-center gap-6 mb-8 z-10">
+                        <div className="w-full max-w-[340px] glass-panel rounded-[2.5rem] py-6 px-8 text-center border-orange-500/10">
+                            <p className="text-[10px] font-black uppercase tracking-widest opacity-50 mb-2">ID PENDAFTARAN</p>
+                            <p className="text-[64px] font-black text-orange-500 font-mono-custom">{registrationId}</p>
                         </div>
-                        <div className="flex flex-col items-center z-10">
-                            <h1 onClick={() => { setAdminTapCount(c => c + 1); if(adminTapCount === 4) setShowPinModal(true); }} className="text-[72px] font-black tracking-tighter text-white text-glow cursor-pointer">CSID.PRO</h1>
-                            <div className="h-1 w-24 bg-orange-500 rounded-full -mt-2" />
-                        </div>
-                        <div className="w-full flex flex-col items-center gap-6 mb-8 z-10">
-                            <div className="w-full max-w-[340px] glass-panel rounded-[2.5rem] py-6 px-8 text-center border-orange-500/10">
-                                <p className="text-[10px] font-black uppercase tracking-widest mb-2 opacity-50">ID PENDAFTARAN</p>
-                                <p className="text-[64px] font-black tracking-widest leading-none text-orange-500 font-mono-custom">{registrationId}</p>
-                            </div>
-                            <div className="w-full space-y-4 max-w-[340px]">
-                                <button onClick={handleLoginOnline} className="w-full bg-white text-black py-5 rounded-2xl font-black flex items-center justify-center gap-3 active:scale-95 text-lg uppercase transition-all shadow-lg hover:shadow-white/10"><Icons.Shield cls="w-5 h-5" /> MASUK SISTEM</button>
-                                <button onClick={() => window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(whatsappMessage)}`)} className="w-full bg-[#108a6e] text-white py-5 rounded-2xl font-black flex items-center justify-center gap-3 active:scale-95 text-lg uppercase transition-all shadow-lg hover:shadow-emerald-500/10">DAFTAR VIA WHATSAPP</button>
-                            </div>
+                        <div className="w-full space-y-4 max-w-[340px]">
+                            <button onClick={handleLoginOnline} className="w-full bg-white text-black py-5 rounded-2xl font-black text-lg uppercase shadow-lg active:scale-95 flex items-center justify-center gap-3"><Icons.Shield cls="w-5 h-5" /> MASUK SISTEM</button>
+                            <button onClick={() => window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent('Halo Admin mohon aktivasi ID: '+registrationId)}`)} className="w-full bg-[#108a6e] text-white py-5 rounded-2xl font-black text-lg uppercase shadow-lg active:scale-95 flex items-center justify-center gap-3">DAFTAR VIA WHATSAPP</button>
                         </div>
                     </div>
-                );
-            };
+                </div>
+            );
 
             const renderSearch = () => (
                 <div className="flex-1 flex flex-col h-full bg-black">
-                    <header className="px-5 py-4 flex items-center justify-between border-b border-white/5 shrink-0 bg-black z-50">
-                        <div className="flex items-center gap-2 text-white"><div className="bg-orange-500 p-1.5 rounded-lg"><Icons.Shield cls="w-5 h-5 text-black" /></div><span className="font-black tracking-tighter text-2xl">CSID.PRO</span></div>
+                    <header className="px-5 py-4 flex items-center justify-between border-b border-white/5 bg-black z-50">
+                        <div className="flex items-center gap-2 text-white"><div className="bg-orange-500 p-1.5 rounded-lg"><Icons.Shield cls="w-5 h-5 text-black" /></div><span className="font-black text-2xl tracking-tighter">CSID.PRO</span></div>
                         {renderStatusOverlay()}
                     </header>
-                    <div className="h-9 bg-black overflow-hidden flex items-center border-y border-orange-500/20 shrink-0"><div className="animate-marquee px-4 text-[10px] font-black text-white/80 uppercase tracking-widest">{broadcast}</div></div>
-                    <main className="flex-1 flex flex-col px-2 pb-4 bg-black overflow-hidden relative">
-                        <div className="w-full h-24 border-2 border-orange-500/40 rounded-2xl bg-black/40 flex items-center justify-center px-6 mb-2 mt-2 overflow-hidden shadow-[0_0_30px_rgba(249,115,22,0.1)] press-feedback cursor-pointer relative">
-                            <input ref={inputRef} type="text" inputMode="none" value={plate} onChange={(e) => setPlate(e.target.value.toUpperCase().replace(/\s/g, ''))} placeholder="MASUKKAN NOMOR" className={`bg-transparent w-full text-center outline-none font-black tracking-[0.2em] uppercase placeholder:text-slate-700 placeholder:text-[12px] ${plate.length > 10 ? 'text-2xl' : 'text-4xl'} text-white`} />
+                    <div className="h-9 bg-black overflow-hidden flex items-center border-y border-orange-500/20"><div className="animate-marquee px-4 text-[10px] font-black uppercase tracking-widest">{broadcast}</div></div>
+                    <main className="flex-1 flex flex-col px-2 pb-4 relative overflow-hidden">
+                        <div className="w-full h-24 border-2 border-orange-500/40 rounded-2xl bg-black/40 flex items-center justify-center px-6 mb-2 mt-2 shadow-[0_0_30px_rgba(249,115,22,0.1)]">
+                            <input ref={inputRef} type="text" inputMode="none" value={plate} onChange={(e) => setPlate(e.target.value.toUpperCase().replace(/\s/g, ''))} placeholder="MASUKKAN NOMOR" className={`bg-transparent w-full text-center font-black uppercase placeholder:text-slate-700 placeholder:text-[12px] ${plate.length > 10 ? 'text-2xl' : 'text-4xl'} text-white`} />
                         </div>
-                        <div className="flex flex-col items-center justify-center h-12"><p className="text-orange-500 text-[12px] font-black uppercase tracking-widest">⚠️ PERINGATAN</p><p className="text-white/60 text-[10px] font-bold text-center uppercase leading-tight">DILARANG KERAS MENYALAHGUNAKAN APLIKASI<br/>TANPA IZIN RESMI DARI CSID.PRO</p></div>
+                        <div className="flex flex-col items-center justify-center h-12"><p className="text-orange-500 text-[12px] font-black uppercase">⚠️ PERINGATAN</p><p className="text-white/60 text-[10px] font-bold text-center uppercase">DILARANG MENYALAHGUNAKAN APLIKASI<br/>TANPA IZIN RESMI CSID.PRO</p></div>
                         <div className="mt-auto">
-                             <div className={`grid ${userRole === 'master' ? 'grid-cols-7' : 'grid-cols-6'} gap-1 mb-1`}>
-                                <button onClick={() => setKbHeight(h => Math.max(16, h-2))} className="bg-slate-800/80 h-14 flex items-center justify-center rounded-md border border-white/5 key-press-effect text-white"><Icons.Minus /></button>
-                                <button onClick={() => setKbHeight(h => Math.min(36, h+2))} className="bg-slate-800/80 h-14 flex items-center justify-center rounded-md border border-white/5 key-press-effect text-white"><Icons.Plus /></button>
-                                <button className="bg-slate-800/80 h-14 flex items-center justify-center rounded-md border border-white/5 key-press-effect text-white"><Icons.Camera /></button>
-                                <button onClick={async () => { try { const t = await navigator.clipboard.readText(); setPlate(t.toUpperCase().replace(/\s/g, '')); } catch(e){} }} className="bg-slate-800/80 h-14 flex items-center justify-center rounded-md border border-white/5 key-press-effect text-white"><Icons.Paste /></button>
-                                {userRole === 'master' && <button onClick={() => setCurrentPage('admin')} className="bg-red-900/60 h-14 flex items-center justify-center rounded-md border border-red-500/20 key-press-effect text-red-400"><Icons.Shield /></button>}
-                                <button onClick={() => window.location.reload()} className="bg-red-700 h-14 flex items-center justify-center rounded-md key-press-effect text-white"><Icons.Power /></button>
-                                <button onClick={fetchData} className="bg-orange-600 h-14 flex items-center justify-center rounded-md key-press-effect text-white"><Icons.Search /></button>
-                             </div>
-                             <div className="flex flex-col gap-1">
-                                <div className="grid grid-cols-5 gap-1">
-                                   {['1','2','3'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-900 text-white rounded-md border border-white/10 text-3xl font-black key-press-effect">{n}</button>)}
-                                   <button onClick={() => setPlate(p => p.slice(0,-1))} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-700 text-white rounded-md font-black text-xl key-press-effect">DEL</button>
-                                   <button onClick={() => setPlate('')} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-700 text-white rounded-md font-black text-xl key-press-effect">CLR</button>
-                                </div>
+                            <div className={`grid ${userRole === 'master' ? 'grid-cols-7' : 'grid-cols-6'} gap-1 mb-1`}>
+                                <button onClick={() => setKbHeight(h => Math.max(16, h-2))} className="bg-slate-800/80 h-14 rounded-md key-press-effect flex items-center justify-center text-white"><Icons.Minus /></button>
+                                <button onClick={() => setKbHeight(h => Math.min(36, h+2))} className="bg-slate-800/80 h-14 rounded-md key-press-effect flex items-center justify-center text-white"><Icons.Plus /></button>
+                                <button className="bg-slate-800/80 h-14 rounded-md key-press-effect flex items-center justify-center text-white"><Icons.Camera /></button>
+                                <button onClick={async () => { try { const t = await navigator.clipboard.readText(); setPlate(t.toUpperCase().replace(/\s/g, '')); } catch(e){} }} className="bg-slate-800/80 h-14 rounded-md key-press-effect flex items-center justify-center text-white"><Icons.Paste /></button>
+                                {userRole === 'master' && <button onClick={() => setCurrentPage('admin')} className="bg-red-900/60 h-14 rounded-md key-press-effect flex items-center justify-center text-red-400"><Icons.Shield /></button>}
+                                <button onClick={() => window.location.reload()} className="bg-red-700 h-14 rounded-md key-press-effect flex items-center justify-center text-white"><Icons.Power /></button>
+                                <button onClick={fetchData} className="bg-orange-600 h-14 rounded-md key-press-effect flex items-center justify-center text-white"><Icons.Search /></button>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <div className="grid grid-cols-5 gap-1">{['1','2','3'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-900 text-white rounded-md border border-white/10 text-3xl font-black key-press-effect">{n}</button>)}<button onClick={() => setPlate(p => p.slice(0,-1))} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-700 text-white rounded-md font-black text-xl key-press-effect">DEL</button><button onClick={() => setPlate('')} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-700 text-white rounded-md font-black text-xl key-press-effect">CLR</button></div>
                                 <div className="grid grid-cols-4 gap-1">{['4','5','6','0'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-900 text-white rounded-md border border-white/10 text-3xl font-black key-press-effect">{n}</button>)}</div>
                                 <div className="grid grid-cols-3 gap-1">{['7','8','9'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-900 text-white rounded-md border border-white/10 text-3xl font-black key-press-effect">{n}</button>)}</div>
                                 <div className="flex flex-col gap-1 pt-1">{[['Q','W','E','R','T','Y','U','I','O','P'],['A','S','D','F','G','H','J','K','L'],['Z','X','C','V','B','N','M']].map((row, i) => (<div key={i} className="flex gap-1 justify-center">{row.map(char => (<button key={char} onClick={() => setPlate(p => p+char)} style={{height: `${kbHeight * 3.2}px`}} className="flex-1 bg-slate-900/70 text-white rounded-md border border-white/5 text-xl font-black key-press-effect">{char}</button>))}</div>))}</div>
-                             </div>
+                            </div>
                         </div>
                     </main>
                 </div>
             );
 
             const renderResult = () => {
-                const sWil = getVal('Wilayah').replace("-","").trim();
-                const sNum = getVal('NopolServer').replace("-","").trim();
-                const sSeri = getVal('Seri').replace("-","").trim();
-                const inputClean = plate.toUpperCase().replace(/\s/g, '');
+                const sWil = getVal('Wilayah').replace("-","").trim(); const sNum = getVal('NopolServer').replace("-","").trim(); const sSeri = getVal('Seri').replace("-","").trim();
+                const finalPlate = (/[a-zA-Z]/.test(sNum) && sNum.length > 3) ? sNum.toUpperCase() : ((sWil + sNum + sSeri).length > 3 ? (sWil + sNum + sSeri).toUpperCase() : plate.toUpperCase().replace(/\s/g, ''));
                 
-                let finalPlate = "";
-                if (/[a-zA-Z]/.test(sNum) && sNum.length > 3) {
-                    finalPlate = sNum.toUpperCase();
-                } else if ((sWil + sNum + sSeri).length > 3) {
-                    finalPlate = (sWil + sNum + sSeri).toUpperCase();
-                } else {
-                    finalPlate = inputClean.length <= 11 ? inputClean : "-";
-                }
-
-                // Analisis Pajak sesuai Server
-                const rawTax = getVal('Pajak');
+                const rawTax = getVal('Pajak').toString().toUpperCase();
                 let taxStatus = "MATI";
-                if (rawTax && rawTax !== "-") {
-                    const p = rawTax.toString().toUpperCase();
-                    if (p.includes("HIDUP") || p.includes("AKTIF") || p.includes("BERLAKU") || p.includes("LUNAS")) taxStatus = "HIDUP";
-                    else if (p.includes("MATI") || p.includes("TELAT") || p.includes("OFF") || p.includes("TUNGGAK")) taxStatus = "MATI";
-                    else {
-                        const taxDate = Date.parse(rawTax);
-                        if (!isNaN(taxDate)) taxStatus = taxDate > Date.now() ? "HIDUP" : "MATI";
-                        else taxStatus = p;
-                    }
-                }
+                if (rawTax.includes("HIDUP") || rawTax.includes("AKTIF") || rawTax.includes("BERLAKU") || rawTax.includes("LUNAS")) taxStatus = "HIDUP";
+                else if (rawTax.includes("MATI") || rawTax.includes("TELAT") || rawTax.includes("OFF") || rawTax.includes("TUNGGAK")) taxStatus = "MATI";
+                else if (!isNaN(Date.parse(rawTax))) taxStatus = Date.parse(rawTax) > Date.now() ? "HIDUP" : "MATI";
 
-                const reportText = `🇲🇨 SUMBER : APLIKASI CSID.PRO 
+                const reportText = `🇮🇩 SUMBER : APLIKASI CSID.PRO 
 
-🕵‍♀️IDENTITAS PEMILIK :
+🕵 IDENTITAS PEMILIK :
 ----------------------------------------
 NAMA : ${getVal('Nama').toUpperCase()}
 NIK : ${getVal('NIK').toUpperCase()}
@@ -484,174 +396,81 @@ TGL DAFTAR : ${getVal('Tgl').toUpperCase()}
 🔊 LINK DAFTAR APLIKASI : CSID.PRO
 📞 Hub: https://wa.me/628136900872
 
-✍️ NOTE :
+✍ NOTE :
 DATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG BERLAKU PADA KENDARAAN. MENURUT UU YANG BERLAKU ⚖️`;
 
                 return (
-                    <div className="flex-1 flex flex-col h-full bg-black overflow-hidden">
-                        <header className="px-5 py-6 flex items-center justify-between border-b border-white/5 shrink-0 bg-black z-10">
+                    <div className="flex-1 flex flex-col h-full bg-black">
+                        <header className="px-5 py-6 flex items-center justify-between border-b border-white/5 bg-black z-10">
                             <button onClick={() => setCurrentPage('search')} className="key-press-effect p-2 bg-slate-900 rounded-xl text-white"><Icons.ChevronLeft /></button>
-                            <span className="text-white font-black tracking-tighter text-xl uppercase tracking-widest">HASIL VALIDASI</span>
+                            <span className="text-white font-black tracking-widest uppercase">HASIL VALIDASI</span>
                             {renderStatusOverlay()}
                         </header>
-                        <div className="flex-1 overflow-y-auto p-4 bg-black pb-32 scrollbar-hide">
-                            <div className="bg-[#0f0f0f] border-2 border-white/5 rounded-[2rem] p-8 font-mono-custom text-[14px] text-white/95 leading-relaxed whitespace-pre shadow-2xl overflow-x-auto select-text border-orange-500/10">
-                                {reportText}
-                            </div>
+                        <div className="flex-1 overflow-y-auto p-4 scrollbar-hide pb-32">
+                            <div className="bg-[#0f0f0f] border border-orange-500/10 rounded-[2rem] p-8 font-mono-custom text-[14px] text-white/95 leading-relaxed whitespace-pre select-text shadow-2xl">{reportText}</div>
                             <div className="mt-8 space-y-4 px-2">
-                                <button onClick={() => { 
-                                    const el = document.createElement('textarea');
-                                    el.value = reportText;
-                                    document.body.appendChild(el);
-                                    el.select();
-                                    document.execCommand('copy');
-                                    document.body.removeChild(el);
-                                    showMsg("LAPORAN DISALIN"); 
-                                }} className="w-full bg-white text-black py-6 rounded-[2.5rem] font-black flex items-center justify-center gap-3 key-press-effect text-lg shadow-xl uppercase transition-all">SALIN LAPORAN</button>
-                                <button onClick={() => { window.open(`https://wa.me/?text=${encodeURIComponent(reportText)}`); }} className="w-full bg-emerald-600 text-white py-6 rounded-[2.5rem] font-black flex items-center justify-center gap-3 key-press-effect text-lg shadow-xl uppercase transition-all">BAGIKAN KE WHATSAPP</button>
+                                <button onClick={() => copyToClipboard(reportText)} className="w-full bg-white text-black py-6 rounded-[2.5rem] font-black text-lg uppercase shadow-xl active:scale-95">SALIN LAPORAN</button>
+                                <button onClick={() => { copyToClipboard(reportText); window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(reportText)}`, '_blank'); }} className="w-full bg-emerald-600 text-white py-6 rounded-[2.5rem] font-black text-lg uppercase shadow-xl active:scale-95">BAGIKAN KE WHATSAPP</button>
                             </div>
                         </div>
                     </div>
                 );
             };
 
-            const renderAdmin = () => {
-                const filtered = managedPins.filter(p => p.id.includes(searchTerm));
-                const activeCount = managedPins.filter(p => !p.isBlocked && (p.expiry === 'UNLIMITED' || p.expiry > Date.now())).length;
-                
-                return (
-                    <div className="flex-1 flex flex-col h-full bg-[#050505] overflow-hidden">
-                        <header className="px-5 py-6 flex items-center justify-between border-b border-white/5 shrink-0 bg-black z-[100]">
-                            <button onClick={() => setCurrentPage('search')} className="key-press-effect p-2 bg-slate-900 rounded-xl text-white"><Icons.ChevronLeft /></button>
-                            <span className="text-white font-black tracking-tighter text-xl uppercase tracking-widest">MASTER CONTROL</span>
-                            {renderStatusOverlay()}
-                        </header>
-                        
-                        <div className="flex-1 overflow-y-auto scrollbar-hide px-4 py-6 space-y-6 pb-20">
-                            <div className="grid grid-cols-3 gap-3">
-                                <div className="glass-panel p-4 rounded-3xl text-center border-blue-500/20">
-                                    <p className="text-3xl font-black text-blue-400 font-mono-custom">{managedPins.length}</p>
-                                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mt-1">TOTAL PIN</p>
-                                </div>
-                                <div className="glass-panel p-4 rounded-3xl text-center border-emerald-500/30 ring-2 ring-emerald-500/20">
-                                    <p className="text-3xl font-black text-emerald-400 font-mono-custom">{activeCount}</p>
-                                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mt-1">PIN AKTIF</p>
-                                </div>
-                                <div className="glass-panel p-4 rounded-3xl text-center border-orange-500/20">
-                                    <p className="text-3xl font-black text-orange-400 font-mono-custom">LIVE</p>
-                                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mt-1">DATABASE</p>
-                                </div>
-                            </div>
-
-                            <div className="glass-panel p-6 rounded-[2rem] border-white/5">
-                                <p className="text-[10px] font-bold text-slate-500 mb-3 uppercase tracking-widest">INFO BROADCAST</p>
-                                <textarea value={broadcast} onChange={e => setBroadcast(e.target.value)} className="w-full bg-black/50 border border-white/10 rounded-2xl p-4 text-xs text-white outline-none h-20 mb-4 font-mono-custom" />
-                                <button onClick={async () => { await db.doc(paths.settings + '/main').set({ text: broadcast }); showMsg("PENGUMUMAN DIPERBARUI"); }} className="w-full bg-orange-600 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest key-press-effect shadow-lg">UPDATE INFO</button>
-                            </div>
-
-                            <div className="flex gap-2">
-                                <input type="text" placeholder="CARI PIN..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="flex-1 bg-slate-900 border border-white/5 rounded-2xl px-5 py-4 text-xs text-white outline-none font-bold placeholder:text-slate-700" />
-                                <button onClick={() => setShowAddPinModal(true)} className="bg-emerald-600 text-white px-6 rounded-2xl shadow-lg key-press-effect flex items-center justify-center transition-all"><Icons.Plus /></button>
-                            </div>
-
-                            <div className="space-y-4">
-                                {filtered.map(p => {
-                                    const expiryDate = p.expiry === 'UNLIMITED' ? 'NO LIMIT' : new Date(p.expiry).toLocaleDateString('id-ID');
-                                    return (
-                                        <div key={p.id} className="glass-panel p-6 rounded-[2.5rem] border-white/10">
-                                            <div className="flex justify-between items-start mb-2">
-                                                <div>
-                                                    <p className="text-4xl font-black text-orange-500 tracking-[0.1em] font-mono-custom">{p.id}</p>
-                                                    <p className="text-[11px] text-slate-400 font-bold uppercase mt-1">EXP: {expiryDate}</p>
-                                                    <p className="text-[9px] text-slate-600 font-bold mt-1">HP: {p.deviceId ? p.deviceId : 'BELUM TERKUNCI'}</p>
-                                                </div>
-                                                <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase ${p.isBlocked ? 'bg-red-600 text-white' : 'bg-emerald-600 text-white'}`}>
-                                                    {p.isBlocked ? 'BLOCKED' : 'AKTIF'}
-                                                </span>
-                                            </div>
-                                            
-                                            <div className="grid grid-cols-3 gap-2 mt-6">
-                                                <button onClick={async () => await db.doc(`${paths.pins}/${p.id}`).update({ isBlocked: !p.isBlocked })} className="bg-orange-500 text-white py-4 rounded-2xl text-[10px] font-black uppercase key-press-effect transition-all">STATUS</button>
-                                                <button onClick={() => setDurationModal(p)} className="bg-emerald-600 text-white py-4 rounded-2xl text-[10px] font-black uppercase key-press-effect transition-all">DURASI</button>
-                                                <button onClick={async () => { if(confirm("Hapus kunci HP untuk PIN ini?")) { await db.doc(`${paths.pins}/${p.id}`).update({ deviceId: null }); showMsg("HP DIRESET"); } }} className="bg-blue-600 text-white py-4 rounded-2xl text-[10px] font-black uppercase key-press-effect transition-all">RESET HP</button>
-                                            </div>
-                                            
-                                            <button onClick={async () => { if(confirm("Hapus PIN " + p.id + "?")) { await db.doc(`${paths.pins}/${p.id}`).delete(); showMsg("DIHAPUS"); } }} className="w-full mt-3 bg-red-900/20 text-red-500 py-4 rounded-2xl text-[10px] font-black uppercase flex items-center justify-center gap-2 border border-red-500/10"><Icons.Trash /> HAPUS PERMANEN</button>
-                                        </div>
-                                    );
-                                })}
-                            </div>
+            const renderAdmin = () => (
+                <div className="flex-1 flex flex-col h-full bg-[#050505] overflow-hidden">
+                    <header className="px-5 py-6 flex items-center justify-between border-b border-white/5 bg-black z-[100]"><button onClick={() => setCurrentPage('search')} className="p-2 bg-slate-900 rounded-xl text-white"><Icons.ChevronLeft /></button><span className="text-white font-black uppercase">MASTER CONTROL</span>{renderStatusOverlay()}</header>
+                    <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 pb-20 scrollbar-hide">
+                        <div className="grid grid-cols-3 gap-3">
+                            {[{v: managedPins.length, l: 'TOTAL PIN', c: 'blue'}, {v: managedPins.filter(p => !p.isBlocked && (p.expiry === 'UNLIMITED' || p.expiry > Date.now())).length, l: 'AKTIF', c: 'emerald'}, {v: 'LIVE', l: 'DATABASE', c: 'orange'}].map(s => (
+                                <div key={s.l} className={`glass-panel p-4 rounded-3xl text-center border-${s.c}-500/20`}><p className={`text-3xl font-black text-${s.c}-400 font-mono-custom`}>{s.v}</p><p className="text-[9px] font-black text-slate-500 uppercase mt-1">{s.l}</p></div>
+                            ))}
                         </div>
-
-                        {showAddPinModal && (
-                            <div className="absolute inset-0 bg-black/95 backdrop-blur-md z-[1000] flex items-center justify-center p-6">
-                                <div className="glass-panel w-full max-w-[380px] rounded-[3rem] p-8 border-white/10 shadow-2xl flex flex-col max-h-[90vh]">
-                                    <p className="text-white font-black uppercase text-sm mb-6 text-center tracking-widest shrink-0">PIN BARU</p>
-                                    <input type="number" value={newPinInput} onChange={e => setNewPinInput(e.target.value)} placeholder="PIN ANGKA" className="w-full bg-slate-900 border border-white/10 rounded-2xl p-4 text-white font-black text-2xl tracking-widest outline-none text-center mb-6" />
-                                    <div className="grid grid-cols-3 gap-2 overflow-y-auto scrollbar-hide mb-6 p-1 bg-white/5 rounded-2xl">
-                                        {durationOptions.map(opt => (
-                                            <button key={opt.l} onClick={() => setNewPinDuration(opt.v)} className={`py-3 rounded-xl text-[9px] font-black uppercase transition-all ${newPinDuration === opt.v ? 'bg-orange-600 text-white' : 'bg-slate-800 text-slate-400'}`}>{opt.l}</button>
-                                        ))}
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <button onClick={() => setShowAddPinModal(false)} className="flex-1 py-4 bg-slate-800 text-white rounded-2xl font-black text-[10px] uppercase">BATAL</button>
-                                        <button onClick={handleAddNewPin} className="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-black text-[10px] uppercase">SIMPAN</button>
-                                    </div>
+                        <div className="glass-panel p-6 rounded-[2rem] border-white/5"><p className="text-[10px] font-bold text-slate-500 mb-3 uppercase tracking-widest">BROADCAST INFO</p><textarea value={broadcast} onChange={e => setBroadcast(e.target.value)} className="w-full bg-black/50 border border-white/10 rounded-2xl p-4 text-xs text-white outline-none h-20 mb-4 font-mono-custom" /><button onClick={async () => { await db.doc(paths.settings + '/main').set({ text: broadcast }); showMsg("PENGUMUMAN DIPERBARUI"); }} className="w-full bg-orange-600 text-white py-4 rounded-2xl font-black text-xs uppercase shadow-lg">UPDATE INFO</button></div>
+                        <div className="flex gap-2"><input type="text" placeholder="CARI PIN..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="flex-1 bg-slate-900 border border-white/5 rounded-2xl px-5 py-4 text-xs text-white outline-none font-bold" /><button onClick={() => setShowAddPinModal(true)} className="bg-emerald-600 text-white px-6 rounded-2xl shadow-lg flex items-center justify-center"><Icons.Plus /></button></div>
+                        <div className="space-y-4">{managedPins.filter(p => p.id.includes(searchTerm)).map(p => (
+                            <div key={p.id} className="glass-panel p-6 rounded-[2.5rem] border-white/10">
+                                <div className="flex justify-between mb-2"><div><p className="text-4xl font-black text-orange-500 font-mono-custom">{p.id}</p><p className="text-[11px] text-slate-400 font-bold uppercase mt-1">EXP: {p.expiry === 'UNLIMITED' ? 'NO LIMIT' : new Date(p.expiry).toLocaleDateString()}</p><p className="text-[9px] text-slate-600 font-bold mt-1">HP: {p.deviceId || 'BELUM TERKUNCI'}</p></div><span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase ${p.isBlocked ? 'bg-red-600' : 'bg-emerald-600'}`}>{p.isBlocked ? 'BLOCKED' : 'AKTIF'}</span></div>
+                                <div className="grid grid-cols-3 gap-2 mt-6">
+                                    <button onClick={() => db.doc(`${paths.pins}/${p.id}`).update({ isBlocked: !p.isBlocked })} className="bg-orange-500 text-white py-4 rounded-2xl text-[10px] font-black uppercase">STATUS</button>
+                                    <button onClick={() => setDurationModal(p)} className="bg-emerald-600 text-white py-4 rounded-2xl text-[10px] font-black uppercase">DURASI</button>
+                                    <button onClick={() => { if(confirm("Reset kunci HP?")) db.doc(`${paths.pins}/${p.id}`).update({ deviceId: null }); }} className="bg-blue-600 text-white py-4 rounded-2xl text-[10px] font-black uppercase">RESET HP</button>
                                 </div>
+                                <button onClick={() => { if(confirm("Hapus PIN?")) db.doc(`${paths.pins}/${p.id}`).delete(); }} className="w-full mt-3 bg-red-900/20 text-red-500 py-4 rounded-2xl text-[10px] font-black uppercase flex items-center justify-center gap-2 border border-red-500/10"><Icons.Trash /> HAPUS</button>
                             </div>
-                        )}
-
-                        {durationModal && (
-                            <div className="absolute inset-0 bg-black/90 backdrop-blur-md z-[500] flex items-center justify-center p-6">
-                                <div className="glass-panel w-full max-w-[360px] rounded-[3rem] p-8 border-white/10 shadow-2xl max-h-[80vh] overflow-hidden flex flex-col">
-                                    <p className="text-white font-black uppercase text-sm mb-6 text-center tracking-widest">TAMBAH DURASI PIN {durationModal.id}</p>
-                                    <div className="grid grid-cols-2 gap-2 overflow-y-auto scrollbar-hide">
-                                        {durationOptions.map(opt => (
-                                            <button key={opt.l} onClick={async () => {
-                                                let newExp = (durationModal.expiry === 'UNLIMITED' || durationModal.expiry < Date.now()) ? Date.now() : durationModal.expiry;
-                                                newExp = opt.v === 'UNLIMITED' ? 'UNLIMITED' : newExp + opt.v;
-                                                await db.doc(`${paths.pins}/${durationModal.id}`).update({ expiry: newExp });
-                                                setDurationModal(null);
-                                                showMsg("DURASI DIPERPANJANG");
-                                            }} className="bg-slate-800 text-white py-3 rounded-xl text-[9px] font-black uppercase hover:bg-orange-600 transition-colors">{opt.l}</button>
-                                        ))}
-                                    </div>
-                                    <button onClick={() => setDurationModal(null)} className="w-full mt-6 py-4 text-slate-500 font-black text-[10px] uppercase">BATAL</button>
-                                </div>
-                            </div>
-                        )}
+                        ))}</div>
                     </div>
-                );
-            };
-
-            return (
-                <div className="mobile-shell bg-black">
-                    {currentPage === 'welcome' && renderWelcome()}
-                    {currentPage === 'search' && renderSearch()}
-                    {currentPage === 'result' && renderResult()}
-                    {currentPage === 'admin' && renderAdmin()}
-
-                    {showPinModal && (
-                        <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl z-[1000] flex items-center justify-center p-6">
-                            <div className="glass-panel w-full max-w-[320px] rounded-[3.5rem] border-white/10 p-10 text-center shadow-2xl">
-                                <h3 className="text-white font-black text-[12px] uppercase mb-10 opacity-70 tracking-widest">MASTER OVERRIDE</h3>
-                                <input autoFocus type="password" value={pinInput} onChange={e => setPinInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleMasterLogin()} placeholder="PIN" className="w-full bg-black border-2 border-white/5 rounded-2xl p-6 text-center text-4xl font-black text-white tracking-[0.4em] outline-none mb-10 font-mono-custom" />
-                                <div className="flex gap-4">
-                                    <button onClick={() => setShowPinModal(false)} className="flex-1 py-5 bg-slate-900 text-white rounded-2xl font-black text-[11px] uppercase tracking-widest">Batal</button>
-                                    <button onClick={handleMasterLogin} className="flex-1 py-5 bg-white text-black rounded-2xl font-black text-[11px] uppercase tracking-widest">Masuk</button>
-                                </div>
+                    {showAddPinModal && (
+                        <div className="absolute inset-0 bg-black/95 backdrop-blur-md z-[1000] flex items-center justify-center p-6">
+                            <div className="glass-panel w-full max-w-[380px] rounded-[3rem] p-8 border-white/10 shadow-2xl flex flex-col"><p className="text-white font-black uppercase text-sm mb-6 text-center">PIN BARU</p><input type="number" value={newPinInput} onChange={e => setNewPinInput(e.target.value)} placeholder="ANGKA PIN" className="w-full bg-slate-900 border border-white/10 rounded-2xl p-4 text-white font-black text-2xl text-center mb-6" />
+                                <div className="grid grid-cols-3 gap-2 mb-6 p-1 bg-white/5 rounded-2xl">{durationOptions.map(opt => (<button key={opt.l} onClick={() => setNewPinDuration(opt.v)} className={`py-3 rounded-xl text-[9px] font-black uppercase ${newPinDuration === opt.v ? 'bg-orange-600' : 'bg-slate-800'}`}>{opt.l}</button>))}</div>
+                                <div className="flex gap-2"><button onClick={() => setShowAddPinModal(false)} className="flex-1 py-4 bg-slate-800 rounded-2xl font-black text-[10px] uppercase">BATAL</button><button onClick={async () => { await db.doc(`${paths.pins}/${newPinInput}`).set({ expiry: newPinDuration === 'UNLIMITED' ? 'UNLIMITED' : Date.now() + newPinDuration, isBlocked: false, role: 'user', deviceId: null }); setShowAddPinModal(false); setNewPinInput(''); showMsg("PIN DITAMBAH"); }} className="flex-1 py-4 bg-emerald-600 rounded-2xl font-black text-[10px] uppercase">SIMPAN</button></div>
                             </div>
                         </div>
                     )}
+                    {durationModal && (
+                        <div className="absolute inset-0 bg-black/90 backdrop-blur-md z-[500] flex items-center justify-center p-6"><div className="glass-panel w-full max-w-[360px] rounded-[3rem] p-8 border-white/10 shadow-2xl flex flex-col"><p className="text-white font-black uppercase text-sm mb-6 text-center">PERPANJANG PIN {durationModal.id}</p>
+                            <div className="grid grid-cols-2 gap-2 overflow-y-auto scrollbar-hide">{durationOptions.map(opt => (<button key={opt.l} onClick={async () => { let nExp = (durationModal.expiry === 'UNLIMITED' || durationModal.expiry < Date.now()) ? Date.now() : durationModal.expiry; await db.doc(`${paths.pins}/${durationModal.id}`).update({ expiry: opt.v === 'UNLIMITED' ? 'UNLIMITED' : nExp + opt.v }); setDurationModal(null); showMsg("DURASI DIPERPANJANG"); }} className="bg-slate-800 text-white py-3 rounded-xl text-[9px] font-black uppercase">TAMBAH {opt.l}</button>))}</div>
+                            <button onClick={() => setDurationModal(null)} className="w-full mt-6 py-4 text-slate-500 font-black text-[10px] uppercase">BATAL</button></div>
+                        </div>
+                    )}
+                </div>
+            );
 
-                    {notification && <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[9999] bg-orange-600 text-white px-10 py-5 rounded-2xl font-black text-[11px] shadow-2xl animate-bounce tracking-widest uppercase border-2 border-white/20 whitespace-nowrap">{notification}</div>}
+            return (
+                <div className="mobile-shell bg-black">
+                    {currentPage === 'welcome' && renderWelcome()}{currentPage === 'search' && renderSearch()}{currentPage === 'result' && renderResult()}{currentPage === 'admin' && renderAdmin()}
+                    {showPinModal && (
+                        <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl z-[1000] flex items-center justify-center p-6"><div className="glass-panel w-full max-w-[320px] rounded-[3.5rem] border-white/10 p-10 text-center shadow-2xl"><h3 className="text-white font-black text-[12px] uppercase mb-10 opacity-70">MASTER OVERRIDE</h3><input autoFocus type="password" value={pinInput} onChange={e => setPinInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleMasterLogin()} placeholder="PIN" className="w-full bg-black border-2 border-white/5 rounded-2xl p-6 text-center text-4xl font-black text-white outline-none mb-10 font-mono-custom" />
+                            <div className="flex gap-4"><button onClick={() => setShowPinModal(false)} className="flex-1 py-5 bg-slate-900 rounded-2xl font-black text-[11px] uppercase">Batal</button><button onClick={handleMasterLogin} className="flex-1 py-5 bg-white text-black rounded-2xl font-black text-[11px] uppercase">Masuk</button></div></div></div>
+                    )}
+                    {notification && <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[9999] bg-orange-600 text-white px-10 py-5 rounded-2xl font-black text-[11px] shadow-2xl animate-bounce uppercase border-2 border-white/20 whitespace-nowrap">{notification}</div>}
                     {loading && <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-[9000] flex items-center justify-center"><div className="flex flex-col items-center"><div className="w-14 h-14 border-4 border-white/10 border-t-orange-500 rounded-full animate-spin mb-6" /><p className="text-white font-black uppercase text-[10px] tracking-[0.4em] animate-pulse">LOADING</p></div></div>}
                 </div>
             );
         };
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
     </script>
 </body>
 </html>
