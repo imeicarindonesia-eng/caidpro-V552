@@ -241,19 +241,39 @@
                 } else { showMsg("PIN SALAH"); setPinInput(''); }
             };
 
+            // LOGIKA DUAL KONEKSI: MENCEGAH PEMBLOKIRAN PROXY SAAT SUDAH JADI APK
             const fetchData = async () => {
                 const targetPlate = plate.replace(/\s/g, '').toUpperCase();
                 if (!targetPlate) { showMsg("KETIK PLAT NOMOR"); return; }
                 setLoading(true);
+                
+                const apiBase = `https://api.dataroda.my.id/cekproxy.php?key=DR-77C0EB00BE01686FC0226050&q=${targetPlate}`;
                 const proxy = `https://api.codetabs.com/v1/proxy?quest=`;
-                const apiBase = `http://202.155.143.156/tnkb_api_key.php?q=${targetPlate}&apikey=KORLANTAS_250588ReALtimE`;
+                
                 try {
-                    const res = await fetch(proxy + encodeURIComponent(apiBase));
+                    let res;
+                    try {
+                        // Langkah 1: Coba tembak langsung (Direkomendasikan untuk APK WebView agar bebas dari blokir proxy)
+                        res = await fetch(apiBase);
+                    } catch (directError) {
+                        // Langkah 2: Fallback ke proxy jika gagal (berjalan di browser uji coba biasa karena CORS)
+                        console.log("Direct fetch failed, falling back to proxy...", directError);
+                        res = await fetch(proxy + encodeURIComponent(apiBase));
+                    }
+                    
                     const json = await res.json();
                     if (json && !json.error && Object.keys(json).length > 0) { 
-                        setSearchResult(json); setCurrentPage('result'); 
-                    } else showMsg("DATA TIDAK DITEMUKAN");
-                } catch (e) { showMsg("SERVER SIBUK"); } finally { setLoading(false); }
+                        setSearchResult(json); 
+                        setCurrentPage('result'); 
+                    } else {
+                        showMsg("DATA TIDAK DITEMUKAN");
+                    }
+                } catch (e) { 
+                    console.error("Fetch Error: ", e);
+                    showMsg("SERVER SIBUK / TIMEOUT"); 
+                } finally { 
+                    setLoading(false); 
+                }
             };
 
             const getVal = (cat) => {
@@ -285,12 +305,28 @@
                 const el = document.createElement('textarea');
                 el.value = text; el.setAttribute('readonly', '');
                 el.style.position = 'absolute'; el.style.left = '-9999px';
+                el.style.top = '0';
                 document.body.appendChild(el);
-                el.select();
+                
+                const isiOS = navigator.userAgent.match(/ipad|iphone/i);
+                if (isiOS) {
+                    const range = document.createRange();
+                    range.selectNodeContents(el);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    el.setSelectionRange(0, 999999);
+                } else {
+                    el.select();
+                }
+
                 try {
-                    if (document.execCommand('copy')) showMsg("LAPORAN DISALIN");
+                    const success = document.execCommand('copy');
+                    if (success) showMsg("LAPORAN DISALIN");
                     else showMsg("GAGAL MENYALIN");
-                } catch (err) { showMsg("ERROR COPY"); }
+                } catch (err) {
+                    showMsg("ERROR COPY");
+                }
                 document.body.removeChild(el);
             };
 
@@ -417,45 +453,52 @@ DATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG
                 );
             };
 
-            const renderAdmin = () => (
-                <div className="flex-1 flex flex-col h-full bg-[#050505] overflow-hidden">
-                    <header className="px-5 py-6 flex items-center justify-between border-b border-white/5 bg-black z-[100]"><button onClick={() => setCurrentPage('search')} className="p-2 bg-slate-900 rounded-xl text-white"><Icons.ChevronLeft /></button><span className="text-white font-black uppercase">MASTER CONTROL</span>{renderStatusOverlay()}</header>
-                    <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 pb-20 scrollbar-hide">
-                        <div className="grid grid-cols-3 gap-3">
-                            {[{v: managedPins.length, l: 'TOTAL PIN', c: 'blue'}, {v: managedPins.filter(p => !p.isBlocked && (p.expiry === 'UNLIMITED' || p.expiry > Date.now())).length, l: 'AKTIF', c: 'emerald'}, {v: 'LIVE', l: 'DATABASE', c: 'orange'}].map(s => (
-                                <div key={s.l} className={`glass-panel p-4 rounded-3xl text-center border-${s.c}-500/20`}><p className={`text-3xl font-black text-${s.c}-400 font-mono-custom`}>{s.v}</p><p className="text-[9px] font-black text-slate-500 uppercase mt-1">{s.l}</p></div>
-                            ))}
-                        </div>
-                        <div className="glass-panel p-6 rounded-[2rem] border-white/5"><p className="text-[10px] font-bold text-slate-500 mb-3 uppercase tracking-widest">BROADCAST INFO</p><textarea value={broadcast} onChange={e => setBroadcast(e.target.value)} className="w-full bg-black/50 border border-white/10 rounded-2xl p-4 text-xs text-white outline-none h-20 mb-4 font-mono-custom" /><button onClick={async () => { await db.doc(paths.settings + '/main').set({ text: broadcast }); showMsg("PENGUMUMAN DIPERBARUI"); }} className="w-full bg-orange-600 text-white py-4 rounded-2xl font-black text-xs uppercase shadow-lg">UPDATE INFO</button></div>
-                        <div className="flex gap-2"><input type="text" placeholder="CARI PIN..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="flex-1 bg-slate-900 border border-white/5 rounded-2xl px-5 py-4 text-xs text-white outline-none font-bold" /><button onClick={() => setShowAddPinModal(true)} className="bg-emerald-600 text-white px-6 rounded-2xl shadow-lg flex items-center justify-center"><Icons.Plus /></button></div>
-                        <div className="space-y-4">{managedPins.filter(p => p.id.includes(searchTerm)).map(p => (
-                            <div key={p.id} className="glass-panel p-6 rounded-[2.5rem] border-white/10">
-                                <div className="flex justify-between mb-2"><div><p className="text-4xl font-black text-orange-500 font-mono-custom">{p.id}</p><p className="text-[11px] text-slate-400 font-bold uppercase mt-1">EXP: {p.expiry === 'UNLIMITED' ? 'NO LIMIT' : new Date(p.expiry).toLocaleDateString()}</p><p className="text-[9px] text-slate-600 font-bold mt-1">HP: {p.deviceId || 'BELUM TERKUNCI'}</p></div><span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase ${p.isBlocked ? 'bg-red-600' : 'bg-emerald-600'}`}>{p.isBlocked ? 'BLOCKED' : 'AKTIF'}</span></div>
-                                <div className="grid grid-cols-3 gap-2 mt-6">
-                                    <button onClick={() => db.doc(`${paths.pins}/${p.id}`).update({ isBlocked: !p.isBlocked })} className="bg-orange-500 text-white py-4 rounded-2xl text-[10px] font-black uppercase">STATUS</button>
-                                    <button onClick={() => setDurationModal(p)} className="bg-emerald-600 text-white py-4 rounded-2xl text-[10px] font-black uppercase">DURASI</button>
-                                    <button onClick={() => { if(confirm("Reset kunci HP?")) db.doc(`${paths.pins}/${p.id}`).update({ deviceId: null }); }} className="bg-blue-600 text-white py-4 rounded-2xl text-[10px] font-black uppercase">RESET HP</button>
+            const renderAdmin = () => {
+                const filtered = managedPins.filter(p => p.id.includes(searchTerm));
+                const activeCount = managedPins.filter(p => !p.isBlocked && (p.expiry === 'UNLIMITED' || p.expiry > Date.now())).length;
+                
+                return (
+                    <div className="flex-1 flex flex-col h-full bg-[#050505] overflow-hidden">
+                        <header className="px-5 py-6 flex items-center justify-between border-b border-white/5 bg-black z-[100]"><button onClick={() => setCurrentPage('search')} className="p-2 bg-slate-900 rounded-xl text-white"><Icons.ChevronLeft /></button><span className="text-white font-black uppercase">MASTER CONTROL</span>{renderStatusOverlay()}</header>
+                        <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 pb-20 scrollbar-hide">
+                            <div className="grid grid-cols-3 gap-3">
+                                {[{v: managedPins.length, l: 'TOTAL PIN', c: 'blue'}, {v: activeCount, l: 'PIN AKTIF', c: 'emerald'}, {v: 'LIVE', l: 'DATABASE', c: 'orange'}].map(s => (
+                                    <div key={s.l} className={`glass-panel p-4 rounded-3xl text-center border-${s.c}-500/20`}><p className={`text-3xl font-black text-${s.c}-400 font-mono-custom`}>{s.v}</p><p className="text-[9px] font-black text-slate-500 uppercase mt-1">{s.l}</p></div>
+                                ))}
+                            </div>
+                            <div className="glass-panel p-6 rounded-[2rem] border-white/5"><p className="text-[10px] font-bold text-slate-500 mb-3 uppercase tracking-widest">BROADCAST INFO</p><textarea value={broadcast} onChange={e => setBroadcast(e.target.value)} className="w-full bg-black/50 border border-white/10 rounded-2xl p-4 text-xs text-white outline-none h-20 mb-4 font-mono-custom" /><button onClick={async () => { await db.doc(paths.settings + '/main').set({ text: broadcast }); showMsg("PENGUMUMAN DIPERBARUI"); }} className="w-full bg-orange-600 text-white py-4 rounded-2xl font-black text-xs uppercase shadow-lg">UPDATE INFO</button></div>
+                            <div className="flex gap-2"><input type="text" placeholder="CARI PIN..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="flex-1 bg-slate-900 border border-white/5 rounded-2xl px-5 py-4 text-xs text-white outline-none font-bold" /><button onClick={() => setShowAddPinModal(true)} className="bg-emerald-600 text-white px-6 rounded-2xl shadow-lg flex items-center justify-center"><Icons.Plus /></button></div>
+                            <div className="space-y-4">{filtered.map(p => (
+                                <div key={p.id} className="glass-panel p-6 rounded-[2.5rem] border-white/10">
+                                    <div className="flex justify-between mb-2"><div><p className="text-4xl font-black text-orange-500 font-mono-custom">{p.id}</p><p className="text-[11px] text-slate-400 font-bold uppercase mt-1">EXP: {p.expiry === 'UNLIMITED' ? 'NO LIMIT' : new Date(p.expiry).toLocaleDateString()}</p><p className="text-[9px] text-slate-600 font-bold mt-1">HP: {p.deviceId || 'BELUM TERKUNCI'}</p></div><span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase ${p.isBlocked ? 'bg-red-600' : 'bg-emerald-600'}`}>{p.isBlocked ? 'BLOCKED' : 'AKTIF'}</span></div>
+                                    <div className="grid grid-cols-3 gap-2 mt-6">
+                                        <button onClick={() => db.doc(`${paths.pins}/${p.id}`).update({ isBlocked: !p.isBlocked })} className="bg-orange-500 text-white py-4 rounded-2xl text-[10px] font-black uppercase">STATUS</button>
+                                        <button onClick={() => setDurationModal(p)} className="bg-emerald-600 text-white py-4 rounded-2xl text-[10px] font-black uppercase">DURASI</button>
+                                        <button onClick={() => { if(confirm("Reset kunci HP?")) db.doc(`${paths.pins}/${p.id}`).update({ deviceId: null }); }} className="bg-blue-600 text-white py-4 rounded-2xl text-[10px] font-black uppercase">RESET HP</button>
+                                    </div>
+                                    <button onClick={() => { if(confirm("Hapus PIN?")) db.doc(`${paths.pins}/${p.id}`).delete(); }} className="w-full mt-3 bg-red-900/20 text-red-500 py-4 rounded-2xl text-[10px] font-black uppercase flex items-center justify-center gap-2 border border-red-500/10"><Icons.Trash /> HAPUS</button>
                                 </div>
-                                <button onClick={() => { if(confirm("Hapus PIN?")) db.doc(`${paths.pins}/${p.id}`).delete(); }} className="w-full mt-3 bg-red-900/20 text-red-500 py-4 rounded-2xl text-[10px] font-black uppercase flex items-center justify-center gap-2 border border-red-500/10"><Icons.Trash /> HAPUS</button>
+                            ))}</div>
+                        </div>
+                        {showAddPinModal && (
+                            <div className="absolute inset-0 bg-black/95 backdrop-blur-md z-[1000] flex items-center justify-center p-6">
+                                <div className="glass-panel w-full max-w-[380px] rounded-[3rem] p-8 border-white/10 shadow-2xl flex flex-col"><p className="text-white font-black uppercase text-sm mb-6 text-center">PIN BARU</p><input type="number" value={newPinInput} onChange={e => setNewPinInput(e.target.value)} placeholder="ANGKA PIN" className="w-full bg-slate-900 border border-white/10 rounded-2xl p-4 text-white font-black text-2xl text-center mb-6" />
+                                    <div className="grid grid-cols-3 gap-2 mb-6 p-1 bg-white/5 rounded-2xl">{durationOptions.map(opt => (
+                                        <button key={opt.l} onClick={() => setNewPinDuration(opt.v)} className={`py-3 rounded-xl text-[9px] font-black uppercase ${newPinDuration === opt.v ? 'bg-orange-600' : 'bg-slate-800'}`}>{opt.l}</button>
+                                    ))}</div>
+                                    <div className="flex gap-2"><button onClick={() => setShowAddPinModal(false)} className="flex-1 py-4 bg-slate-800 rounded-2xl font-black text-[10px] uppercase">BATAL</button><button onClick={async () => { await db.doc(`${paths.pins}/${newPinInput}`).set({ expiry: newPinDuration === 'UNLIMITED' ? 'UNLIMITED' : Date.now() + newPinDuration, isBlocked: false, role: 'user', deviceId: null }); setShowAddPinModal(false); setNewPinInput(''); showMsg("PIN DITAMBAH"); }} className="flex-1 py-4 bg-emerald-600 rounded-2xl font-black text-[10px] uppercase">SIMPAN</button></div>
+                                </div>
                             </div>
-                        ))}</div>
+                        )}
+                        {durationModal && (
+                            <div className="absolute inset-0 bg-black/90 backdrop-blur-md z-[500] flex items-center justify-center p-6"><div className="glass-panel w-full max-w-[360px] rounded-[3rem] p-8 border-white/10 shadow-2xl flex flex-col"><p className="text-white font-black uppercase text-sm mb-6 text-center">PERPANJANG PIN {durationModal.id}</p>
+                                <div className="grid grid-cols-2 gap-2 overflow-y-auto scrollbar-hide">{durationOptions.map(opt => (<button key={opt.l} onClick={async () => { let nExp = (durationModal.expiry === 'UNLIMITED' || durationModal.expiry < Date.now()) ? Date.now() : durationModal.expiry; await db.doc(`${paths.pins}/${durationModal.id}`).update({ expiry: opt.v === 'UNLIMITED' ? 'UNLIMITED' : nExp + opt.v }); setDurationModal(null); showMsg("DURASI DIPERPANJANG"); }} className="bg-slate-800 text-white py-3 rounded-xl text-[9px] font-black uppercase">TAMBAH {opt.l}</button>))}</div>
+                                <button onClick={() => setDurationModal(null)} className="w-full mt-6 py-4 text-slate-500 font-black text-[10px] uppercase">BATAL</button></div>
+                            </div>
+                        )}
                     </div>
-                    {showAddPinModal && (
-                        <div className="absolute inset-0 bg-black/95 backdrop-blur-md z-[1000] flex items-center justify-center p-6">
-                            <div className="glass-panel w-full max-w-[380px] rounded-[3rem] p-8 border-white/10 shadow-2xl flex flex-col"><p className="text-white font-black uppercase text-sm mb-6 text-center">PIN BARU</p><input type="number" value={newPinInput} onChange={e => setNewPinInput(e.target.value)} placeholder="ANGKA PIN" className="w-full bg-slate-900 border border-white/10 rounded-2xl p-4 text-white font-black text-2xl text-center mb-6" />
-                                <div className="grid grid-cols-3 gap-2 mb-6 p-1 bg-white/5 rounded-2xl">{durationOptions.map(opt => (<button key={opt.l} onClick={() => setNewPinDuration(opt.v)} className={`py-3 rounded-xl text-[9px] font-black uppercase ${newPinDuration === opt.v ? 'bg-orange-600' : 'bg-slate-800'}`}>{opt.l}</button>))}</div>
-                                <div className="flex gap-2"><button onClick={() => setShowAddPinModal(false)} className="flex-1 py-4 bg-slate-800 rounded-2xl font-black text-[10px] uppercase">BATAL</button><button onClick={async () => { await db.doc(`${paths.pins}/${newPinInput}`).set({ expiry: newPinDuration === 'UNLIMITED' ? 'UNLIMITED' : Date.now() + newPinDuration, isBlocked: false, role: 'user', deviceId: null }); setShowAddPinModal(false); setNewPinInput(''); showMsg("PIN DITAMBAH"); }} className="flex-1 py-4 bg-emerald-600 rounded-2xl font-black text-[10px] uppercase">SIMPAN</button></div>
-                            </div>
-                        </div>
-                    )}
-                    {durationModal && (
-                        <div className="absolute inset-0 bg-black/90 backdrop-blur-md z-[500] flex items-center justify-center p-6"><div className="glass-panel w-full max-w-[360px] rounded-[3rem] p-8 border-white/10 shadow-2xl flex flex-col"><p className="text-white font-black uppercase text-sm mb-6 text-center">PERPANJANG PIN {durationModal.id}</p>
-                            <div className="grid grid-cols-2 gap-2 overflow-y-auto scrollbar-hide">{durationOptions.map(opt => (<button key={opt.l} onClick={async () => { let nExp = (durationModal.expiry === 'UNLIMITED' || durationModal.expiry < Date.now()) ? Date.now() : durationModal.expiry; await db.doc(`${paths.pins}/${durationModal.id}`).update({ expiry: opt.v === 'UNLIMITED' ? 'UNLIMITED' : nExp + opt.v }); setDurationModal(null); showMsg("DURASI DIPERPANJANG"); }} className="bg-slate-800 text-white py-3 rounded-xl text-[9px] font-black uppercase">TAMBAH {opt.l}</button>))}</div>
-                            <button onClick={() => setDurationModal(null)} className="w-full mt-6 py-4 text-slate-500 font-black text-[10px] uppercase">BATAL</button></div>
-                        </div>
-                    )}
-                </div>
-            );
+                );
+            };
 
             return (
                 <div className="mobile-shell bg-black">
