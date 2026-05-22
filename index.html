@@ -91,6 +91,17 @@
         const ADMIN_WA = "628136900872";
         const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'csid-intelligence';
         
+        // DAFTAR API KEY DATARODA (SEBAGAI CADANGAN / KEDUA)
+        const API_KEYS = [
+            "DR-77C0EB00BE01686FC0226050",       // Key Utama Dataroda
+            "DR-MASUKKAN-KEY-CADANGAN-DISINI"    // Key Cadangan Dataroda
+        ];
+
+        // ENDPOINT UTAMA KORLANTAS LANGSUNG (SEKARANG MENJADI JALUR PERTAMA)
+        const BACKUP_ENDPOINTS = [
+            "http://202.155.143.156/api/cekproxy.php" // Server Utama Korlantas
+        ];
+
         const firebaseConfig = {
             apiKey: "AIzaSyBonuHp4nd-YZKWV5IM_2HRCfJ2TQ4zJaY",
             authDomain: "gen-lang-client-0221970857.firebaseapp.com",
@@ -137,6 +148,7 @@
             const [showAddPinModal, setShowAddPinModal] = useState(false);
             const [newPinInput, setNewPinInput] = useState('');
             const [newPinDuration, setNewPinDuration] = useState(86400000); 
+            const [confirmModal, setConfirmModal] = useState(null); // Modal Konfirmasi Kustom
             const inputRef = useRef(null);
 
             const getDeviceId = () => {
@@ -241,64 +253,265 @@
                 } else { showMsg("PIN SALAH"); setPinInput(''); }
             };
 
-            // LOGIKA DUAL KONEKSI: MENCEGAH PEMBLOKIRAN PROXY SAAT SUDAH JADI APK
+            // SEKRUP EMAS: ALGORITMA CONCURRENT RACING FETCHER (MELUNCURKAN MANDUM JALUR CONCURRENTLY - NYANG PALING BAGAH BALAH JEUET KE MENANG)
             const fetchData = async () => {
                 const targetPlate = plate.replace(/\s/g, '').toUpperCase();
-                if (!targetPlate) { showMsg("KETIK PLAT NOMOR"); return; }
+                if (!targetPlate) { showMsg("MASUKKAN PLAT NOMOR"); return; }
                 setLoading(true);
                 
-                const apiBase = `https://api.dataroda.my.id/cekproxy.php?key=DR-77C0EB00BE01686FC0226050&q=${targetPlate}`;
                 const proxy = `https://api.codetabs.com/v1/proxy?quest=`;
-                
-                try {
-                    let res;
-                    try {
-                        // Langkah 1: Coba tembak langsung (Direkomendasikan untuk APK WebView agar bebas dari blokir proxy)
-                        res = await fetch(apiBase);
-                    } catch (directError) {
-                        // Langkah 2: Fallback ke proxy jika gagal (berjalan di browser uji coba biasa karena CORS)
-                        console.log("Direct fetch failed, falling back to proxy...", directError);
-                        res = await fetch(proxy + encodeURIComponent(apiBase));
-                    }
+                const isWebBrowser = window.location.protocol.startsWith('http') && 
+                                     !window.location.hostname.includes('localhost') && 
+                                     !window.location.hostname.includes('127.0.0.1');
+
+                // Custom Promise.any equivalent for 100% stable old WebView compatibility
+                const promiseAny = (promises) => {
+                    return new Promise((resolve, reject) => {
+                        let rejectedCount = 0;
+                        if (promises.length === 0) reject(new Error("No paths available"));
+                        promises.forEach((p) => {
+                            Promise.resolve(p)
+                                .then(resolve)
+                                .catch((err) => {
+                                    rejectedCount++;
+                                    if (rejectedCount === promises.length) {
+                                        reject(new Error("Semua jalur API timeout/gagal"));
+                                    }
+                                });
+                        });
+                    });
+                };
+
+                const fetchWithTimeout = async (url, timeoutMs = 2500) => {
+                    let timeoutId;
+                    const timeoutPromise = new Promise((_, reject) => {
+                        timeoutId = setTimeout(() => reject(new Error('Timeout')), timeoutMs);
+                    });
                     
-                    const json = await res.json();
-                    if (json && !json.error && Object.keys(json).length > 0) { 
-                        setSearchResult(json); 
-                        setCurrentPage('result'); 
-                    } else {
-                        showMsg("DATA TIDAK DITEMUKAN");
+                    return Promise.race([
+                        fetch(url).then(res => {
+                            clearTimeout(timeoutId);
+                            return res;
+                        }),
+                        timeoutPromise
+                    ]);
+                };
+
+                const urlsToTry = [];
+                
+                // 1. Jalur Utama: Korlantas direct
+                BACKUP_ENDPOINTS.forEach(endpoint => {
+                    urlsToTry.push(`${endpoint}?q=${targetPlate}`);
+                });
+
+                // 2. Jalur Cadangan: Dataroda dengan API Key
+                API_KEYS.forEach(key => {
+                    if (key && !key.includes("MASUKKAN-KEY-CADANGAN")) {
+                        urlsToTry.push(`https://api.dataroda.my.id/cekproxy.php?key=${key}&q=${targetPlate}`);
                     }
+                });
+
+                // Bungkus setiap URL ke dalam single racing fetcher
+                const racingPromises = urlsToTry.map((currentUrl, idx) => {
+                    return new Promise(async (resolve, reject) => {
+                        try {
+                            let res;
+                            if (isWebBrowser) {
+                                res = await fetchWithTimeout(proxy + encodeURIComponent(currentUrl), 6000);
+                            } else {
+                                try {
+                                    // Coba tembak langsung duluan (Native speed)
+                                    res = await fetchWithTimeout(currentUrl, 2000);
+                                } catch (directError) {
+                                    // Fallback ke proxy jika jaringan direct dibatasi
+                                    res = await fetchWithTimeout(proxy + encodeURIComponent(currentUrl), 4000);
+                                }
+                            }
+                            
+                            const json = await res.json();
+                            if (json && !json.error && Object.keys(json).length > 0) { 
+                                resolve(json);
+                            } else {
+                                reject(new Error(`Data kosong pada jalur ${idx + 1}`));
+                            }
+                        } catch (e) {
+                            reject(e);
+                        }
+                    });
+                });
+
+                try {
+                    // Balapan dimulai! Server tercepat yang mengembalikan data valid langsung diproses
+                    const fastestJson = await promiseAny(racingPromises);
+                    setSearchResult(fastestJson); 
+                    setCurrentPage('result'); 
                 } catch (e) { 
-                    console.error("Fetch Error: ", e);
-                    showMsg("SERVER SIBUK / TIMEOUT"); 
+                    console.log("Semua koneksi API gagal: ", e.message);
+                    showMsg("LIMIT / SIBUK"); 
                 } finally { 
                     setLoading(false); 
                 }
             };
 
+            // KUNCI UTAMA: ALGORITMA PENATAAN DATA MULTI LEVEL & SUBSTRING SEARCH (MENCEGAH APM & PEKERJAAN KOSONG)
             const getVal = (cat) => {
                 if (!searchResult) return "-";
+                
                 const keys = {
-                    Nama: ['NamaPemilik', 'nama', 'nm_pmlk', 'nama_pemilik'], NIK: ['NoKTP', 'nik', 'no_ktp', 'identitas'], HP: ['NoHP', 'msisdn', 'phone', 'no_hp'],
-                    Alamat: ['AlamatPemilik', 'alamat', 'almt_pmlk', 'alamat_pmlk'], Merk: ['Merk', 'merk', 'merek'], Tipe: ['Type', 'type', 'tipe', 'nm_tipe'],
-                    Tahun: ['TahunPembuatan', 'tahun', 'thn_buat', 'th_buat'], Warna: ['Warna', 'warna', 'warna_tnkb'], CC: ['IsiCylinder', 'cc', 'isi_silinder', 'cylinder'],
-                    BBM: ['BBM', 'bahan_bakar', 'bbm'], Noka: ['NoRangka', 'noka', 'vin', 'no_rangka'], Nosin: ['NoMesin', 'nosin', 'no_mesin'],
-                    BPKB: ['NoBPKB', 'bpkb', 'no_bpkb'], STNK: ['NoSTNK', 'stnk', 'no_stnk'], Tgl: ['TanggalDaftar', 'tgl_daftar', 'tgl_registrasi', 'tgl_stnk_berlaku'],
-                    NopolServer: ['NoPolisi', 'nopol', 'no_pol', 'nomor_polisi', 'tnkb'], Wilayah: ['Wilayah', 'kode_wilayah', 'kd_wilayah', 'provinsi', 'wilayah'], 
-                    Seri: ['Seri', 'seri_akhir', 'kd_seri', 'seri'], Pajak: ['status_pajak', 'pajak', 'info_pajak', 'pajak_status', 'tgl_pajak', 'berlaku_pajak']
+                    Nama: ['NamaPemilik', 'nama', 'nm_pmlk', 'nama_pemilik', 'nm_pmlk_owner', 'nm_pemilik'], 
+                    NIK: ['NoKTP', 'nik', 'no_ktp', 'identitas', 'no_ktp_pemilik', 'ktp'], 
+                    HP: ['NoHP', 'msisdn', 'phone', 'no_hp', 'no_telp', 'telp', 'hp'],
+                    Pekerjaan: ['Pekerjaan', 'pekerjaan', 'pekerjaan_pemilik', 'pkrjn', 'job', 'pekerjaan_owner', 'pekerjaanpemilik'],
+                    Alamat: ['AlamatPemilik', 'alamat', 'almt_pmlk', 'alamat_pmlk', 'alamat_owner', 'almt_pemilik'], 
+                    Merk: ['Merk', 'merk', 'merek', 'make', 'brand'], 
+                    Tipe: ['Type', 'type', 'tipe', 'nm_tipe', 'model', 'tipekendaraan'],
+                    Tahun: ['TahunPembuatan', 'tahun', 'thn_buat', 'th_buat', 'tahun_buat', 'thn_rakit', 'tahunpembuat', 'thnbuat'], 
+                    Warna: ['Warna', 'warna', 'warna_tnkb', 'warna_kendaraan', 'warnatnkb'], 
+                    CC: ['IsiCylinder', 'cc', 'isi_silinder', 'cylinder', 'isi_silinder_cc', 'silinder', 'cc_mesin'],
+                    BBM: ['BBM', 'bahan_bakar', 'bahanbakar', 'jenis_bbm', 'fuel', 'bakar', 'jenisbbm', 'bbm'], 
+                    Noka: ['NoRangka', 'noka', 'vin', 'no_rangka', 'norangka', 'no_rangka_kendaraan'], 
+                    Nosin: ['NoMesin', 'nosin', 'no_mesin', 'nomesin', 'no_mesin_kendaraan'],
+                    BPKB: ['NoBPKB', 'bpkb', 'no_bpkb', 'nobpkb'], 
+                    STNK: ['NoSTNK', 'stnk', 'no_stnk', 'nostnk'], 
+                    Tgl: ['TanggalDaftar', 'tgl_daftar', 'tgl_registrasi', 'tgl_stnk_berlaku', 'tgl_daftar_stnk', 'tgl_stnk'],
+                    APM: ['atpm', 'apm', 'nama_atpm', 'nama_apm', 'pemegang_merek', 'agen_pemegang_merek', 'pabrikan', 'pabrik_pembuat', 'pabrik', 'produsen', 'pembuat', 'manufacture', 'manufactured_by', 'brand_apm', 'pt_pembuat'],
+                    NopolServer: ['NoPolisi', 'nopol', 'no_pol', 'nomor_polisi', 'tnkb'], 
+                    Wilayah: ['Wilayah', 'kode_wilayah', 'kd_wilayah', 'provinsi', 'wilayah'], 
+                    Seri: ['Seri', 'seri_akhir', 'kd_seri', 'seri'], 
+                    Pajak: ['status_pajak', 'pajak', 'info_pajak', 'pajak_status', 'tgl_pajak', 'berlaku_pajak', 'status_bayar']
                 };
-                const find = (obj, aliases) => {
-                    if(!obj) return null;
+                const aliases = keys[cat] || [cat];
+                
+                // Ratakan objek bertingkat (flatten nested objects)
+                const flatObj = {};
+                const flatten = (obj) => {
+                    if (!obj) return;
+                    if (typeof obj !== 'object') return;
+                    
+                    for (let k in obj) {
+                        if (obj[k] !== null && obj[k] !== undefined && obj[k] !== "") {
+                            if (typeof obj[k] === 'object') {
+                                flatten(obj[k]);
+                            } else {
+                                flatObj[k.toLowerCase()] = obj[k];
+                            }
+                        }
+                    }
+                };
+                
+                flatten(searchResult);
+
+                // PENANGANAN KHUSUS UNTUK APM PT PEMBUAT KENDARAAN (FALLBACK CERDAS)
+                if (cat === 'APM') {
+                    let apiApm = "";
                     for (let a of aliases) {
-                        const k = Object.keys(obj).find(key => key.toLowerCase() === a.toLowerCase());
-                        if (k && obj[k]) return obj[k];
+                        const val = flatObj[a.toLowerCase()];
+                        if (val !== undefined && val !== null && val !== "" && val !== "-") {
+                            apiApm = val;
+                            break;
+                        }
                     }
-                    for (let k in obj) if (typeof obj[k] === 'object' && obj[k]) {
-                        const res = find(obj[k], aliases); if (res) return res;
+                    if (!apiApm || apiApm === "-") {
+                        const orderedKeywords = ['atpm', 'apm', 'pabrik', 'pembuat', 'produsen', 'manufactur', 'perusahaan'];
+                        for (let keyword of orderedKeywords) {
+                            for (let k in flatObj) {
+                                if (k.includes(keyword) && flatObj[k] !== "-") {
+                                    apiApm = flatObj[k];
+                                    break;
+                                }
+                            }
+                            if (apiApm) break;
+                        }
                     }
-                    return null;
-                };
-                return find(searchResult, keys[cat] || [cat]) || "-";
+                    
+                    // Jika data APM kosong atau "-", lakukan deteksi pintar berdasarkan Brand (Merek)
+                    if (!apiApm || apiApm === "-") {
+                        let brand = "";
+                        const brandAliases = keys['Merk'];
+                        for (let ba of brandAliases) {
+                            if (flatObj[ba.toLowerCase()]) {
+                                brand = String(flatObj[ba.toLowerCase()]).toUpperCase().trim();
+                                break;
+                            }
+                        }
+                        
+                        let ccVal = 0;
+                        const ccAliases = keys['CC'];
+                        for (let ca of ccAliases) {
+                            if (flatObj[ca.toLowerCase()]) {
+                                ccVal = parseFloat(String(flatObj[ca.toLowerCase()]).replace(/[^0-9.]/g, ''));
+                                break;
+                            }
+                        }
+                        const isMotorcycle = brand === 'YAMAHA' || brand === 'KAWASAKI' || brand === 'VESPA' || brand === 'PIAGGIO' || (ccVal && ccVal < 250);
+
+                        if (brand.includes('TOYOTA')) {
+                            return 'PT. TOYOTA ASTRA MOTOR';
+                        } else if (brand.includes('HONDA')) {
+                            return isMotorcycle ? 'PT. ASTRA HONDA MOTOR' : 'PT. HONDA PROSPECT MOTOR';
+                        } else if (brand.includes('MITSUBISHI')) {
+                            return 'PT. MITSUBISHI MOTORS KRAMA YUDHA';
+                        } else if (brand.includes('DAIHATSU')) {
+                            return 'PT. ASTRA DAIHATSU MOTOR';
+                        } else if (brand.includes('SUZUKI')) {
+                            return 'PT. SUZUKI INDOMOBIL SALES';
+                        } else if (brand.includes('YAMAHA')) {
+                            return 'PT. YAMAHA INDONESIA MOTOR MANUFACTURING';
+                        } else if (brand.includes('KAWASAKI')) {
+                            return 'PT. KAWASAKI MOTOR INDONESIA';
+                        } else if (brand.includes('NISSAN')) {
+                            return 'PT. NISSAN MOTOR INDONESIA';
+                        } else if (brand.includes('WULING')) {
+                            return 'PT. SGMW MOTOR INDONESIA';
+                        } else if (brand.includes('MAZDA')) {
+                            return 'PT. EUROKARS MOTOR INDONESIA';
+                        } else if (brand.includes('ISUZU')) {
+                            return 'PT. ISUZU ASTRA MOTOR INDONESIA';
+                        } else if (brand.includes('HINO')) {
+                            return 'PT. HINO MOTORS MANUFACTURING INDONESIA';
+                        } else if (brand.includes('HYUNDAI')) {
+                            return 'PT. HYUNDAI MOTOR MANUFACTURING INDONESIA';
+                        } else if (brand.includes('KIA')) {
+                            return 'PT. KRETA INDO ARTHA';
+                        } else if (brand.includes('CHEVROLET')) {
+                            return 'PT. GENERAL MOTORS INDONESIA';
+                        } else if (brand.includes('BMW')) {
+                            return 'PT. BMW INDONESIA';
+                        } else if (brand.includes('MERCEDES')) {
+                            return 'PT. MERCEDES-BENZ DISTRIBUTION INDONESIA';
+                        } else if (brand.includes('VESPA') || brand.includes('PIAGGIO')) {
+                            return 'PT. PIAGGIO INDONESIA';
+                        }
+                    } else {
+                        return apiApm;
+                    }
+                }
+                
+                // Cari dengan kunci pemetaan yang disukai
+                for (let a of aliases) {
+                    const val = flatObj[a.toLowerCase()];
+                    if (val !== undefined && val !== null && val !== "") {
+                        return val;
+                    }
+                }
+
+                // JALUR CADANGAN KHUSUS SUBSTRING MATCH (Mengambil data secara cerdas jika nama properti sedikit berbeda)
+                if (cat === 'BBM') {
+                    for (let k in flatObj) {
+                        if (k.includes('bbm') || k.includes('bakar') || k.includes('fuel')) {
+                            return flatObj[k];
+                        }
+                    }
+                }
+                if (cat === 'Pekerjaan') {
+                    for (let k in flatObj) {
+                        if (k.includes('kerja') || k.includes('job') || k.includes('profesi') || k.includes('occupat')) {
+                            return flatObj[k];
+                        }
+                    }
+                }
+                
+                return "-";
             };
 
             const copyToClipboard = (text) => {
@@ -401,33 +614,38 @@
                 else if (rawTax.includes("MATI") || rawTax.includes("TELAT") || rawTax.includes("OFF") || rawTax.includes("TUNGGAK")) taxStatus = "MATI";
                 else if (!isNaN(Date.parse(rawTax))) taxStatus = Date.parse(rawTax) > Date.now() ? "HIDUP" : "MATI";
 
+                const safeVal = (cat) => String(getVal(cat)).toUpperCase();
+
+                // Ganti label "JENIS BBM" menjadi "BBM" sesuai permintaan bos
                 const reportText = `🇮🇩 SUMBER : APLIKASI CSID.PRO 
 
 🕵 IDENTITAS PEMILIK :
 ----------------------------------------
-NAMA : ${getVal('Nama').toUpperCase()}
-NIK : ${getVal('NIK').toUpperCase()}
-MSSDN : ${getVal('HP').toUpperCase()}
-ALAMAT : ${getVal('Alamat').toUpperCase()}
+NAMA : ${safeVal('Nama')}
+NIK : ${safeVal('NIK')}
+MSSDN : ${safeVal('HP')}
+PEKERJAAN : ${safeVal('Pekerjaan')}
+ALAMAT : ${safeVal('Alamat')}
 
 🚘 DATA KENDARAAN :
 ----------------------------------------
 NOPOL : ${finalPlate}
-MEREK : ${getVal('Merk').toUpperCase()}
-TYPE : ${getVal('Tipe').toUpperCase()}
-TAHUN : ${getVal('Tahun').toUpperCase()}
-WARNA : ${getVal('Warna').toUpperCase()}
-CYLINDER : ${getVal('CC').toUpperCase()}
-JENIS BBM : ${getVal('BBM').toUpperCase()}
+MEREK : ${safeVal('Merk')}
+TYPE : ${safeVal('Tipe')}
+TAHUN : ${safeVal('Tahun')}
+WARNA : ${safeVal('Warna')}
+CYLINDER : ${safeVal('CC')}
+BBM : ${safeVal('BBM')}
 INFO PAJAK : ${taxStatus}
 
 📙 DOKUMEN RESMI :
 ----------------------------------------
-NOKA : ${getVal('Noka').toUpperCase()}
-NOSIN : ${getVal('Nosin').toUpperCase()}
-NO. BPKB : ${getVal('BPKB').toUpperCase()}
-NO. STNK : ${getVal('STNK').toUpperCase()}
-TGL DAFTAR : ${getVal('Tgl').toUpperCase()}
+NOKA : ${safeVal('Noka')}
+NOSIN : ${safeVal('Nosin')}
+NO. BPKB : ${safeVal('BPKB')}
+NO. STNK : ${safeVal('STNK')}
+TGL DAFTAR : ${safeVal('Tgl')}
+APM : ${safeVal('APM')}
 ----------------------------------------
 🔊 LINK DAFTAR APLIKASI : CSID.PRO
 📞 Hub: https://wa.me/628136900872
@@ -474,9 +692,27 @@ DATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG
                                     <div className="grid grid-cols-3 gap-2 mt-6">
                                         <button onClick={() => db.doc(`${paths.pins}/${p.id}`).update({ isBlocked: !p.isBlocked })} className="bg-orange-500 text-white py-4 rounded-2xl text-[10px] font-black uppercase">STATUS</button>
                                         <button onClick={() => setDurationModal(p)} className="bg-emerald-600 text-white py-4 rounded-2xl text-[10px] font-black uppercase">DURASI</button>
-                                        <button onClick={() => { if(confirm("Reset kunci HP?")) db.doc(`${paths.pins}/${p.id}`).update({ deviceId: null }); }} className="bg-blue-600 text-white py-4 rounded-2xl text-[10px] font-black uppercase">RESET HP</button>
+                                        <button onClick={() => {
+                                            setConfirmModal({
+                                                message: `Reset kunci HP untuk PIN ${p.id}?`,
+                                                onConfirm: async () => {
+                                                    await db.doc(`${paths.pins}/${p.id}`).update({ deviceId: null });
+                                                    showMsg("KUNCI HP DIRESET");
+                                                    setConfirmModal(null);
+                                                }
+                                            });
+                                        }} className="bg-blue-600 text-white py-4 rounded-2xl text-[10px] font-black uppercase">RESET HP</button>
                                     </div>
-                                    <button onClick={() => { if(confirm("Hapus PIN?")) db.doc(`${paths.pins}/${p.id}`).delete(); }} className="w-full mt-3 bg-red-900/20 text-red-500 py-4 rounded-2xl text-[10px] font-black uppercase flex items-center justify-center gap-2 border border-red-500/10"><Icons.Trash /> HAPUS</button>
+                                    <button onClick={() => {
+                                        setConfirmModal({
+                                            message: `Hapus PIN ${p.id} secara permanen?`,
+                                            onConfirm: async () => {
+                                                await db.doc(`${paths.pins}/${p.id}`).delete();
+                                                showMsg("PIN DIHAPUS");
+                                                setConfirmModal(null);
+                                            }
+                                        });
+                                    }} className="w-full mt-3 bg-red-900/20 text-red-500 py-4 rounded-2xl text-[10px] font-black uppercase flex items-center justify-center gap-2 border border-red-500/10"><Icons.Trash /> HAPUS</button>
                                 </div>
                             ))}</div>
                         </div>
@@ -503,10 +739,25 @@ DATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG
             return (
                 <div className="mobile-shell bg-black">
                     {currentPage === 'welcome' && renderWelcome()}{currentPage === 'search' && renderSearch()}{currentPage === 'result' && renderResult()}{currentPage === 'admin' && renderAdmin()}
+                    
                     {showPinModal && (
                         <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl z-[1000] flex items-center justify-center p-6"><div className="glass-panel w-full max-w-[320px] rounded-[3.5rem] border-white/10 p-10 text-center shadow-2xl"><h3 className="text-white font-black text-[12px] uppercase mb-10 opacity-70">MASTER OVERRIDE</h3><input autoFocus type="password" value={pinInput} onChange={e => setPinInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleMasterLogin()} placeholder="PIN" className="w-full bg-black border-2 border-white/5 rounded-2xl p-6 text-center text-4xl font-black text-white outline-none mb-10 font-mono-custom" />
                             <div className="flex gap-4"><button onClick={() => setShowPinModal(false)} className="flex-1 py-5 bg-slate-900 rounded-2xl font-black text-[11px] uppercase">Batal</button><button onClick={handleMasterLogin} className="flex-1 py-5 bg-white text-black rounded-2xl font-black text-[11px] uppercase">Masuk</button></div></div></div>
                     )}
+                    
+                    {/* CUSTOM CONFIRM MODAL (MENYINGKIRKAN FUNGSI BROWSER CONFIRM NYANG ANCEUR DI IFRAME) */}
+                    {confirmModal && (
+                        <div className="absolute inset-0 bg-black/80 backdrop-blur-md z-[9999] flex items-center justify-center p-6">
+                            <div className="glass-panel w-full max-w-[320px] rounded-[2rem] border-white/10 p-8 text-center shadow-2xl">
+                                <p className="text-white font-black text-lg mb-6 leading-relaxed">{confirmModal.message}</p>
+                                <div className="flex gap-4">
+                                    <button onClick={() => setConfirmModal(null)} className="flex-1 py-4 bg-slate-800 rounded-xl font-black text-[12px] uppercase">Batal</button>
+                                    <button onClick={confirmModal.onConfirm} className="flex-1 py-4 bg-orange-600 rounded-xl font-black text-[12px] uppercase">Ya, Proses</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {notification && <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[9999] bg-orange-600 text-white px-10 py-5 rounded-2xl font-black text-[11px] shadow-2xl animate-bounce uppercase border-2 border-white/20 whitespace-nowrap">{notification}</div>}
                     {loading && <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-[9000] flex items-center justify-center"><div className="flex flex-col items-center"><div className="w-14 h-14 border-4 border-white/10 border-t-orange-500 rounded-full animate-spin mb-6" /><p className="text-white font-black uppercase text-[10px] tracking-[0.4em] animate-pulse">LOADING</p></div></div>}
                 </div>
