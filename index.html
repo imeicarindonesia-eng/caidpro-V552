@@ -687,22 +687,43 @@
                             <p className="text-white/50 text-[9px] font-bold text-center uppercase leading-tight">Dilarang keras menyalahgunakan sistem ini<br/>Hak Cipta CSID.PRO Intelligence Security</p>
                         </div>
                         
-                        <div className="mt-auto space-y-1.5">
-                            <div className={`grid ${userRole === 'master' ? 'grid-cols-7' : 'grid-cols-6'} gap-1.5`}>
-                                <button onClick={() => setKbHeight(h => Math.max(15, h-2))} className="bg-slate-900 h-14 rounded-xl key-press-effect flex items-center justify-center text-slate-400"><Icons.Minus /></button>
-                                <button onClick={() => setKbHeight(h => Math.min(35, h+2))} className="bg-slate-900 h-14 rounded-xl key-press-effect flex items-center justify-center text-slate-400"><Icons.Plus /></button>
-                                <button className="bg-slate-900 h-14 rounded-xl key-press-effect flex items-center justify-center text-slate-400"><Icons.Camera /></button>
-                                <button onClick={async () => { try { const t = await navigator.clipboard.readText(); setPlate(t.toUpperCase().replace(/\s/g, '')); } catch(e){} }} className="bg-slate-900 h-14 rounded-xl key-press-effect flex items-center justify-center text-slate-400"><Icons.Paste /></button>
-                                {userRole === 'master' && <button onClick={() => setCurrentPage('admin')} className="bg-orange-600/20 h-14 rounded-xl key-press-effect flex items-center justify-center text-orange-500"><Icons.Shield /></button>}
-                                <button onClick={() => window.location.reload()} className="bg-red-600/20 h-14 rounded-xl key-press-effect flex items-center justify-center text-red-500"><Icons.Power /></button>
-                                <button onClick={fetchData} className="bg-orange-600 h-14 rounded-xl key-press-effect flex items-center justify-center text-white shadow-lg shadow-orange-600/20"><Icons.Search /></button>
+                        {/* PEMBARUAN: Modifikasi Keyboard Menjadi Model Kotak Sempurna Tanpa Lengkungan (rounded-none) & Jarak Sangat Rapat */}
+                        <div className="mt-auto space-y-1">
+                            <div className="grid grid-cols-7 gap-[2px]">
+                                <button onClick={() => setKbHeight(h => Math.max(15, h-2))} className="bg-slate-900 h-14 rounded-none key-press-effect flex items-center justify-center text-slate-400 border border-white/5"><Icons.Minus /></button>
+                                <button onClick={() => setKbHeight(h => Math.min(35, h+2))} className="bg-slate-900 h-14 rounded-none key-press-effect flex items-center justify-center text-slate-400 border border-white/5"><Icons.Plus /></button>
+                                <button className="bg-slate-900 h-14 rounded-none key-press-effect flex items-center justify-center text-slate-400 border border-white/5"><Icons.Camera /></button>
+                                <button onClick={async () => { try { const t = await navigator.clipboard.readText(); setPlate(t.toUpperCase().replace(/\s/g, '')); } catch(e){} }} className="bg-slate-900 h-14 rounded-none key-press-effect flex items-center justify-center text-slate-400 border border-white/5"><Icons.Paste /></button>
+                                {userRole === 'master' && <button onClick={() => setCurrentPage('admin')} className="bg-orange-600/20 h-14 rounded-none key-press-effect flex items-center justify-center text-orange-500 border border-white/5"><Icons.Shield /></button>}
+                                <button onClick={() => window.location.reload()} className="bg-red-600/20 h-14 rounded-none key-press-effect flex items-center justify-center text-red-500 border border-white/5"><Icons.Power /></button>
+                                <button onClick={fetchData} className="bg-orange-600 h-14 rounded-none key-press-effect flex items-center justify-center text-white shadow-lg border border-white/5"><Icons.Search /></button>
                             </div>
                             
-                            <div className="flex flex-col gap-1.5">
-                                <div className="grid grid-cols-5 gap-1.5">{['1','2','3'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-900/60 text-white rounded-xl border border-white/5 text-4xl font-black key-press-effect font-mono-custom">{n}</button>)}<button onClick={() => setPlate(p => p.slice(0,-1))} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-800 text-white rounded-xl font-black text-sm key-press-effect">DEL</button><button onClick={() => setPlate('')} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-800 text-white rounded-xl font-black text-sm key-press-effect">CLR</button></div>
-                                <div className="grid grid-cols-4 gap-1.5">{['4','5','6','0'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-900/60 text-white rounded-xl border border-white/5 text-4xl font-black key-press-effect font-mono-custom">{n}</button>)}</div>
-                                <div className="grid grid-cols-3 gap-1.5">{['7','8','9'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-900/60 text-white rounded-xl border border-white/5 text-4xl font-black key-press-effect font-mono-custom">{n}</button>)}</div>
-                                <div className="flex flex-col gap-1.5 pt-2">{[['Q','W','E','R','T','Y','U','I','O','P'],['A','S','D','F','G','H','J','K','L'],['Z','X','C','V','B','N','M']].map((row, i) => (<div key={i} className="flex gap-1.5 justify-center">{row.map(char => (<button key={char} onClick={() => setPlate(p => p+char)} style={{height: `${kbHeight * 3.2}px`}} className="flex-1 bg-slate-950 text-white rounded-xl border border-white/5 text-xl font-black key-press-effect">{char}</button>))}</div>))}</div>
+                            <div className="flex flex-col gap-[2px]">
+                                <div className="grid grid-cols-5 gap-[2px]">
+                                    {['1','2','3'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-900/60 text-white rounded-none border border-white/5 text-4xl font-black key-press-effect font-mono-custom">{n}</button>)}
+                                    <button onClick={() => setPlate(p => p.slice(0,-1))} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-800 text-white rounded-none font-black text-sm key-press-effect border border-white/5">DEL</button>
+                                    <button onClick={() => setPlate('')} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-800 text-white rounded-none font-black text-sm key-press-effect border border-white/5">CLR</button>
+                                </div>
+                                <div className="grid grid-cols-4 gap-[2px]">
+                                    {['4','5','6','0'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-900/60 text-white rounded-none border border-white/5 text-4xl font-black key-press-effect font-mono-custom">{n}</button>)}
+                                </div>
+                                <div className="grid grid-cols-3 gap-[2px]">
+                                    {['7','8','9'].map(n => <button key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-900/60 text-white rounded-none border border-white/5 text-4xl font-black key-press-effect font-mono-custom">{n}</button>)}
+                                </div>
+                                <div className="flex flex-col gap-[2px] pt-1">
+                                    {[
+                                        ['Q','W','E','R','T','Y','U','I','O','P'],
+                                        ['A','S','D','F','G','H','J','K','L'],
+                                        ['Z','X','C','V','B','N','M']
+                                    ].map((row, i) => (
+                                        <div key={i} className="flex gap-[2px] justify-center">
+                                            {row.map(char => (
+                                                <button key={char} onClick={() => setPlate(p => p+char)} style={{height: `${kbHeight * 3.2}px`}} className="flex-1 bg-slate-950 text-white rounded-none border border-white/5 text-xl font-black key-press-effect">{char}</button>
+                                            ))}
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </main>
