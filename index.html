@@ -91,8 +91,9 @@
         const ADMIN_WA = "628136900872";
         const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'csid-intelligence';
         
-        // SATU-SATUNYA API UTAMA YANG DIGUNAKAN (NAGA API BARU SUPER KENCANG)
-        const NAGA_KEY = "DR-EA7B642ECEB38CFD73F8F70C";
+        // CONFIGURASI API (API UTAMA DAN API CADANGAN KINI DI-SWAP)
+        const API_UTAMA_URL = "https://api.dataroda.my.id/naga.php"; // Utama (Tanpa Key)
+        const API_CADANGAN_URL = "https://api.dataroda.my.id/naga.php?key=DR-EA7B642ECEB38CFD73F8F70C"; // Cadangan (Dengan Key)
 
         const firebaseConfig = {
             apiKey: "AIzaSyBonuHp4nd-YZKWV5IM_2HRCfJ2TQ4zJaY",
@@ -245,7 +246,7 @@
                 } else { showMsg("PIN SALAH"); setPinInput(''); }
             };
 
-            // LOGIKA TUNGGAL API NAGA.PHP DENGAN TIMEOUT PROMISE RACE TERSTABIL & TERCEPAT
+            // LOGIKA CONCURRENT SUCCESSFUL RACING: UTAMA VS CADANGAN (NAGA UTAMA TANPA KEY DAN NAGA CADANGAN DENGAN KEY)
             const fetchData = async () => {
                 const targetPlate = plate.replace(/\s/g, '').toUpperCase();
                 if (!targetPlate) { showMsg("MASUKKAN PLAT NOMOR"); return; }
@@ -272,32 +273,72 @@
                     ]);
                 };
 
-                const targetUrl = `https://api.dataroda.my.id/naga.php?key=${NAGA_KEY}&q=${targetPlate}`;
+                // DAFTAR JALUR UNTUK BALAPAN RACING (UTAMA: TANPA KEY, CADANGAN: DENGAN KEY)
+                const urlsToTry = [
+                    `${API_UTAMA_URL}?q=${targetPlate}`,                  // 1. JALUR UTAMA (NAGA TANPA KEY) - SUPER CEPAT
+                    `${API_CADANGAN_URL}&q=${targetPlate}`                // 2. JALUR CADANGAN (NAGA DENGAN KEY) - FALLBACK INSTAN
+                ];
+
+                // Custom Promise.any yang kompatibel dengan WebView lama (Hanya mengambil penyelesaian sukses tercepat)
+                const raceSuccessful = (promises) => {
+                    return new Promise((resolve, reject) => {
+                        let rejectedCount = 0;
+                        let resolved = false;
+                        if (promises.length === 0) reject(new Error("No paths available"));
+                        promises.forEach((p) => {
+                            Promise.resolve(p)
+                                .then(val => {
+                                    if (!resolved) {
+                                        resolved = true;
+                                        resolve(val);
+                                    }
+                                })
+                                .catch((err) => {
+                                    rejectedCount++;
+                                    if (rejectedCount === promises.length && !resolved) {
+                                        reject(new Error("Semua jalur API gagal"));
+                                    }
+                                });
+                        });
+                    });
+                };
+
+                // Bungkus setiap URL ke dalam single racing fetcher
+                const racingPromises = urlsToTry.map((currentUrl, idx) => {
+                    return new Promise(async (resolve, reject) => {
+                        try {
+                            let res;
+                            if (isWebBrowser) {
+                                res = await fetchWithTimeout(proxy + encodeURIComponent(currentUrl), 6000);
+                            } else {
+                                try {
+                                    // Coba tembak langsung duluan (Native speed)
+                                    res = await fetchWithTimeout(currentUrl, 2000);
+                                } catch (directError) {
+                                    // Fallback ke proxy jika jaringan direct dibatasi
+                                    res = await fetchWithTimeout(proxy + encodeURIComponent(currentUrl), 4000);
+                                }
+                            }
+                            
+                            const json = await res.json();
+                            if (json && !json.error && Object.keys(json).length > 0) { 
+                                resolve(json);
+                            } else {
+                                reject(new Error(`Data kosong pada jalur ${idx + 1}`));
+                            }
+                        } catch (e) {
+                            reject(e);
+                        }
+                    });
+                });
 
                 try {
-                    let res;
-                    if (isWebBrowser) {
-                        // Di browser preview, bypass CORS langsung dengan proxy
-                        res = await fetchWithTimeout(proxy + encodeURIComponent(targetUrl), 6000);
-                    } else {
-                        try {
-                            // Di APK WebView, direct fetch instan
-                            res = await fetchWithTimeout(targetUrl, 2500);
-                        } catch (directError) {
-                            console.log("Direct path timeout/failed. Falling back to proxy...", directError);
-                            res = await fetchWithTimeout(proxy + encodeURIComponent(targetUrl), 5000);
-                        }
-                    }
-                    
-                    const json = await res.json();
-                    if (json && !json.error && Object.keys(json).length > 0) { 
-                        setSearchResult(json); 
-                        setCurrentPage('result'); 
-                    } else {
-                        showMsg("DATA TIDAK DITEMUKAN");
-                    }
+                    // Balapan dimulai! Server tercepat yang mengembalikan data valid langsung diproses
+                    const fastestJson = await raceSuccessful(racingPromises);
+                    setSearchResult(fastestJson); 
+                    setCurrentPage('result'); 
                 } catch (e) { 
-                    console.log("Koneksi API gagal: ", e.message);
+                    console.log("Semua koneksi API gagal: ", e.message);
                     showMsg("LIMIT / SIBUK"); 
                 } finally { 
                     setLoading(false); 
