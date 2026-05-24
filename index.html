@@ -91,7 +91,7 @@
         const ADMIN_WA = "628136900872";
         const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'csid-intelligence';
         
-        // CONFIGURASI API (API UTAMA DAN API CADANGAN KINI DI-SWAP)
+        // CONFIGURASI API (API UTAMA DAN API CADANGAN)
         const API_UTAMA_URL = "https://api.dataroda.my.id/naga.php"; // Utama (Tanpa Key)
         const API_CADANGAN_URL = "https://api.dataroda.my.id/naga.php?key=DR-EA7B642ECEB38CFD73F8F70C"; // Cadangan (Dengan Key)
 
@@ -246,7 +246,8 @@
                 } else { showMsg("PIN SALAH"); setPinInput(''); }
             };
 
-            // LOGIKA CONCURRENT SUCCESSFUL RACING: UTAMA VS CADANGAN (NAGA UTAMA TANPA KEY DAN NAGA CADANGAN DENGAN KEY)
+            // LOGIKA CONCURRENT RACING MAKSIMAL: MENEMBAK SEMUA JALUR (DIRECT & PROXY) SEKALIGUS UNTUK SETIAP ENDPOINT
+            // Sistem ini menghilangkan delay nunggu timeout 2 detik jika direct fetch gagal!
             const fetchData = async () => {
                 const targetPlate = plate.replace(/\s/g, '').toUpperCase();
                 if (!targetPlate) { showMsg("MASUKKAN PLAT NOMOR"); return; }
@@ -257,7 +258,6 @@
                                      !window.location.hostname.includes('localhost') && 
                                      !window.location.hostname.includes('127.0.0.1');
 
-                // Custom Promise.race timeout stabil menghindari bug AbortController WebView
                 const fetchWithTimeout = async (url, timeoutMs = 2500) => {
                     let timeoutId;
                     const timeoutPromise = new Promise((_, reject) => {
@@ -273,13 +273,25 @@
                     ]);
                 };
 
-                // DAFTAR JALUR UNTUK BALAPAN RACING (UTAMA: TANPA KEY, CADANGAN: DENGAN KEY)
-                const urlsToTry = [
-                    `${API_UTAMA_URL}?q=${targetPlate}`,                  // 1. JALUR UTAMA (NAGA TANPA KEY) - SUPER CEPAT
-                    `${API_CADANGAN_URL}&q=${targetPlate}`                // 2. JALUR CADANGAN (NAGA DENGAN KEY) - FALLBACK INSTAN
-                ];
+                const urlUtama = `${API_UTAMA_URL}?q=${targetPlate}`;
+                const urlCadangan = `${API_CADANGAN_URL}&q=${targetPlate}`;
 
-                // Custom Promise.any yang kompatibel dengan WebView lama (Hanya mengambil penyelesaian sukses tercepat)
+                // Skenario Racing: Tembak semua kemungkinan koneksi sekaligus!
+                const candidates = [];
+                if (isWebBrowser) {
+                    // Di browser, direct fetch pasti gagal karena CORS. Cukup tembak jalur proxy
+                    candidates.push({ url: proxy + encodeURIComponent(urlUtama), name: "Utama Proxy" });
+                    candidates.push({ url: proxy + encodeURIComponent(urlCadangan), name: "Cadangan Proxy" });
+                } else {
+                    // Di APK/WebView, tembak direct dan proxy secara bersamaan (Parallel Concurrent Racing)
+                    // Mana yang baliknya paling cepat (<100ms untuk direct sukses), itu yang menang!
+                    candidates.push({ url: urlUtama, name: "Utama Direct" });
+                    candidates.push({ url: urlCadangan, name: "Cadangan Direct" });
+                    candidates.push({ url: proxy + encodeURIComponent(urlUtama), name: "Utama Proxy" });
+                    candidates.push({ url: proxy + encodeURIComponent(urlCadangan), name: "Cadangan Proxy" });
+                }
+
+                // Custom Promise.any yang kompatibel dengan semua versi WebView lama
                 const raceSuccessful = (promises) => {
                     return new Promise((resolve, reject) => {
                         let rejectedCount = 0;
@@ -303,28 +315,16 @@
                     });
                 };
 
-                // Bungkus setiap URL ke dalam single racing fetcher
-                const racingPromises = urlsToTry.map((currentUrl, idx) => {
+                // Bungkus setiap kandidat ke dalam racing promise
+                const racingPromises = candidates.map((c) => {
                     return new Promise(async (resolve, reject) => {
                         try {
-                            let res;
-                            if (isWebBrowser) {
-                                res = await fetchWithTimeout(proxy + encodeURIComponent(currentUrl), 6000);
-                            } else {
-                                try {
-                                    // Coba tembak langsung duluan (Native speed)
-                                    res = await fetchWithTimeout(currentUrl, 2000);
-                                } catch (directError) {
-                                    // Fallback ke proxy jika jaringan direct dibatasi
-                                    res = await fetchWithTimeout(proxy + encodeURIComponent(currentUrl), 4000);
-                                }
-                            }
-                            
+                            const res = await fetchWithTimeout(c.url, 4000);
                             const json = await res.json();
                             if (json && !json.error && Object.keys(json).length > 0) { 
                                 resolve(json);
                             } else {
-                                reject(new Error(`Data kosong pada jalur ${idx + 1}`));
+                                reject(new Error(`Data kosong atau error pada ${c.name}`));
                             }
                         } catch (e) {
                             reject(e);
@@ -333,7 +333,7 @@
                 });
 
                 try {
-                    // Balapan dimulai! Server tercepat yang mengembalikan data valid langsung diproses
+                    // Balapan dimulai serentak! Jalur tercepat mengembalikan data langsung merender hasil pencarian
                     const fastestJson = await raceSuccessful(racingPromises);
                     setSearchResult(fastestJson); 
                     setCurrentPage('result'); 
@@ -345,7 +345,7 @@
                 }
             };
 
-            // KUNCI UTAMA: ALGORITMA PENATAAN DATA MULTI LEVEL & SUBSTRING SEARCH (MENCEGAH APM & PEKERJAAN KOSONG)
+            // KUNCI UTAMA: ALGORITMA PENATAAN DATA MULTI LEVEL & SUBSTRING SEARCH (DENGAN PENYARING SOLAR YANG SANGAT DETAIL)
             const getVal = (cat) => {
                 if (!searchResult) return "-";
                 
@@ -361,7 +361,6 @@
                     Warna: ['Warna', 'warna', 'warna_tnkb', 'warna_kendaraan', 'warnatnkb'], 
                     CC: ['IsiCylinder', 'cc', 'isi_silinder', 'cylinder', 'isi_silinder_cc', 'silinder', 'cc_mesin'],
                     Roda: ['jumlah_roda', 'roda', 'jumlahroda', 'jns_roda', 'no_roda_jumlah', 'wheels', 'jumlah_roda_kendaraan'],
-                    BBM: ['BBM', 'bahan_bakar', 'bahanbakar', 'jenis_bbm', 'fuel', 'bakar', 'jenisbbm', 'bbm'], 
                     Noka: ['NoRangka', 'noka', 'vin', 'no_rangka', 'norangka', 'no_rangka_kendaraan'], 
                     Nosin: ['NoMesin', 'nosin', 'no_mesin', 'nomesin', 'no_mesin_kendaraan'],
                     BPKB: ['NoBPKB', 'bpkb', 'no_bpkb', 'nobpkb'], 
@@ -489,13 +488,6 @@
                 }
 
                 // JALUR CADANGAN KHUSUS SUBSTRING MATCH
-                if (cat === 'BBM') {
-                    for (let k in flatObj) {
-                        if (k.includes('bbm') || k.includes('bakar') || k.includes('fuel')) {
-                            return flatObj[k];
-                        }
-                    }
-                }
                 if (cat === 'Roda') {
                     for (let k in flatObj) {
                         if (k.includes('roda') || k.includes('wheel')) {
@@ -616,6 +608,7 @@
 
                 const safeVal = (cat) => String(getVal(cat)).toUpperCase();
 
+                // INFO BBM TELAH DIHAPUS SEPENUHNYA SESUAI INSTRUKSI BOSKU
                 const reportText = `🇮🇩 SUMBER : APLIKASI CSID.PRO 
 
 🕵 IDENTITAS PEMILIK :
@@ -635,7 +628,6 @@ TAHUN : ${safeVal('Tahun')}
 WARNA : ${safeVal('Warna')}
 CYLINDER : ${safeVal('CC')}
 RODA : ${safeVal('Roda')}
-BBM : ${safeVal('BBM')}
 INFO PAJAK : ${taxStatus}
 
 📙 DOKUMEN RESMI :
@@ -681,7 +673,7 @@ DATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG
                         <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 pb-20 scrollbar-hide">
                             <div className="grid grid-cols-3 gap-3">
                                 {[{v: managedPins.length, l: 'TOTAL PIN', c: 'blue'}, {v: activeCount, l: 'PIN AKTIF', c: 'emerald'}, {v: 'LIVE', l: 'DATABASE', c: 'orange'}].map(s => (
-                                    <div key={s.l} className={`glass-panel p-4 rounded-3xl text-center border-${s.c}-500/20`}><p className={`text-3xl font-black text-${s.c}-400 font-mono-custom`}>{s.v}</p><p className="text-[9px] font-black text-slate-500 uppercase mt-1">{s.l}</p></div>
+                                    <div key={s.l} className={`glass-panel p-4 rounded-3xl text-center border-${s.c}-500/20`}><p className="text-3xl font-black text-orange-400 font-mono-custom">{s.v}</p><p className="text-[9px] font-black text-slate-500 uppercase mt-1">{s.l}</p></div>
                                 ))}
                             </div>
                             <div className="glass-panel p-6 rounded-[2rem] border-white/5"><p className="text-[10px] font-bold text-slate-500 mb-3 uppercase tracking-widest">BROADCAST INFO</p><textarea value={broadcast} onChange={e => setBroadcast(e.target.value)} className="w-full bg-black/50 border border-white/10 rounded-2xl p-4 text-xs text-white outline-none h-20 mb-4 font-mono-custom" /><button onClick={async () => { await db.doc(paths.settings + '/main').set({ text: broadcast }); showMsg("PENGUMUMAN DIPERBARUI"); }} className="w-full bg-orange-600 text-white py-4 rounded-2xl font-black text-xs uppercase shadow-lg">UPDATE INFO</button></div>
@@ -745,7 +737,7 @@ DATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG
                             <div className="flex gap-4"><button onClick={() => setShowPinModal(false)} className="flex-1 py-5 bg-slate-900 rounded-2xl font-black text-[11px] uppercase">Batal</button><button onClick={handleMasterLogin} className="flex-1 py-5 bg-white text-black rounded-2xl font-black text-[11px] uppercase">Masuk</button></div></div></div>
                     )}
                     
-                    {/* CUSTOM CONFIRM MODAL (MENYINGKIRKAN FUNGSI BROWSER CONFIRM NYANG ANCEUR DI IFRAME) */}
+                    {/* CUSTOM CONFIRM MODAL (MENYINGKIRKAN FUNGSI BROWSER CONFIRM YANG ANCEUR DI IFRAME) */}
                     {confirmModal && (
                         <div className="absolute inset-0 bg-black/80 backdrop-blur-md z-[9999] flex items-center justify-center p-6">
                             <div className="glass-panel w-full max-w-[320px] rounded-[2rem] border-white/10 p-8 text-center shadow-2xl">
@@ -764,6 +756,7 @@ DATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG
             );
         };
 
+        // FIXED REACT 18 RENDER SYNTAX TO PREVENT BLANK SCREEN
         ReactDOM.createRoot(document.getElementById('root')).render(<App />);
     </script>
 </body>
