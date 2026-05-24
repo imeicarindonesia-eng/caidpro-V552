@@ -615,10 +615,28 @@
                 document.body.removeChild(a);
             };
 
+            // PEMBARUAN: Fungsi Kalkulasi Sisa Waktu Masa Aktif Dinamis Real-time
+            const getRemainingTime = (expiry) => {
+                if (!expiry) return "-";
+                if (expiry === 'UNLIMITED') return "PERMANEN";
+                const diff = expiry - Date.now();
+                if (diff <= 0) return "EXPIRED";
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                if (days >= 1) return `${days + 1} HARI`;
+                
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                if (hours >= 1) return `${hours} JAM`;
+                
+                const minutes = Math.floor(diff / (1000 * 60));
+                return `${minutes} MENIT`;
+            };
+
+            // PEMBARUAN: Modifikasi komponen status di pojok kanan atas agar dinamis
             const renderStatusOverlay = () => currentPage !== 'welcome' && (
                 <div className="text-right glass-panel px-3 py-1.5 rounded-xl border border-white/10 z-[60]">
                     <p className="text-[10px] font-black uppercase text-orange-500">ID: {activePin}</p>
-                    <p className="text-[9px] font-black text-slate-400">EXP: {userExpiry === 'UNLIMITED' ? 'NOLIMIT' : 'ACTIVE'}</p>
+                    <p className="text-[9px] font-black text-slate-400">SISA: {getRemainingTime(userExpiry)}</p>
                 </div>
             );
 
@@ -936,7 +954,7 @@ DATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG
 
         // Memasang React 18 Root
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />); // Diubah kembali ke format JSX element valid untuk mencegah Hook dispatcher crash
+        root.render(<App />);
     </script>
 </body>
 </html>
