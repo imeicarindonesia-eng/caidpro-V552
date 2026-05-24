@@ -201,11 +201,8 @@
                 }
                 setRegistrationId(savedId);
 
-                // Cek status login lokal untuk bypass splash screen instan
-                const isAlreadyLoggedIn = localStorage.getItem('csid_logged_in') === 'true';
-                if (!isAlreadyLoggedIn) {
-                    setLoading(false); // Matikan loading langsung agar Welcome Screen muncul 0ms!
-                }
+                // Set loading true agar kita bisa memverifikasi status user ke Firebase secara instan
+                setLoading(true);
 
                 const startAuth = async () => {
                     try {
@@ -227,28 +224,35 @@
                         
                         setUser(authenticatedUser);
                         
-                        if (isAlreadyLoggedIn) {
-                            // Skenario Auto-login Cepat
-                            handleAutoLogin(savedId);
-                        } else {
-                            // Otentikasi latar belakang diam-diam (Silent Check)
-                            const pinSnap = await getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'csid_pro_pins', savedId));
-                            if (pinSnap.exists()) {
-                                const data = pinSnap.data();
-                                if (data && !data.isBlocked && (data.expiry === 'UNLIMITED' || data.expiry > Date.now())) {
-                                    const currentDeviceId = getDeviceId();
-                                    if (!data.deviceId || data.deviceId === currentDeviceId) {
-                                        setUserRole(data.role || 'user');
-                                        setUserExpiry(data.expiry);
-                                        setActivePin(savedId);
-                                        localStorage.setItem('csid_logged_in', 'true');
-                                        setCurrentPage('search');
-                                    }
-                                }
+                        // PEMBARUAN: Langsung cek validitas PIN di database Firebase secara senyap
+                        const pinSnap = await getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'csid_pro_pins', savedId));
+                        if (pinSnap.exists()) {
+                            const data = pinSnap.data();
+                            const currentDeviceId = getDeviceId();
+                            
+                            const isNotBlocked = !data.isBlocked;
+                            const isNotExpired = data.expiry === 'UNLIMITED' || data.expiry > Date.now();
+                            const isDeviceMatched = !data.deviceId || data.deviceId === currentDeviceId;
+
+                            if (isNotBlocked && isNotExpired && isDeviceMatched) {
+                                // JIKA HAK AKSES VALID: Bypass Halaman Welcome dan langsung Auto-Login!
+                                setUserRole(data.role || 'user');
+                                setUserExpiry(data.expiry);
+                                setActivePin(savedId);
+                                localStorage.setItem('csid_logged_in', 'true');
+                                setCurrentPage('search');
+                            } else {
+                                // Jika expired/blocked, tetap di welcome page
+                                localStorage.removeItem('csid_logged_in');
+                                setCurrentPage('welcome');
                             }
+                        } else {
+                            setCurrentPage('welcome');
                         }
                     } catch (e) { 
-                        console.error("Auth Failure:", e); 
+                        console.error("Auth / Auto-Login Failure:", e); 
+                        setCurrentPage('welcome');
+                    } finally { 
                         setLoading(false); 
                     }
                 };
@@ -426,7 +430,17 @@
                             const parsed = parseRobustJSON(textData);
 
                             if (parsed) {
-                                let targetData = Array.isArray(parsed) ? parsed[0] : parsed;
+                                // Kupas data dari pembungkus CORS Proxy jika ada
+                                let unwrapped = parsed;
+                                if (parsed && parsed.contents) {
+                                    try {
+                                        unwrapped = typeof parsed.contents === 'string' ? JSON.parse(parsed.contents) : parsed.contents;
+                                    } catch (e) {
+                                        unwrapped = parsed.contents;
+                                    }
+                                }
+
+                                let targetData = Array.isArray(unwrapped) ? unwrapped[0] : unwrapped;
                                 if (targetData && (targetData.Nama || targetData.NamaPemilik || targetData.nm_pmlk || Object.keys(targetData).length > 2)) {
                                     resolve(targetData);
                                 } else {
@@ -523,16 +537,58 @@
                 return "-";
             };
 
+            // OPTIMASI SALIN CLIPBOARD KHUSUS APK WEBVIEW
             const copyToClipboard = (text) => {
                 const el = document.createElement('textarea');
                 el.value = text;
+                el.setAttribute('readonly', '');
+                el.style.position = 'absolute';
+                el.style.left = '-9999px';
+                el.style.fontSize = '12pt'; // Cegah auto-zoom pada beberapa browser WebView
                 document.body.appendChild(el);
+                
+                // Menyimpan seleksi teks sebelumnya
+                const selected = document.getSelection().rangeCount > 0 
+                    ? document.getSelection().getRangeAt(0) 
+                    : false;
+                    
                 el.select();
+                el.setSelectionRange(0, 99999); // Sangat krusial untuk perangkat iOS dan Android APK
+                
                 try {
-                    document.execCommand('copy');
-                    showMsg("LAPORAN DISALIN");
-                } catch (e) { showMsg("GAGAL SALIN"); }
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        showMsg("LAPORAN DISALIN");
+                    } else {
+                        showMsg("GAGAL SALIN");
+                    }
+                } catch (err) {
+                    showMsg("GAGAL SALIN");
+                }
+                
                 document.body.removeChild(el);
+                if (selected) {
+                    document.getSelection().removeAllRanges();
+                    document.getSelection().addRange(selected);
+                }
+            };
+
+            // OPTIMASI REDIRECT DEEPLINK WHATSAPP KHUSUS APK (Anti-Blocked window.open)
+            const shareToWhatsApp = (text) => {
+                const encodedText = encodeURIComponent(text);
+                const urlScheme = `whatsapp://send?text=${encodedText}`;
+                const webUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+                
+                // Salin otomatis sebelum berpindah aplikasi
+                copyToClipboard(text);
+                
+                // Coba panggil aplikasi lokal menggunakan Deeplink URL scheme.
+                // Jika diblokir oleh WebView atau tidak terpasang, fallback langsung mengarah ke versi Web di container yang sama.
+                try {
+                    window.location.href = urlScheme;
+                } catch (e) {
+                    window.location.href = webUrl;
+                }
             };
 
             const renderStatusOverlay = () => currentPage !== 'welcome' && (
@@ -546,7 +602,6 @@
                 <div className="flex-1 flex flex-col items-center justify-between py-12 px-8 bg-black text-white h-full relative">
                     <div className="absolute top-[-10%] left-[-10%] w-[80%] h-[40%] bg-orange-600/10 blur-[150px] rounded-full" />
                     <div className="text-center z-10 mt-6 space-y-1.5">
-                        {/* PENYELARASAN UKURAN: Menyamakan ukuran teks, ketebalan, dan gaya agar sejajar */}
                         <p className="text-[15px] font-black uppercase tracking-tight text-orange-500 leading-tight">INTEL-NET SYSTEM</p>
                         <p className="text-[15px] font-black uppercase tracking-tight leading-tight text-white">SAMSAT CSID.PRO NASIONAL</p>
                     </div>
@@ -670,7 +725,7 @@ DATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG
                             </div>
                             <div className="mt-8 space-y-4">
                                 <button onClick={() => copyToClipboard(reportText)} className="w-full bg-white text-black py-5 rounded-[2rem] font-black text-lg uppercase shadow-xl active:scale-95 transition-all">SALIN DATA LAPORAN</button>
-                                <button onClick={() => { copyToClipboard(reportText); window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(reportText)}`, '_blank'); }} className="w-full bg-[#25d366] text-white py-5 rounded-[2rem] font-black text-lg uppercase shadow-xl active:scale-95 transition-all">BAGIKAN KE WHATSAPP</button>
+                                <button onClick={() => shareToWhatsApp(reportText)} className="w-full bg-[#25d366] text-white py-5 rounded-[2rem] font-black text-lg uppercase shadow-xl active:scale-95 transition-all">BAGIKAN KE WHATSAPP</button>
                             </div>
                         </div>
                     </div>
@@ -679,55 +734,78 @@ DATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG
 
             const renderAdmin = () => {
                 const filtered = managedPins.filter(p => p.id.includes(searchTerm));
+                
+                // PEMBARUAN: Kalkulasi dinamis data pengguna aktif & mati berdasarkan live Firestore
                 const activeCount = managedPins.filter(p => !p.isBlocked && (p.expiry === 'UNLIMITED' || p.expiry > Date.now())).length;
+                const expiredCount = managedPins.filter(p => p.isBlocked || (p.expiry !== 'UNLIMITED' && p.expiry <= Date.now())).length;
                 
                 return (
                     <div className="flex-1 flex flex-col h-full bg-[#050505] overflow-hidden">
                         <header className="px-6 py-6 flex items-center justify-between border-b border-white/5 bg-black z-[100]"><button onClick={() => setCurrentPage('search')} className="p-2.5 bg-slate-900 rounded-2xl text-white"><Icons.ChevronLeft /></button><span className="text-white font-black uppercase text-xs tracking-widest">KONTROL MASTER</span>{renderStatusOverlay()}</header>
                         <div className="flex-1 overflow-y-auto px-5 py-6 space-y-6 pb-20 scrollbar-hide">
-                            <div className="grid grid-cols-3 gap-3">
-                                {[{v: managedPins.length, l: 'TOTAL', c: 'orange'}, {v: activeCount, l: 'AKTIF', c: 'emerald'}, {v: 'ONLINE', l: 'STATUS', c: 'blue'}].map(s => (
-                                    <div key={s.l} className={`glass-panel p-5 rounded-[2rem] text-center border-${s.c}-500/10 shadow-lg`}><p className="text-3xl font-black text-white font-mono-custom">{s.v}</p><p className="text-[9px] font-black text-slate-500 uppercase mt-1 tracking-widest">{s.l}</p></div>
-                                ))}
+                            
+                            {/* PEMBARUAN: 3 Kartu Panel Admin (Total, Aktif, dan Mati) Terintegrasi Otomatis */}
+                            <div className="grid grid-cols-3 gap-2">
+                                <div className="glass-panel p-4 rounded-[1.8rem] text-center border-orange-500/10 shadow-lg">
+                                    <p className="text-2xl font-black text-white font-mono-custom">{managedPins.length}</p>
+                                    <p className="text-[8px] font-black text-slate-500 uppercase mt-1 tracking-wider">TOTAL USER</p>
+                                </div>
+                                <div className="glass-panel p-4 rounded-[1.8rem] text-center border-emerald-500/10 shadow-lg">
+                                    <p className="text-2xl font-black text-emerald-500 font-mono-custom">{activeCount}</p>
+                                    <p className="text-[8px] font-black text-emerald-500/70 uppercase mt-1 tracking-wider">PIN AKTIF</p>
+                                </div>
+                                <div className="glass-panel p-4 rounded-[1.8rem] text-center border-red-500/10 shadow-lg">
+                                    <p className="text-2xl font-black text-red-500 font-mono-custom">{expiredCount}</p>
+                                    <p className="text-[8px] font-black text-red-500/70 uppercase mt-1 tracking-wider">PIN MATI</p>
+                                </div>
                             </div>
+
                             <div className="glass-panel p-6 rounded-[2.5rem] border-white/5"><p className="text-[10px] font-black text-orange-500 mb-3 uppercase tracking-widest">BROADCAST INFO BARU</p><textarea value={broadcast} onChange={e => setBroadcast(e.target.value)} className="w-full bg-black/50 border border-white/10 rounded-2xl p-5 text-xs text-white outline-none h-24 mb-4 font-mono-custom focus:border-orange-500/30 transition-all" /><button onClick={async () => { await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'csid_pro_settings', 'main'), { text: broadcast }); showMsg("DIPERBARUI"); }} className="w-full bg-orange-600 text-white py-4 rounded-2xl font-black text-xs uppercase shadow-xl hover:bg-orange-700">UPDATE RUNNING TEXT</button></div>
                             <div className="flex gap-2"><input type="text" placeholder="CARI ID PIN..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="flex-1 bg-slate-900/50 border border-white/5 rounded-2xl px-6 py-5 text-xs text-white outline-none font-bold" /><button onClick={() => setShowAddPinModal(true)} className="bg-emerald-600 text-white px-6 rounded-2xl shadow-lg active:scale-95"><Icons.Plus /></button></div>
-                            <div className="space-y-4">{filtered.map(p => (
-                                <div key={p.id} className="glass-panel p-6 rounded-[2.5rem] border-white/5 shadow-lg relative overflow-hidden">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <div>
-                                            <p className="text-4xl font-black text-white font-mono-custom tracking-tighter">{p.id}</p>
-                                            <p className="text-[11px] text-orange-500 font-bold uppercase mt-1">EXP: {p.expiry === 'UNLIMITED' ? 'NOLIMIT' : new Date(p.expiry).toLocaleDateString()}</p>
-                                            <p className="text-[9px] text-slate-500 font-bold mt-1 uppercase">DEVICE: {p.deviceId ? p.deviceId.substring(0,10)+'...' : 'HP BEBAS'}</p>
+                            <div className="space-y-4">{filtered.map(p => {
+                                const isExpired = p.expiry !== 'UNLIMITED' && p.expiry <= Date.now();
+                                const isUserActive = !p.isBlocked && !isExpired;
+                                return (
+                                    <div key={p.id} className="glass-panel p-6 rounded-[2.5rem] border-white/5 shadow-lg relative overflow-hidden">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <div>
+                                                <p className="text-4xl font-black text-white font-mono-custom tracking-tighter">{p.id}</p>
+                                                <p className={`text-[11px] font-bold uppercase mt-1 ${isExpired ? 'text-red-500' : 'text-orange-500'}`}>
+                                                    EXP: {p.expiry === 'UNLIMITED' ? 'NOLIMIT' : new Date(p.expiry).toLocaleDateString()}
+                                                </p>
+                                                <p className="text-[9px] text-slate-500 font-bold mt-1 uppercase">DEVICE: {p.deviceId ? p.deviceId.substring(0,10)+'...' : 'HP BEBAS'}</p>
+                                            </div>
+                                            <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase ${isUserActive ? 'bg-emerald-600/20 text-emerald-500 border border-emerald-500/20' : 'bg-red-600/20 text-red-500 border border-red-500/20'}`}>
+                                                {isUserActive ? 'ACTIVE' : p.isBlocked ? 'BLOCKED' : 'EXPIRED'}
+                                            </span>
                                         </div>
-                                        <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase ${p.isBlocked ? 'bg-red-600/20 text-red-500 border border-red-500/20' : 'bg-emerald-600/20 text-emerald-500 border border-emerald-500/20'}`}>{p.isBlocked ? 'BLOCKED' : 'ACTIVE'}</span>
-                                    </div>
-                                    <div className="grid grid-cols-3 gap-2 mt-6">
-                                        <button onClick={() => updateDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'csid_pro_pins', p.id), { isBlocked: !p.isBlocked })} className="bg-slate-900 border border-white/5 text-white py-4 rounded-2xl text-[9px] font-black uppercase">BLOKIR</button>
-                                        <button onClick={() => setDurationModal(p)} className="bg-slate-900 border border-white/5 text-white py-4 rounded-2xl text-[9px] font-black uppercase">DURASI</button>
+                                        <div className="grid grid-cols-3 gap-2 mt-6">
+                                            <button onClick={() => updateDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'csid_pro_pins', p.id), { isBlocked: !p.isBlocked })} className="bg-slate-900 border border-white/5 text-white py-4 rounded-2xl text-[9px] font-black uppercase">BLOKIR</button>
+                                            <button onClick={() => setDurationModal(p)} className="bg-slate-900 border border-white/5 text-white py-4 rounded-2xl text-[9px] font-black uppercase">DURASI</button>
+                                            <button onClick={() => {
+                                                setConfirmModal({
+                                                    message: `Reset kunci hardware HP untuk PIN ${p.id}?`,
+                                                    onConfirm: async () => {
+                                                        await updateDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'csid_pro_pins', p.id), { deviceId: null });
+                                                        showMsg("RESET HP BERHASIL");
+                                                        setConfirmModal(null);
+                                                    }
+                                                });
+                                            }} className="bg-slate-900 border border-white/5 text-white py-4 rounded-2xl text-[9px] font-black uppercase text-blue-400">RESET HW</button>
+                                        </div>
                                         <button onClick={() => {
                                             setConfirmModal({
-                                                message: `Reset kunci hardware HP untuk PIN ${p.id}?`,
+                                                message: `Hapus PIN ${p.id} secara permanen dari sistem?`,
                                                 onConfirm: async () => {
-                                                    await updateDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'csid_pro_pins', p.id), { deviceId: null });
-                                                    showMsg("RESET HP BERHASIL");
+                                                    await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'csid_pro_pins', p.id));
+                                                    showMsg("PIN DIHAPUS");
                                                     setConfirmModal(null);
                                                 }
                                             });
-                                        }} className="bg-slate-900 border border-white/5 text-white py-4 rounded-2xl text-[9px] font-black uppercase text-blue-400">RESET HW</button>
+                                        }} className="w-full mt-2 bg-red-600/5 text-red-500 py-3.5 rounded-2xl text-[9px] font-black uppercase flex items-center justify-center gap-2 border border-red-600/10 font-bold">HAPUS PERMANEN</button>
                                     </div>
-                                    <button onClick={() => {
-                                        setConfirmModal({
-                                            message: `Hapus PIN ${p.id} secara permanen dari sistem?`,
-                                            onConfirm: async () => {
-                                                await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'csid_pro_pins', p.id));
-                                                showMsg("PIN DIHAPUS");
-                                                setConfirmModal(null);
-                                            }
-                                        });
-                                    }} className="w-full mt-2 bg-red-600/5 text-red-500 py-3.5 rounded-2xl text-[9px] font-black uppercase flex items-center justify-center gap-2 border border-red-600/10 font-bold">HAPUS PERMANEN</button>
-                                </div>
-                            ))}</div>
+                                );
+                            })}</div>
                         </div>
                         {showAddPinModal && (
                             <div className="absolute inset-0 bg-black/90 backdrop-blur-2xl z-[1000] flex items-center justify-center p-6">
