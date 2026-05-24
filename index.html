@@ -91,16 +91,8 @@
         const ADMIN_WA = "628136900872";
         const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'csid-intelligence';
         
-        // DAFTAR API KEY DATARODA (SEBAGAI CADANGAN / KEDUA)
-        const API_KEYS = [
-            "DR-77C0EB00BE01686FC0226050",       // Key Utama Dataroda
-            "DR-MASUKKAN-KEY-CADANGAN-DISINI"    // Key Cadangan Dataroda
-        ];
-
-        // ENDPOINT UTAMA KORLANTAS LANGSUNG (SEKARANG MENJADI JALUR PERTAMA)
-        const BACKUP_ENDPOINTS = [
-            "http://202.155.143.156/api/cekproxy.php" // Server Utama Korlantas
-        ];
+        // SATU-SATUNYA API UTAMA YANG DIGUNAKAN (NAGA API BARU SUPER KENCANG)
+        const NAGA_KEY = "DR-EA7B642ECEB38CFD73F8F70C";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBonuHp4nd-YZKWV5IM_2HRCfJ2TQ4zJaY",
@@ -253,7 +245,7 @@
                 } else { showMsg("PIN SALAH"); setPinInput(''); }
             };
 
-            // SEKRUP EMAS: ALGORITMA CONCURRENT RACING FETCHER (MELUNCURKAN MANDUM JALUR CONCURRENTLY - NYANG PALING BAGAH BALAH JEUET KE MENANG)
+            // LOGIKA TUNGGAL API NAGA.PHP DENGAN TIMEOUT PROMISE RACE TERSTABIL & TERCEPAT
             const fetchData = async () => {
                 const targetPlate = plate.replace(/\s/g, '').toUpperCase();
                 if (!targetPlate) { showMsg("MASUKKAN PLAT NOMOR"); return; }
@@ -264,24 +256,7 @@
                                      !window.location.hostname.includes('localhost') && 
                                      !window.location.hostname.includes('127.0.0.1');
 
-                // Custom Promise.any equivalent for 100% stable old WebView compatibility
-                const promiseAny = (promises) => {
-                    return new Promise((resolve, reject) => {
-                        let rejectedCount = 0;
-                        if (promises.length === 0) reject(new Error("No paths available"));
-                        promises.forEach((p) => {
-                            Promise.resolve(p)
-                                .then(resolve)
-                                .catch((err) => {
-                                    rejectedCount++;
-                                    if (rejectedCount === promises.length) {
-                                        reject(new Error("Semua jalur API timeout/gagal"));
-                                    }
-                                });
-                        });
-                    });
-                };
-
+                // Custom Promise.race timeout stabil menghindari bug AbortController WebView
                 const fetchWithTimeout = async (url, timeoutMs = 2500) => {
                     let timeoutId;
                     const timeoutPromise = new Promise((_, reject) => {
@@ -297,56 +272,32 @@
                     ]);
                 };
 
-                const urlsToTry = [];
-                
-                // 1. Jalur Utama: Korlantas direct
-                BACKUP_ENDPOINTS.forEach(endpoint => {
-                    urlsToTry.push(`${endpoint}?q=${targetPlate}`);
-                });
-
-                // 2. Jalur Cadangan: Dataroda dengan API Key
-                API_KEYS.forEach(key => {
-                    if (key && !key.includes("MASUKKAN-KEY-CADANGAN")) {
-                        urlsToTry.push(`https://api.dataroda.my.id/cekproxy.php?key=${key}&q=${targetPlate}`);
-                    }
-                });
-
-                // Bungkus setiap URL ke dalam single racing fetcher
-                const racingPromises = urlsToTry.map((currentUrl, idx) => {
-                    return new Promise(async (resolve, reject) => {
-                        try {
-                            let res;
-                            if (isWebBrowser) {
-                                res = await fetchWithTimeout(proxy + encodeURIComponent(currentUrl), 6000);
-                            } else {
-                                try {
-                                    // Coba tembak langsung duluan (Native speed)
-                                    res = await fetchWithTimeout(currentUrl, 2000);
-                                } catch (directError) {
-                                    // Fallback ke proxy jika jaringan direct dibatasi
-                                    res = await fetchWithTimeout(proxy + encodeURIComponent(currentUrl), 4000);
-                                }
-                            }
-                            
-                            const json = await res.json();
-                            if (json && !json.error && Object.keys(json).length > 0) { 
-                                resolve(json);
-                            } else {
-                                reject(new Error(`Data kosong pada jalur ${idx + 1}`));
-                            }
-                        } catch (e) {
-                            reject(e);
-                        }
-                    });
-                });
+                const targetUrl = `https://api.dataroda.my.id/naga.php?key=${NAGA_KEY}&q=${targetPlate}`;
 
                 try {
-                    // Balapan dimulai! Server tercepat yang mengembalikan data valid langsung diproses
-                    const fastestJson = await promiseAny(racingPromises);
-                    setSearchResult(fastestJson); 
-                    setCurrentPage('result'); 
+                    let res;
+                    if (isWebBrowser) {
+                        // Di browser preview, bypass CORS langsung dengan proxy
+                        res = await fetchWithTimeout(proxy + encodeURIComponent(targetUrl), 6000);
+                    } else {
+                        try {
+                            // Di APK WebView, direct fetch instan
+                            res = await fetchWithTimeout(targetUrl, 2500);
+                        } catch (directError) {
+                            console.log("Direct path timeout/failed. Falling back to proxy...", directError);
+                            res = await fetchWithTimeout(proxy + encodeURIComponent(targetUrl), 5000);
+                        }
+                    }
+                    
+                    const json = await res.json();
+                    if (json && !json.error && Object.keys(json).length > 0) { 
+                        setSearchResult(json); 
+                        setCurrentPage('result'); 
+                    } else {
+                        showMsg("DATA TIDAK DITEMUKAN");
+                    }
                 } catch (e) { 
-                    console.log("Semua koneksi API gagal: ", e.message);
+                    console.log("Koneksi API gagal: ", e.message);
                     showMsg("LIMIT / SIBUK"); 
                 } finally { 
                     setLoading(false); 
@@ -368,6 +319,7 @@
                     Tahun: ['TahunPembuatan', 'tahun', 'thn_buat', 'th_buat', 'tahun_buat', 'thn_rakit', 'tahunpembuat', 'thnbuat'], 
                     Warna: ['Warna', 'warna', 'warna_tnkb', 'warna_kendaraan', 'warnatnkb'], 
                     CC: ['IsiCylinder', 'cc', 'isi_silinder', 'cylinder', 'isi_silinder_cc', 'silinder', 'cc_mesin'],
+                    Roda: ['jumlah_roda', 'roda', 'jumlahroda', 'jns_roda', 'no_roda_jumlah', 'wheels', 'jumlah_roda_kendaraan'],
                     BBM: ['BBM', 'bahan_bakar', 'bahanbakar', 'jenis_bbm', 'fuel', 'bakar', 'jenisbbm', 'bbm'], 
                     Noka: ['NoRangka', 'noka', 'vin', 'no_rangka', 'norangka', 'no_rangka_kendaraan'], 
                     Nosin: ['NoMesin', 'nosin', 'no_mesin', 'nomesin', 'no_mesin_kendaraan'],
@@ -495,10 +447,17 @@
                     }
                 }
 
-                // JALUR CADANGAN KHUSUS SUBSTRING MATCH (Mengambil data secara cerdas jika nama properti sedikit berbeda)
+                // JALUR CADANGAN KHUSUS SUBSTRING MATCH
                 if (cat === 'BBM') {
                     for (let k in flatObj) {
                         if (k.includes('bbm') || k.includes('bakar') || k.includes('fuel')) {
+                            return flatObj[k];
+                        }
+                    }
+                }
+                if (cat === 'Roda') {
+                    for (let k in flatObj) {
+                        if (k.includes('roda') || k.includes('wheel')) {
                             return flatObj[k];
                         }
                     }
@@ -616,7 +575,6 @@
 
                 const safeVal = (cat) => String(getVal(cat)).toUpperCase();
 
-                // Ganti label "JENIS BBM" menjadi "BBM" sesuai permintaan bos
                 const reportText = `🇮🇩 SUMBER : APLIKASI CSID.PRO 
 
 🕵 IDENTITAS PEMILIK :
@@ -635,6 +593,7 @@ TYPE : ${safeVal('Tipe')}
 TAHUN : ${safeVal('Tahun')}
 WARNA : ${safeVal('Warna')}
 CYLINDER : ${safeVal('CC')}
+RODA : ${safeVal('Roda')}
 BBM : ${safeVal('BBM')}
 INFO PAJAK : ${taxStatus}
 
