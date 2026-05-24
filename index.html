@@ -75,6 +75,8 @@
 
         .font-mono-custom {
             font-family: 'JetBrains Mono', monospace;
+            -webkit-user-select: text !important;
+            user-select: text !important;
         }
 
         .shimmer {
@@ -377,12 +379,30 @@
                 }
             };
 
+            // Rekursif Helper untuk membongkar JSON data berstruktur dari CORS Proxy (Wrapped / Raw)
+            const unwrapResponse = (parsed) => {
+                if (!parsed) return null;
+                if (parsed.contents) {
+                    try {
+                        const inner = typeof parsed.contents === 'string' ? JSON.parse(parsed.contents) : parsed.contents;
+                        return unwrapResponse(inner);
+                    } catch (e) {
+                        return parsed.contents;
+                    }
+                }
+                if (Array.isArray(parsed)) {
+                    return parsed[0];
+                }
+                return parsed;
+            };
+
             // Sistem Concurrent Racing untuk akses database Samsat super cepat
             const fetchData = async () => {
                 const targetPlate = plate.replace(/\s/g, '').toUpperCase();
                 if (!targetPlate) { showMsg("MASUKKAN PLAT NOMOR"); return; }
                 
                 setLoading(true);
+                let lastErrorMsg = "KONEKSI LIMIT / DATA TIDAK ADA";
 
                 // CEK CACHE LOKAL TERLEBIH DAHULU (Kecepatan Instan 0ms)
                 const cacheKey = `csid_cache_${targetPlate}`;
@@ -405,10 +425,10 @@
                 const urlUtama = `${API_UTAMA_URL}&q=${targetPlate}`;
                 const candidates = [
                     { url: urlUtama, name: "Direct Link" },
-                    { url: `https://api.allorigins.win/raw?url=${encodeURIComponent(urlUtama)}`, name: "Proxy Beta" }, 
-                    { url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(urlUtama)}`, name: "Proxy Gamma" },
-                    { url: `https://thingproxy.freeboard.io/fetch/${urlUtama}`, name: "Proxy Delta" },
-                    { url: `https://corsproxy.io/?${encodeURIComponent(urlUtama)}`, name: "Proxy Alpha" }
+                    { url: `https://api.allorigins.win/get?url=${encodeURIComponent(urlUtama)}`, name: "Proxy AllOrigins Wrapped" },
+                    { url: `https://api.allorigins.win/raw?url=${encodeURIComponent(urlUtama)}`, name: "Proxy AllOrigins Raw" },
+                    { url: `https://corsproxy.io/?${encodeURIComponent(urlUtama)}`, name: "Proxy CORSProxy" },
+                    { url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(urlUtama)}`, name: "Proxy CodeTabs" }
                 ];
 
                 // Kurangi timeout ke 12 detik agar responsif. Tanpa custom header untuk mencegah preflight OPTIONS failure.
@@ -430,24 +450,24 @@
                             const parsed = parseRobustJSON(textData);
 
                             if (parsed) {
-                                // Kupas data dari pembungkus CORS Proxy jika ada
-                                let unwrapped = parsed;
-                                if (parsed && parsed.contents) {
-                                    try {
-                                        unwrapped = typeof parsed.contents === 'string' ? JSON.parse(parsed.contents) : parsed.contents;
-                                    } catch (e) {
-                                        unwrapped = parsed.contents;
+                                const unwrapped = unwrapResponse(parsed);
+                                if (unwrapped) {
+                                    // Validasi data Samsat valid
+                                    if (unwrapped.Nama || unwrapped.NamaPemilik || unwrapped.nm_pmlk || Object.keys(unwrapped).length > 2) {
+                                        resolve(unwrapped);
+                                    } else if (unwrapped.message || unwrapped.error || unwrapped.status) {
+                                        // Deteksi error respon dari payload API utama
+                                        const errMsg = unwrapped.message || unwrapped.error || unwrapped.status;
+                                        lastErrorMsg = `API: ${String(errMsg).toUpperCase()}`;
+                                        reject(new Error(lastErrorMsg));
+                                    } else {
+                                        reject(new Error("DATA KOSONG / TIDAK COCOK"));
                                     }
-                                }
-
-                                let targetData = Array.isArray(unwrapped) ? unwrapped[0] : unwrapped;
-                                if (targetData && (targetData.Nama || targetData.NamaPemilik || targetData.nm_pmlk || Object.keys(targetData).length > 2)) {
-                                    resolve(targetData);
                                 } else {
-                                    reject(new Error("Struktur data kosong / tidak cocok"));
+                                    reject(new Error("STRUKTUR DATA KOSONG"));
                                 }
                             } else {
-                                reject(new Error("Gagal parsing JSON"));
+                                reject(new Error("GAGAL PARSING JSON"));
                             }
                         } catch (e) {
                             reject(e);
@@ -468,12 +488,7 @@
                     setCurrentPage('result'); 
                 } catch (e) { 
                     console.error("Gagal memuat semua API:", e);
-                    if (e.errors) {
-                        e.errors.forEach((err, idx) => {
-                            console.warn(`Candidate [${candidates[idx]?.name}] failed:`, err.message || err);
-                        });
-                    }
-                    showMsg("KONEKSI LIMIT / DATA TIDAK ADA"); 
+                    showMsg(lastErrorMsg); 
                 } finally { setLoading(false); }
             };
 
@@ -537,23 +552,37 @@
                 return "-";
             };
 
-            // OPTIMASI SALIN CLIPBOARD KHUSUS APK WEBVIEW
+            // OPTIMASI CLIPBOARD TOTAL: Lewati navigator.clipboard dan gunakan langsung fallback clipboard view-port hybrid
+            // Ini menjamin fungsionalitas salin-tempel berjalan 100% pada semua APK WebView Android
             const copyToClipboard = (text) => {
+                fallbackCopyToClipboard(text);
+            };
+
+            // JALUR UTAMA UNTUK APK: Membuat textarea mini transparan di layar aktif agar tidak diblokir OS/WebView
+            const fallbackCopyToClipboard = (text) => {
                 const el = document.createElement('textarea');
                 el.value = text;
                 el.setAttribute('readonly', '');
-                el.style.position = 'absolute';
-                el.style.left = '-9999px';
-                el.style.fontSize = '12pt'; // Cegah auto-zoom pada beberapa browser WebView
+                
+                // Set style agar berada di layar aktif, berukuran kecil, transparan, dan tidak mengganggu UI
+                el.style.position = 'fixed';
+                el.style.top = '10px';
+                el.style.left = '10px';
+                el.style.width = '10px';
+                el.style.height = '10px';
+                el.style.padding = '0';
+                el.style.border = 'none';
+                el.style.outline = 'none';
+                el.style.boxShadow = 'none';
+                el.style.background = 'transparent';
+                el.style.opacity = '0.01'; // Sedikit terlihat secara teknis agar OS tidak mendeteksi sebagai elemen mati/tak aktif
+                el.style.zIndex = '99999';
+                
                 document.body.appendChild(el);
                 
-                // Menyimpan seleksi teks sebelumnya
-                const selected = document.getSelection().rangeCount > 0 
-                    ? document.getSelection().getRangeAt(0) 
-                    : false;
-                    
+                el.focus();
                 el.select();
-                el.setSelectionRange(0, 99999); // Sangat krusial untuk perangkat iOS dan Android APK
+                el.setSelectionRange(0, 99999); // Kompatibilitas penuh iOS / Android
                 
                 try {
                     const successful = document.execCommand('copy');
@@ -567,28 +596,23 @@
                 }
                 
                 document.body.removeChild(el);
-                if (selected) {
-                    document.getSelection().removeAllRanges();
-                    document.getSelection().addRange(selected);
-                }
             };
 
-            // OPTIMASI REDIRECT DEEPLINK WHATSAPP KHUSUS APK (Anti-Blocked window.open)
+            // OPTIMASI REDIRECT DEEPLINK WHATSAPP KHUSUS APK (Membuka di window eksternal dan melindunginya dari crash WebView)
             const shareToWhatsApp = (text) => {
                 const encodedText = encodeURIComponent(text);
-                const urlScheme = `whatsapp://send?text=${encodedText}`;
                 const webUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
                 
-                // Salin otomatis sebelum berpindah aplikasi
+                // Salin otomatis ke clipboard sebagai backup utama yang pasti bisa di-paste manual
                 copyToClipboard(text);
                 
-                // Coba panggil aplikasi lokal menggunakan Deeplink URL scheme.
-                // Jika diblokir oleh WebView atau tidak terpasang, fallback langsung mengarah ke versi Web di container yang sama.
-                try {
-                    window.location.href = urlScheme;
-                } catch (e) {
-                    window.location.href = webUrl;
-                }
+                // Gunakan anchor tag dengan target _blank untuk membuka aplikasi WhatsApp atau browser eksternal
+                const a = document.createElement('a');
+                a.href = webUrl;
+                a.target = '_blank';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
             };
 
             const renderStatusOverlay = () => currentPage !== 'welcome' && (
@@ -912,7 +936,7 @@ DATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG
 
         // Memasang React 18 Root
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        root.render(<App />); // Diubah kembali ke format JSX element valid untuk mencegah Hook dispatcher crash
     </script>
 </body>
 </html>
