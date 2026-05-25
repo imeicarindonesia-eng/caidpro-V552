@@ -731,13 +731,13 @@
                 </div>
             );
 
+            // PEMBARUAN: Halaman Hasil Modifikasi untuk menghapus output visual BBM & INFO PAJAK
             const renderResult = () => {
                 const sWil = String(getVal('Wilayah')).replace("-","").trim(); 
                 const sNum = String(getVal('NopolServer')).replace("-","").trim(); 
                 const sSeri = String(getVal('Seri')).replace("-","").trim();
                 const finalPlate = (/[a-zA-Z]/.test(sNum) && sNum.length > 3) ? sNum.toUpperCase() : ((sWil + sNum + sSeri).length > 3 ? (sWil + sNum + sSeri).toUpperCase() : plate.toUpperCase().replace(/\s/g, ''));
                 
-                const taxStatus = String(getVal('Pajak')).toUpperCase().includes("HIDUP") || String(getVal('Pajak')).toUpperCase().includes("AKTIF") ? "HIDUP" : "MATI";
                 const safeVal = (cat) => String(getVal(cat)).toUpperCase();
 
                 const reportText = `🇮🇩 SUMBER : APLIKASI CSID.PRO 
@@ -758,8 +758,6 @@ TYPE : ${safeVal('Tipe')}
 TAHUN : ${safeVal('Tahun')}
 WARNA : ${safeVal('Warna')}
 CYLINDER : ${safeVal('CC')}
-BBM : ${safeVal('BBM')}
-INFO PAJAK : ${taxStatus}
 
 📙 DOKUMEN RESMI :
 ----------------------------------------
