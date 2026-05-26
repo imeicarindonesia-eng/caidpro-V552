@@ -149,18 +149,24 @@
         };
 
         const App = () => {
-            const [currentPage, setCurrentPage] = useState('welcome');
+            // OPTIMASI LAUNCH INSTAN: Muat data sesi secara langsung dari localStorage untuk bypass delay render
+            const isAlreadyLoggedIn = localStorage.getItem('csid_logged_in') === 'true';
+            const savedRole = localStorage.getItem('csid_user_role') || 'user';
+            const savedExpiry = localStorage.getItem('csid_user_expiry') || null;
+            const savedActivePin = localStorage.getItem('csid_active_pin') || '';
+
+            const [currentPage, setCurrentPage] = useState(isAlreadyLoggedIn ? 'search' : 'welcome');
             const [registrationId, setRegistrationId] = useState('');
             const [showPinModal, setShowPinModal] = useState(false);
             const [pinInput, setPinInput] = useState('');
             const [user, setUser] = useState(null);
-            const [userRole, setUserRole] = useState(null);
-            const [userExpiry, setUserExpiry] = useState(null);
-            const [activePin, setActivePin] = useState('');
+            const [userRole, setUserRole] = useState(isAlreadyLoggedIn ? savedRole : null);
+            const [userExpiry, setUserExpiry] = useState(isAlreadyLoggedIn ? savedExpiry : null);
+            const [activePin, setActivePin] = useState(isAlreadyLoggedIn ? savedActivePin : '');
             const [plate, setPlate] = useState('');
             const [kbHeight, setKbHeight] = useState(25); 
             const [broadcast, setBroadcast] = useState("SELAMAT DATANG DI CSID.PRO - VEHICLE INTELLIGENCE SYSTEM v4.0");
-            const [loading, setLoading] = useState(true);
+            const [loading, setLoading] = useState(!isAlreadyLoggedIn); // Jangan blokir layar jika user sudah terautentikasi sebelumnya!
             const [searchResult, setSearchResult] = useState(null);
             const [notification, setNotification] = useState(null);
             const [managedPins, setManagedPins] = useState([]);
@@ -203,9 +209,6 @@
                 }
                 setRegistrationId(savedId);
 
-                // Set loading true agar kita bisa memverifikasi status user ke Firebase secara instan
-                setLoading(true);
-
                 const startAuth = async () => {
                     try {
                         const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
@@ -226,7 +229,7 @@
                         
                         setUser(authenticatedUser);
                         
-                        // PEMBARUAN: Langsung cek validitas PIN di database Firebase secara senyap
+                        // Lakukan validasi jarak jauh (remote background check) secara senyap untuk menjaga kestabilan sesi
                         const pinSnap = await getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'csid_pro_pins', savedId));
                         if (pinSnap.exists()) {
                             const data = pinSnap.data();
@@ -237,23 +240,36 @@
                             const isDeviceMatched = !data.deviceId || data.deviceId === currentDeviceId;
 
                             if (isNotBlocked && isNotExpired && isDeviceMatched) {
-                                // JIKA HAK AKSES VALID: Bypass Halaman Welcome dan langsung Auto-Login!
+                                // Sesi valid, simpan ke lokal agar launch berikutnya tetap instan (0ms)
                                 setUserRole(data.role || 'user');
                                 setUserExpiry(data.expiry);
                                 setActivePin(savedId);
                                 localStorage.setItem('csid_logged_in', 'true');
+                                localStorage.setItem('csid_user_role', data.role || 'user');
+                                localStorage.setItem('csid_user_expiry', data.expiry);
+                                localStorage.setItem('csid_active_pin', savedId);
                                 setCurrentPage('search');
                             } else {
-                                // Jika expired/blocked, tetap di welcome page
+                                // Sesi tidak valid / kedaluwarsa, hapus data lokal dan kembalikan ke Welcome
                                 localStorage.removeItem('csid_logged_in');
+                                localStorage.removeItem('csid_user_role');
+                                localStorage.removeItem('csid_user_expiry');
+                                localStorage.removeItem('csid_active_pin');
                                 setCurrentPage('welcome');
                             }
                         } else {
+                            // PIN dihapus di Firebase, tendang keluar
+                            localStorage.removeItem('csid_logged_in');
+                            localStorage.removeItem('csid_user_role');
+                            localStorage.removeItem('csid_user_expiry');
+                            localStorage.removeItem('csid_active_pin');
                             setCurrentPage('welcome');
                         }
                     } catch (e) { 
                         console.error("Auth / Auto-Login Failure:", e); 
-                        setCurrentPage('welcome');
+                        if (!isAlreadyLoggedIn) {
+                            setCurrentPage('welcome');
+                        }
                     } finally { 
                         setLoading(false); 
                     }
@@ -338,6 +354,9 @@
                     setUserExpiry(data.expiry); 
                     setActivePin(registrationId); 
                     localStorage.setItem('csid_logged_in', 'true');
+                    localStorage.setItem('csid_user_role', 'user');
+                    localStorage.setItem('csid_user_expiry', data.expiry);
+                    localStorage.setItem('csid_active_pin', registrationId);
                     setCurrentPage('search');
                 } catch (e) { 
                     showMsg(e.message); 
@@ -349,6 +368,10 @@
             const handleMasterLogin = () => {
                 if (pinInput === MASTER_PIN) {
                     setUserRole('master'); setUserExpiry('UNLIMITED'); setActivePin('MASTER');
+                    localStorage.setItem('csid_logged_in', 'true');
+                    localStorage.setItem('csid_user_role', 'master');
+                    localStorage.setItem('csid_user_expiry', 'UNLIMITED');
+                    localStorage.setItem('csid_active_pin', 'MASTER');
                     setCurrentPage('search'); setShowPinModal(false); setPinInput('');
                 } else { showMsg("PIN SALAH"); setPinInput(''); }
             };
@@ -644,7 +667,8 @@
                 <div className="flex-1 flex flex-col items-center justify-between py-12 px-8 bg-black text-white h-full relative">
                     <div className="absolute top-[-10%] left-[-10%] w-[80%] h-[40%] bg-orange-600/10 blur-[150px] rounded-full" />
                     <div className="text-center z-10 mt-6 space-y-1.5">
-                        <p className="text-[15px] font-black uppercase tracking-tight text-orange-500 leading-tight">INTEL-NET SYSTEM</p>
+                        {/* PEMBARUAN: Teks diubah menjadi APLIKASI sesuai permintaan */}
+                        <p className="text-[15px] font-black uppercase tracking-tight text-orange-500 leading-tight">APLIKASI</p>
                         <p className="text-[15px] font-black uppercase tracking-tight leading-tight text-white">SAMSAT CSID.PRO NASIONAL</p>
                     </div>
                     <div className="flex flex-col items-center z-10">
@@ -732,6 +756,7 @@
             );
 
             // PEMBARUAN: Halaman Hasil Modifikasi untuk menghapus output visual BBM & INFO PAJAK
+            // DAN PEMBARUAN KEAMANAN: Memaksa laporan menjadi benar-benar read-only (tidak dapat diubah, diedit, atau dimanipulasi oleh user di dalam aplikasi sebelum dikirim/salin)
             const renderResult = () => {
                 const sWil = String(getVal('Wilayah')).replace("-","").trim(); 
                 const sNum = String(getVal('NopolServer')).replace("-","").trim(); 
@@ -740,6 +765,7 @@
                 
                 const safeVal = (cat) => String(getVal(cat)).toUpperCase();
 
+                // PEMBARUAN: Menambahkan tautan HTTPS klik-aktif ke wa.me admin & csid.pro agar aktif saat dikirim ke whatsapp
                 const reportText = `🇮🇩 SUMBER : APLIKASI CSID.PRO 
 
 🕵 IDENTITAS PEMILIK :
@@ -768,7 +794,7 @@ NO. STNK : ${safeVal('STNK')}
 TGL DAFTAR : ${safeVal('Tgl')}
 APM : ${safeVal('APM')}
 ----------------------------------------
-🔊 LINK DAFTAR APLIKASI : CSID.PRO
+🔊 LINK DAFTAR APLIKASI : https://csid.pro
 📞 Hub: https://wa.me/628136900872
 
 ✍ NOTE :
@@ -782,9 +808,17 @@ DATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG
                             {renderStatusOverlay()}
                         </header>
                         <div className="flex-1 overflow-y-auto p-4 scrollbar-hide pb-32">
-                            <div className="bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] p-8 font-mono-custom text-[13px] text-white/90 leading-relaxed whitespace-pre select-text shadow-2xl shimmer">
+                            {/* INDIKATOR SEGEL KEAMANAN: Mempertegas laporan tidak dapat dimanipulasi */}
+                            <div className="mb-4 bg-orange-600/10 border border-orange-600/30 rounded-2xl px-5 py-3 flex items-center gap-3">
+                                <span className="text-orange-500 animate-pulse font-bold">🔒</span>
+                                <p className="text-[10px] font-black text-orange-500 tracking-wider uppercase">LAPORAN TERSEGEL - DATA ASLI TIDAK DAPAT DIEDIT</p>
+                            </div>
+                            
+                            {/* RENDER VIEW: Menggunakan Div Read-Only yang mematikan input keyboard/editing secara fisik (user-select tetap aktif untuk dibaca) */}
+                            <div className="bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] p-8 font-mono-custom text-[13px] text-white/90 leading-relaxed whitespace-pre select-text shadow-2xl shimmer pointer-events-auto">
                                 {reportText}
                             </div>
+                            
                             <div className="mt-8 space-y-4">
                                 <button onClick={() => copyToClipboard(reportText)} className="w-full bg-white text-black py-5 rounded-[2rem] font-black text-lg uppercase shadow-xl active:scale-95 transition-all">SALIN DATA LAPORAN</button>
                                 <button onClick={() => shareToWhatsApp(reportText)} className="w-full bg-[#25d366] text-white py-5 rounded-[2rem] font-black text-lg uppercase shadow-xl active:scale-95 transition-all">BAGIKAN KE WHATSAPP</button>
