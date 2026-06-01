@@ -114,7 +114,10 @@
         const ADMIN_WA = "628136900872";
         const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'csid-intelligence-pro';
         
-        const API_UTAMA_URL = "https://tnkb.deltaforce.space/?apikey=ae958b6e6869c10dddaec2283b3c824b&keyword=BL1562C";
+        const BASE_API_URL = "https://tnkb.deltaforce.space/";
+        const API_KEY = "ae958b6e6869c10dddaec2283b3c824b";
+        const buatUrl = (kunci) => `${BASE_API_URL}?apikey=${API_KEY}&keyword=${encodeURIComponent(kunci)}`;
+
 
         const firebaseConfig = {
             apiKey: "AIzaSyBonuHp4nd-YZKWV5IM_2HRCfJ2TQ4zJaY",
