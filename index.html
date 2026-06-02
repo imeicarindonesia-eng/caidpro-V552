@@ -114,9 +114,36 @@
         const ADMIN_WA = "628136900872";
         const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'csid-intelligence-pro';
         
+        async function handleSearch() {
+    const plat = document.getElementById('platInput').value.trim();
+    const resultContent = document.getElementById('resultContent');
+    const actionButtons = document.getElementById('actionButtons');
+    if (!plat) return alert("Masukkan nomor plat!");
+
+    resultContent.innerText = "Mengambil data...";
+    actionButtons.classList.add('hidden');
+
+    try {
+        // API KEY TERPASANG DI BAWAH INI
         const apiKey = "ae958b6e6869c10dddaec2283b3c824b";
-‎        const response = await fetch(`https://tnkb.deltaforce.space/?apikey=${apiKey}&keyword=${plat}`);
-‎        const data = await response.json();
+        const response = await fetch(`https://tnkb.deltaforce.space/?apikey=${apiKey}&keyword=${plat}`);
+        const data = await response.json();
+        
+        if (data && data.success === true && data.data && data.data.length > 0) {
+            const item = data.data[0];
+            // Format hasil pencarian yang Anda inginkan
+            currentTextResult = `🇮🇩 SUMBER : APLIKASI CSID.PRO \n----------------------------------------\n🕵 IDENTITAS PEMILIK :\nNAMA : ${item.NamaPemilik || '-'}\nNIK : ${item.NIK || item.NoKTP || '-'}\nMSSDN : ${item.NoHP || item.MSSDN || '-'}\nALAMAT : ${item.Alamat || '-'}\n\n🚘 DATA KENDARAAN :\nNOPOL : ${plat.toUpperCase()}\nMEREK : ${item.Merk || '-'}\nTYPE : ${item.Type || '-'}\nTAHUN : ${item.TahunPembuatan || '-'}\nWARNA : ${item.Warna || '-'}\nCYLINDER : ${item.IsiCylinder || item.Cylinder || '-'}\n\n📙 DOKUMEN RESMI :\nNOKA : ${item.NoRangka || '-'}\nNOSIN : ${item.NoMesin || '-'}\nNO. BPKB : ${item.NoBPKB || '-'}\nNO. STNK : ${item.NoSTNK || '-'}\n----------------------------------------\n📲 INSTAL APLIKASI HUBUNGI : https://wa.me/628136900872`;
+            
+            resultContent.innerText = currentTextResult;
+            actionButtons.classList.remove('hidden');
+        } else {
+            resultContent.innerText = "Data tidak ditemukan.";
+        }
+    } catch (e) {
+        resultContent.innerText = "Gagal terhubung ke server.";
+    }
+}
+
 ‎        
 ‎        if (data && data.success === true && data.data && data.data.length > 0) {
 
