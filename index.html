@@ -52,7 +52,10 @@
         const MASTER_PIN = "280189"; 
         const ADMIN_WA = "628136900872";
         const APP_ID = 'csid-intelligence-pro';
+        
+        // DUA ALAMAT SERVER UTAMA & CADANGAN KEDUA
         const API_UTAMA_URL = "https://tnkb.deltaforce.space/?apikey=ae958b6e6869c10dddaec2283b3c824b"; 
+        const API_CADANGAN_URL = "http://178.83.180.241/.h_api_tnkb.php";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBonuHp4nd-YZKWV5IM_2HRCfJ2TQ4zJaY",
@@ -275,11 +278,12 @@
                 return null;
             };
 
-            // Pencari Data Kendaraan Rekursif Mendalam (Pasti Tembus Proxy Manapun)
+            // Pencari Data Kendaraan Rekursif Mendalam (Menjelajah semua layer data)
             const findVehicleData = (obj) => {
                 if (!obj || typeof obj !== 'object') return null;
                 
-                if (obj.NamaPemilik || obj.NoRangka || obj.NoSTNK || obj.NoMesin || obj.Merk || obj.Nama || obj.nopol) {
+                // Mendeteksi data yang valid baik dari API Utama maupun API Cadangan ke-2
+                if (obj.NamaPemilik || obj.NoRangka || obj.NoSTNK || obj.NoMesin || obj.Merk || obj.Nama || obj.nopol || obj.nama_pemilik || obj.no_rangka) {
                     return obj;
                 }
                 
@@ -313,13 +317,13 @@
                 return findVehicleData(parsed);
             };
 
-            // Turbo-Racing 12-Concurrent Fetch dengan Auto Spacing SAMSAT Standard
+            // PEMBARUAN UTAMA: Turbo-Racing 12-Concurrent Balancer dengan Mixed Content Bypass (DeltaForce Space + IP Cadangan)
             const fetchData = async () => {
                 const rawPlate = plate.trim().toUpperCase();
                 if (!rawPlate) { showMsg("MASUKKAN PLAT NOMOR"); return; }
                 setLoading(true);
 
-                // Variasi pencarian agar tembus format strict di API Deltaforce
+                // Buat variasi format input agar lolos pencarian strict server
                 const formattedPlate = formatPlate(rawPlate);
                 const unformattedPlate = rawPlate.replace(/\s+/g, '');
                 
@@ -329,7 +333,7 @@
                     unformattedPlate
                 ])).filter(k => k.length > 2);
 
-                // Periksa Cache Lokal (Pencarian Instan 0ms)
+                // Periksa Cache Lokal untuk performa instan (0ms)
                 for (let kw of searchKeywords) {
                     const cacheKey = `csid_cache_${kw}`;
                     const cachedDataRaw = localStorage.getItem(cacheKey);
@@ -344,27 +348,52 @@
                     }
                 }
 
-                // 12 request paralel seketika untuk memecah kebuntuan jaringan
                 const allUrls = [];
+                // Deteksi HTTPS untuk menghindari Mixed Content block yang membuat koneksi HTTP cadangan macet di WebView
+                const isHttps = window.location.protocol === 'https:';
+
                 searchKeywords.forEach(kw => {
-                    const baseUrl = `https://tnkb.deltaforce.space/?apikey=ae958b6e6869c10dddaec2283b3c824b&keyword=${encodeURIComponent(kw)}`;
+                    const primaryUrl = `${API_UTAMA_URL}&keyword=${encodeURIComponent(kw)}`;
+                    const backupUrl = `${API_CADANGAN_URL}?q=${encodeURIComponent(kw)}`;
+                    
+                    // Direct requests (Direct ke backup HTTP hanya diluncurkan jika non-HTTPS)
+                    allUrls.push({ url: primaryUrl, type: 'primary' });
+                    if (!isHttps) {
+                        allUrls.push({ url: backupUrl, type: 'backup' });
+                    }
+
+                    // Proxy requests untuk Primary (HTTPS ke HTTPS - 100% Aman)
                     allUrls.push(
-                        { url: baseUrl, type: 'direct' },
-                        { url: `https://corsproxy.io/?${encodeURIComponent(baseUrl)}`, type: 'proxy' },
-                        { url: `https://api.allorigins.win/raw?url=${encodeURIComponent(baseUrl)}`, type: 'proxy' },
-                        { url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(baseUrl)}`, type: 'proxy' },
-                        { url: `https://allorigins.hexschool.workers.dev/raw?url=${encodeURIComponent(baseUrl)}`, type: 'proxy' },
-                        { url: `https://api.allorigins.win/get?url=${encodeURIComponent(baseUrl)}`, type: 'proxy' }
+                        { url: `https://corsproxy.io/?${encodeURIComponent(primaryUrl)}`, type: 'proxy' },
+                        { url: `https://api.allorigins.win/raw?url=${encodeURIComponent(primaryUrl)}`, type: 'proxy' },
+                        { url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(primaryUrl)}`, type: 'proxy' },
+                        { url: `https://allorigins.hexschool.workers.dev/raw?url=${encodeURIComponent(primaryUrl)}`, type: 'proxy' },
+                        { url: `https://api.allorigins.win/get?url=${encodeURIComponent(primaryUrl)}`, type: 'proxy' }
+                    );
+
+                    // Proxy requests untuk Backup (Sangat Krusial! Mengubah target HTTP menjadi HTTPS lewat server proxy agar aman dari WebView)
+                    allUrls.push(
+                        { url: `https://corsproxy.io/?${encodeURIComponent(backupUrl)}`, type: 'proxy' },
+                        { url: `https://api.allorigins.win/raw?url=${encodeURIComponent(backupUrl)}`, type: 'proxy' },
+                        { url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(backupUrl)}`, type: 'proxy' },
+                        { url: `https://allorigins.hexschool.workers.dev/raw?url=${encodeURIComponent(backupUrl)}`, type: 'proxy' },
+                        { url: `https://api.allorigins.win/get?url=${encodeURIComponent(backupUrl)}`, type: 'proxy' }
                     );
                 });
 
                 let resolved = false;
                 let activeRequests = allUrls.length;
+                const controllers = [];
 
                 const cleanLoadingAndTransition = (data) => {
                     if (resolved) return;
                     resolved = true;
                     
+                    // Abort / batalkan sisa request lain seketika untuk hemat RAM & baterai HP
+                    controllers.forEach(ctrl => {
+                        try { ctrl.abort(); } catch(e) {}
+                    });
+
                     searchKeywords.forEach(kw => {
                         localStorage.setItem(`csid_cache_${kw}`, JSON.stringify({ data: data, timestamp: Date.now() }));
                     });
@@ -382,9 +411,11 @@
                     }
                 };
 
+                // Jalankan perlombaan paralel Dual API (DeltaForce + API Cadangan IP)
                 allUrls.forEach((targetObj) => {
                     const ctrl = new AbortController();
-                    const id = setTimeout(() => ctrl.abort(), 10000);
+                    controllers.push(ctrl);
+                    const id = setTimeout(() => ctrl.abort(), 9500);
 
                     fetch(targetObj.url, { signal: ctrl.signal })
                         .then(async (res) => {
@@ -407,51 +438,64 @@
                 });
             };
 
+            const extractField = (item, keys) => {
+                if (!item) return '-';
+                for (let k of keys) {
+                    if (item[k] !== undefined && item[k] !== null && item[k] !== '') {
+                        return String(item[k]).toUpperCase();
+                    }
+                }
+                return '-';
+            };
+
+            // Pemetaan Kolom Fleksibel (Mendukung CamelCase, PascalCase, dan snake_case dari kedua API)
             const getVal = (cat) => {
                 if (!searchResult) return "-";
                 const item = searchResult;
                 
                 switch (cat) {
                     case 'Nama': 
-                        return item.NamaPemilik || '-';
+                        return extractField(item, ['NamaPemilik', 'nama_pemilik', 'Nama', 'nama', 'nm_pmlk']);
                     case 'NIK': 
-                        return item.NIK || item.NoKTP || '-';
+                        return extractField(item, ['NIK', 'NoKTP', 'nik', 'no_ktp', 'identitas', 'no_identitas']);
                     case 'HP': 
-                        return item.NoHP || item.MSSDN || '-';
+                        return extractField(item, ['NoHP', 'MSSDN', 'msisdn', 'phone', 'no_hp', 'no_telp']);
                     case 'Pekerjaan': 
-                        return item.Pekerjaan || '-';
+                        return extractField(item, ['Pekerjaan', 'pekerjaan', 'job', 'pekerjaan_pemilik']);
                     case 'Alamat': 
-                        return item.Alamat || item.alamat || '-';
+                        return extractField(item, ['Alamat', 'alamat', 'alamat_pemilik']);
                     case 'NopolServer': 
-                        const wilayah = item.wilayah || '';
-                        const nopol = item.nopol || '';
-                        const seri = item.seri || '';
+                        const nServer = extractField(item, ['nopol', 'Nopol', 'no_polisi', 'plat', 'plate']);
+                        if (nServer && nServer !== '-') return nServer;
+                        const wilayah = item.wilayah || item.Wilayah || '';
+                        const nopol = item.nopol || item.Nopol || '';
+                        const seri = item.seri || item.Seri || '';
                         if (wilayah || nopol || seri) {
                             return `${wilayah} ${nopol} ${seri}`.trim().toUpperCase();
                         }
                         return formatPlate(plate);
                     case 'Merk': 
-                        return item.Merk || '-';
+                        return extractField(item, ['Merk', 'Merek', 'merk', 'merek', 'brand']);
                     case 'Tipe': 
-                        return item.Type || item.Tipe || '-';
+                        return extractField(item, ['Type', 'Tipe', 'type', 'tipe', 'model']);
                     case 'Tahun': 
-                        return item.TahunPembuatan || item.Tahun || '-';
+                        return extractField(item, ['TahunPembuatan', 'Tahun', 'tahun_pembuatan', 'tahun_buat', 'th_buat', 'tahun']);
                     case 'Warna': 
-                        return item.Warna || '-';
+                        return extractField(item, ['Warna', 'warna', 'warna_tnkb', 'warna_kendaraan']);
                     case 'CC': 
-                        return item.IsiCylinder || item.Cylinder || item.cylinder || '-';
+                        return extractField(item, ['IsiCylinder', 'Cylinder', 'cylinder', 'isi_silinder', 'cc', 'isi_cylinder']);
                     case 'Noka': 
-                        return item.NoRangka || '-';
+                        return extractField(item, ['NoRangka', 'noka', 'no_rangka', 'vin', 'no_frame']);
                     case 'Nosin': 
-                        return item.NoMesin || '-';
+                        return extractField(item, ['NoMesin', 'nosin', 'no_mesin', 'no_engine']);
                     case 'BPKB': 
-                        return item.NoBPKB || '-';
+                        return extractField(item, ['NoBPKB', 'bpkb', 'no_bpkb']);
                     case 'STNK': 
-                        return item.NoSTNK || '-';
+                        return extractField(item, ['NoSTNK', 'stnk', 'no_stnk']);
                     case 'Tgl': 
-                        return item.TglDaftar || item.TanggalDaftar || item.tgl_daftar || item.tglDaftar || '-';
+                        return extractField(item, ['TglDaftar', 'TanggalDaftar', 'tgl_daftar', 'tanggal_daftar', 'tglDaftar']);
                     case 'APM': 
-                        return item.APM || item.apm || item.AgenPemegangMerek || '-';
+                        return extractField(item, ['APM', 'apm', 'atpm', 'AgenPemegangMerek', 'agen_pemegang_merek']);
                     default: 
                         return "-";
                 }
@@ -580,7 +624,7 @@
                                     <p className="text-[10px] font-black text-orange-500 tracking-wider uppercase">LAPORAN TERSEGEL - DATA ASLI TIDAK DAPAT DIEDIT</p>
                                 </div>
                                 <div className="bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] p-8 font-mono-custom text-[13px] text-white/90 leading-relaxed whitespace-pre-wrap break-words w-full shadow-2xl shimmer pointer-events-auto">
-                                    {`🇮🇩 SUMBER : APLIKASI CSID.PRO \n----------------------------------------\n🕵 IDENTITAS PEMILIK :\n----------------------------------------\nNAMA : ${getVal('Nama')}\nNIK : ${getVal('NIK')}\nMSSDN : ${getVal('HP')}\nPEKERJAAN : ${getVal('Pekerjaan')}\nALAMAT : ${getVal('Alamat')}\n\n🚘 DATA KENDARAAN :\n----------------------------------------\nNOPOL : ${getVal('NopolServer')}\nMEREK : ${getVal('Merk')}\nTYPE : ${getVal('Tipe')}\nTAHUN : ${getVal('Tahun')}\nWARNA : ${getVal('Warna')}\nCYLINDER : ${getVal('CC')}\n\n📙 DOKUMEN RESMI :\n----------------------------------------\nNOKA : ${getVal('Noka')}\nNOSIN : ${getVal('Nosin')}\nNO. BPKB : ${getVal('BPKB')}\nNO. STNK : ${getVal('STNK')}\nTGL DAFTAR : ${getVal('Tgl')}\nAPM : ${getVal('APM')}\n----------------------------------------\n🔊 LINK DAFTAR APLIKASI : CSID.PRO\n📞 Hub: https://wa.me/628136900872\n\n✍ NOTE : \nDATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG BERLAKU PADA KENDARAAN. MENURUT UU YANG BERLAKU ⚖️`}
+                                    {`🇮🇩 SUMBER : APLIKASI CSID.PRO \n----------------------------------------\n🕵 IDENTITAS PEMILIK :\n----------------------------------------\nNAMA : ${getVal('Nama')}\nNIK : ${getVal('NIK')}\nMSSDN : ${getVal('HP')}\nPEKERJAAN : ${getVal('Pekerjaan')}\nALAMAT : ${getVal('Alamat')}\n\n🚘 DATA KENDARAAN :\n----------------------------------------\nNOPOL : ${getVal('NopolServer')}\nMEREK : ${getVal('Merk')}\nTYPE : ${getVal('Tipe')}\nTAHUN : ${getVal('Tahun')}\nWARNA : ${getVal('Warna')}\nCYLINDER : ${getVal('CC')}\n\n📙 DOKUMEN RESMI :\n----------------------------------------\nNOKA : ${getVal('Noka')}\nNOSIN : ${getVal('Nosin')}\nNO. BPKB : ${getVal('BPKB')}\nNO. STNK : ${getVal('STNK')}\nTGL DAFTAR : ${getVal('Tgl')}\nAPM : ${getVal('APM')}\n----------------------------------------\n🔊 LINK DAFTAR APLIKASI : CSID.PRO\n📞 Hub: https://wa.me/628136900872\n\n✍ NOTE :\nDATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG BERLAKU PADA KENDARAAN. MENURUT UU YANG BERLAKU ⚖️`}
                                 </div>
                                 <div className="mt-8 space-y-4 w-full">
                                     <button onClick={() => {
