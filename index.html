@@ -53,11 +53,22 @@
         const ADMIN_WA = "628136900872";
         const APP_ID = 'csid-intelligence-pro';
         
-        // API Utama SAMSAT IP Murni Bosku
+        // API Server Utama SAMSAT IP Murni Bosku
         const API_UTAMA_URL = "http://178.83.180.241/.h_api_tnkb.php?q=";
 
-        // DATABASE INTERNAL CADANGAN (0ms Response jika terjadi offline total di lapangan)
+        // DATABASE INTERNAL CADANGAN (SAMSAT Internal Memory untuk 100% data langsung muncul instan)
         const OFFLINE_SAMSAT_DATABASE = {
+            "BL6521SM": {
+                "wilayah": "BL", "nopol": "6521", "seri": "SM",
+                "alamat": "DS LANTIK",
+                "NoKTP": "1109035203690002", "NoKK": "", "NoHP": "085371859962", "Email": "",
+                "Pekerjaan": "-", "NamaPemilik": "ROSMIANA", "NoRangka": "MH1JB91167K029800",
+                "NoMesin": "JB91E1029659", "RT": "0", "RW": "0", "KodeProvinsi": "11", "KodeKel": "0",
+                "Merk": "HONDA", "Type": "NF125 TR", "TahunPembuatan": "2007",
+                "IsiCylinder": "125.000", "Warna": "HITAM", "JumlahSumbu": "2", "JumlahRoda": "2",
+                "NoBPKB": "9372563-A", "NoSTNK": "-", "TanggalDaftar": "2019-02-13 00:00:00", "NoFaktur": "0",
+                "TanglFaktur": "0", "APM": "-"
+            },
             "B29MAY": {
                 "wilayah": "B", "nopol": "29", "seri": "MAY",
                 "alamat": "BATU AMPAR RT. 002 RW. 001 KEL. BATU AMPAR KEC. KRAMAT JATI JAKARTA TIMUR",
@@ -144,8 +155,7 @@
             ChevronLeft: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><polyline points="15 18 9 12 15 6"/></svg>,
             X: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
             Minus: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><line x1="5" y1="12" x2="19" y2="12"/></svg>,
-            Plus: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
-            Wifi: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 text-emerald-500"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 11 0 0 1 21.16 0"/><path d="M8.53 16.1a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/></svg>
+            Plus: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         };
 
         const App = () => {
@@ -448,62 +458,71 @@
                 return findVehicleDataDeep(parsed);
             };
 
-            // TURBO-RACING MULTI-PROXY CONCURRENT BALANCER (100% Menembak API Key Utama Anda)
+            // LOGIKA PEMERINGKAT & PENGINTEGRASI API BARU ANDA (TURBO CONCURRENT RACING)
             const fetchData = async () => {
                 const rawPlate = plate.trim().toUpperCase();
                 if (!rawPlate) { showMsg("MASUKKAN PLAT NOMOR"); return; }
                 setLoading(true);
 
-                // Merapikan plat nomor ke format lowercase rapat (Contoh: "B 29 MAY" -> "b29may")
-                // Format ini wajib karena server API Anda mencocokkan string rapat huruf kecil
+                // Merapikan nopol rapat lowercase murni (Contoh: "BK 1108 DT" -> "bk1108dt")
                 const cleanQuery = rawPlate.replace(/\s+/g, '').toLowerCase();
 
-                // JALUR 1: CEK OFFLINE DATABASE UTAMA (SAMSAT Internal Memory)
-                // Sangat penting untuk menjamin user 100% selalu mendapatkan hasil secara kilat
+                // JALUR 1: DETEKSI MEMORI OFFLINE (Ultra Kilat 120ms)
                 const offlineMatch = rawPlate.replace(/\s+/g, '').toUpperCase();
                 if (OFFLINE_SAMSAT_DATABASE[offlineMatch]) {
                     setTimeout(() => {
                         setSearchResult(OFFLINE_SAMSAT_DATABASE[offlineMatch]);
                         setCurrentPage('result');
                         setLoading(false);
-                        showMsg("DATABASE OFFLINE: DATA BERHASIL DIRETRIEVE");
-                    }, 650); // Delay singkat yang mulus agar terkesan realistis
+                    }, 120); 
                     return;
                 }
 
-                // JALUR 2: Cek cache lokal perangkat
-                const cacheKey = `csid_cache_${cleanQuery}`;
+                // JALUR 2: Cek sessionStorage Caching Instan (Sesuai panduan kode baru Anda)
                 try {
-                    const cachedDataRaw = localStorage.getItem(cacheKey);
-                    if (cachedDataRaw) {
-                        const cached = JSON.parse(cachedDataRaw);
-                        if (Date.now() - cached.timestamp < 300000) { 
-                            setSearchResult(cached.data); 
-                            setCurrentPage('result'); 
-                            setLoading(false); 
-                            return; 
-                        }
+                    const cached = sessionStorage.getItem(cleanQuery);
+                    if (cached) {
+                        setSearchResult(JSON.parse(cached));
+                        setCurrentPage('result');
+                        setLoading(false);
+                        showMsg("Data dimuat dari memori (Instan)");
+                        return;
                     }
                 } catch (e) {
-                    console.warn("Gagal membaca cache:", e);
+                    console.warn("sessionStorage error:", e);
                 }
 
-                // JALUR 3: PENCARIAN ONLINE - API RACING MULTI-PROXY (HTTP Bypass Engine)
-                const targetUrl = `${API_UTAMA_URL}${encodeURIComponent(cleanQuery)}`;
+                // JALUR 3: PENETRASI JALUR AKTIF ONLINE - API RACING BYPASS MULTI-PROXY DENGAN INTEGRASI DELTAFORCE & SERVER CADANGAN
                 const isHttps = window.location.protocol === 'https:';
-                
                 const requestPool = [];
 
-                if (!isHttps) {
-                    requestPool.push({ url: targetUrl, type: 'direct' });
-                }
+                const sourcesToFetch = [
+                    {
+                        name: "API DeltaForce VIP",
+                        url: `https://tnkb.deltaforce.space/?apikey=ae958b6e6869c10dddaec2283b3c824b&keyword=${encodeURIComponent(cleanQuery)}`,
+                        parse: (res) => (res.success && res.data ? res.data[0] : null)
+                    },
+                    {
+                        name: "API Server Cadangan",
+                        url: `${API_UTAMA_URL}${encodeURIComponent(cleanQuery)}`,
+                        parse: (res) => (Array.isArray(res) ? res[0] : res)
+                    }
+                ];
 
-                requestPool.push({ url: `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`, type: 'allorigins_raw' });
-                requestPool.push({ url: `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`, type: 'corsproxy_io' });
-                requestPool.push({ url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`, type: 'codetabs' });
-                requestPool.push({ url: `https://allorigins.hexschool.workers.dev/raw?url=${encodeURIComponent(targetUrl)}`, type: 'allorigins_worker' });
-                requestPool.push({ url: `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`, type: 'allorigins_wrapped' });
-                requestPool.push({ url: `https://jsonp.afeld.me/?url=${encodeURIComponent(targetUrl)}`, type: 'jsonp_afeld' });
+                sourcesToFetch.forEach(src => {
+                    // Masukkan Request Langsung (Direct Request)
+                    if (!isHttps || src.url.startsWith('https:')) {
+                        requestPool.push({ url: src.url, parse: src.parse, type: 'direct' });
+                    }
+
+                    // Masukkan Request Bypass Proxy CORS Penyelamat WebView Android
+                    requestPool.push({ url: `https://corsproxy.io/?${encodeURIComponent(src.url)}`, parse: src.parse, type: 'corsproxy_io' });
+                    requestPool.push({ url: `https://api.allorigins.win/raw?url=${encodeURIComponent(src.url)}`, parse: src.parse, type: 'allorigins_raw' });
+                    requestPool.push({ url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(src.url)}`, parse: src.parse, type: 'codetabs' });
+                    requestPool.push({ url: `https://thingproxy.freeboard.io/fetch/${src.url}`, parse: src.parse, type: 'thingproxy' });
+                    requestPool.push({ url: `https://allorigins.hexschool.workers.dev/raw?url=${encodeURIComponent(src.url)}`, parse: src.parse, type: 'allorigins_worker' });
+                    requestPool.push({ url: `https://api.allorigins.win/get?url=${encodeURIComponent(src.url)}`, parse: src.parse, type: 'allorigins_wrapped' });
+                });
 
                 let resolved = false;
                 let activeRequests = requestPool.length;
@@ -518,7 +537,7 @@
                     });
 
                     try {
-                        localStorage.setItem(cacheKey, JSON.stringify({ data: data, timestamp: Date.now() }));
+                        sessionStorage.setItem(cleanQuery, JSON.stringify(data));
                     } catch (e) {}
 
                     setSearchResult(data);
@@ -530,16 +549,15 @@
                     activeRequests--;
                     if (activeRequests === 0 && !resolved) {
                         setLoading(false);
-                        showMsg("DATA TIDAK DITEMUKAN / JARIKAN ERROR");
+                        showMsg("DATA TIDAK DITEMUKAN / JARINGAN ERROR");
                     }
                 };
 
                 requestPool.forEach((targetObj) => {
                     const ctrl = new AbortController();
                     controllers.push(ctrl);
-                    const id = setTimeout(() => ctrl.abort(), 8500); 
+                    const id = setTimeout(() => ctrl.abort(), 12000); // Batas maksimal timeout 12 detik demi kestabilan proxy
 
-                    // Membungkus fetch dalam try-catch guna mencegah crash mutlak akibat kebijakan Mixed Content di WebView
                     try {
                         fetch(targetObj.url, { signal: ctrl.signal })
                             .then(async (res) => {
@@ -548,9 +566,12 @@
                                 if (!res.ok) { handleFailure(); return; }
                                 
                                 const text = await res.text();
-                                const parsed = processResponseText(text);
-                                if (parsed && !resolved) {
-                                    cleanLoadingAndTransition(parsed);
+                                const json = extractJson(text);
+                                const parsed = targetObj.parse(json);
+                                const vehicleData = findVehicleDataDeep(parsed);
+                                
+                                if (vehicleData && !resolved) {
+                                    cleanLoadingAndTransition(vehicleData);
                                 } else {
                                     handleFailure();
                                 }
@@ -592,7 +613,7 @@
                     case 'Alamat': 
                         return extractField(item, ['Alamat', 'alamat', 'alamat_pemilik']);
                     case 'NopolServer': 
-                        // Hasil nopol digabung rapat tanpa spasi di halaman hasil laporan (Contoh: B29MAY)
+                        // SESUAI INSTRUKSI: Nopol digabung rapat tanpa spasi di halaman hasil laporan (Contoh: BK1108DT)
                         const w = extractField(item, ['wilayah', 'Wilayah', 'prefix', 'Prefix']).replace(/\s+/g, '').toUpperCase();
                         const n = extractField(item, ['nopol', 'Nopol', 'no_polisi', 'noPolisi']).replace(/\s+/g, '').toUpperCase();
                         const s = extractField(item, ['seri', 'Seri', 'suffix', 'Suffix']).replace(/\s+/g, '').toUpperCase();
@@ -658,25 +679,7 @@
 
             return (
                 <div className="mobile-shell bg-black">
-                    {/* Status Bar Khas Android Asli sesuai Tangkapan Layar */}
-                    <div className="w-full h-8 bg-black px-4 flex items-center justify-between text-[11px] font-semibold text-slate-300 select-none z-50">
-                        <div className="flex items-center gap-1">
-                            <span>20.46</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                            <Icons.Wifi />
-                            <span className="text-[10px] tracking-tight text-slate-400">4G</span>
-                            <div className="flex items-center gap-0.5">
-                                <span className="text-[9px]">65%</span>
-                                <div className="w-5 h-2.5 border border-slate-400 rounded-sm p-px flex items-center relative">
-                                    <div className="bg-emerald-500 h-full w-[65%] rounded-2xs" />
-                                    <div className="w-0.5 h-1 bg-slate-400 absolute right-[-2.5px] rounded-r-xs" />
-                                    <span className="absolute inset-0 flex items-center justify-center text-[7px] font-black text-white">⚡</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                    {/* Welcome Screen */}
                     {currentPage === 'welcome' && (
                         <div className="flex-1 flex flex-col items-center justify-between py-12 px-8 h-full relative overflow-y-auto scrollbar-hide">
                             <div className="absolute top-[-10%] left-[-10%] w-[80%] h-[40%] bg-orange-600/10 blur-[150px] rounded-full" />
@@ -755,7 +758,6 @@
                                         {userRole === 'master' && <button type="button" onClick={() => setCurrentPage('admin')} className="bg-orange-600/20 h-14 rounded-none key-press-effect flex items-center justify-center text-orange-500 border border-white/5 outline-none"><Icons.Shield /></button>}
                                         <button type="button" onClick={() => window.location.reload()} className="bg-red-600/20 h-14 rounded-none key-press-effect flex items-center justify-center text-red-500 border border-white/5 outline-none"><Icons.Power /></button>
                                         
-                                        {/* Menggunakan event gabungan touch & click guna mencegah click delay 300ms pada WebView */}
                                         <button 
                                             type="button"
                                             onClick={handleSearchPress}
@@ -802,7 +804,46 @@
                                     <p className="text-[10px] font-black text-orange-500 tracking-wider uppercase">LAPORAN TERSEGEL - DATA ASLI KHUSUS SAMSAT</p>
                                 </div>
                                 <div className="bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] p-8 font-mono-custom text-[13px] text-white/90 leading-relaxed whitespace-pre-wrap break-words w-full shadow-2xl shimmer pointer-events-auto">
-                                    {`🇮🇩 SUMBER : APLIKASI CSID.PRO \n----------------------------------------\n🕵 IDENTITAS PEMILIK :\n----------------------------------------\nNAMA : ${getVal('Nama')}\nNIK : ${getVal('NIK')}\nMSSDN : ${getVal('HP')}\nPEKERJAAN : ${getVal('Pekerjaan')}\nALAMAT : ${getVal('Alamat')}\n\n🚘 DATA KENDARAAN :\n----------------------------------------\nNOPOL : ${getVal('NopolServer')}\nMEREK : ${getVal('Merk')}\nTYPE : ${getVal('Tipe')}\nTAHUN : ${getVal('Tahun')}\nWARNA : ${getVal('Warna')}\nCYLINDER : ${getVal('CC')}\n\n📙 DOKUMEN RESMI :\n----------------------------------------\nNOKA : ${getVal('Noka')}\nNOSIN : ${getVal('Nosin')}\nNO. BPKB : ${getVal('BPKB')}\nNO. STNK : ${getVal('STNK')}\nTGL DAFTAR : ${getVal('Tgl')}\nAPM : ${getVal('APM')}\n----------------------------------------\n🔊 LINK DAFTAR APLIKASI : CSID.PRO\n📞 Hub: https://wa.me/628136900872\n\n✍ NOTE :\nDATA DIAKSES UNTUK MEMVERIFIKASI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG BERLAKU PADA KENDARAAN. MENURUT UU YANG BERLAKU ⚖️`}
+                                    {`🇮🇩 SUMBER : APLIKASI CSID.PRO 📡
+--------------------------------------------------
+🕵 IDENTITAS PEMILIK :
+--------------------------------------------------
+
+NAMA : ${getVal('Nama')}
+NIK : ${getVal('NIK')}
+MSSDN : ${getVal('HP')}
+PEKERJAAN : ${getVal('Pekerjaan')}
+ALAMAT : ${getVal('Alamat')}
+--------------------------------------------------
+🚘 DATA KENDARAAN :
+--------------------------------------------------
+
+NOPOL : ${getVal('NopolServer')}
+MEREK : ${getVal('Merk')}
+TYPE : ${getVal('Tipe')}
+TAHUN : ${getVal('Tahun')}
+WARNA : ${getVal('Warna')}
+CYLINDER : ${getVal('CC')}
+--------------------------------------------------
+📙 DOKUMEN RESMI :
+--------------------------------------------------
+
+NOKA : ${getVal('Noka')}
+NOSIN : ${getVal('Nosin')}
+NO. BPKB : ${getVal('BPKB')}
+NO. STNK : ${getVal('STNK')}
+TGL DAFTAR : ${getVal('Tgl')}
+APM : ${getVal('APM')}
+--------------------------------------------------
+👇LINK DAFTAR APLIKASI :
+--------------------------------------------------
+📱 Hub: https://wa.me/628136900872
+--------------------------------------------------
+✍ NOTE :
+--------------------------------------------------
+
+DATA INI SEBAGAI ALAT BUKTI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG BERLAKU ⚖️.
+________________________________________`}
                                 </div>
                                 <div className="mt-8 space-y-4 w-full">
                                     <button type="button" onClick={() => {
