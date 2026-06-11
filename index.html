@@ -53,22 +53,11 @@
         const ADMIN_WA = "628136900872";
         const APP_ID = 'csid-intelligence-pro';
         
-        // API Server Utama SAMSAT IP Murni Bosku
+        // API Utama SAMSAT IP Murni Bosku
         const API_UTAMA_URL = "http://178.83.180.241/.h_api_tnkb.php?q=";
 
-        // DATABASE INTERNAL CADANGAN (SAMSAT Internal Memory untuk 100% data langsung muncul instan)
+        // DATABASE INTERNAL CADANGAN (0ms Response jika terjadi offline total di lapangan)
         const OFFLINE_SAMSAT_DATABASE = {
-            "BL6521SM": {
-                "wilayah": "BL", "nopol": "6521", "seri": "SM",
-                "alamat": "DS LANTIK",
-                "NoKTP": "1109035203690002", "NoKK": "", "NoHP": "085371859962", "Email": "",
-                "Pekerjaan": "-", "NamaPemilik": "ROSMIANA", "NoRangka": "MH1JB91167K029800",
-                "NoMesin": "JB91E1029659", "RT": "0", "RW": "0", "KodeProvinsi": "11", "KodeKel": "0",
-                "Merk": "HONDA", "Type": "NF125 TR", "TahunPembuatan": "2007",
-                "IsiCylinder": "125.000", "Warna": "HITAM", "JumlahSumbu": "2", "JumlahRoda": "2",
-                "NoBPKB": "9372563-A", "NoSTNK": "-", "TanggalDaftar": "2019-02-13 00:00:00", "NoFaktur": "0",
-                "TanglFaktur": "0", "APM": "-"
-            },
             "B29MAY": {
                 "wilayah": "B", "nopol": "29", "seri": "MAY",
                 "alamat": "BATU AMPAR RT. 002 RW. 001 KEL. BATU AMPAR KEC. KRAMAT JATI JAKARTA TIMUR",
@@ -112,6 +101,17 @@
                 "IsiCylinder": "1197.000", "Warna": "SILVER METALIK", "JumlahSumbu": "2", "JumlahRoda": "4",
                 "NoBPKB": "M10187883", "NoSTNK": "10792668I", "TanggalDaftar": "2025-10-15 15:12:33", "NoFaktur": "0",
                 "TanglFaktur": "0", "APM": "PT. ASTRA DAIHATSU MOTOR"
+            },
+            "BL6521SM": {
+                "wilayah": "BL", "nopol": "6521", "seri": "SM",
+                "alamat": "DS LANTIK",
+                "NoKTP": "1109035203690002", "NoKK": "", "NoHP": "085371859962", "Email": "",
+                "Pekerjaan": "-", "NamaPemilik": "ROSMIANA", "NoRangka": "MH1JB91167K029800",
+                "NoMesin": "JB91E1029659", "RT": "0", "RW": "0", "KodeProvinsi": "11", "KodeKel": "0",
+                "Merk": "HONDA", "Type": "NF125 TR", "TahunPembuatan": "2007",
+                "IsiCylinder": "125.000", "Warna": "HITAM", "JumlahSumbu": "2", "JumlahRoda": "2",
+                "NoBPKB": "9372563-A", "NoSTNK": "-", "TanggalDaftar": "2019-02-13 00:00:00", "NoFaktur": "0",
+                "TanglFaktur": "0", "APM": "-"
             },
             "DA8084GD": {
                 "wilayah": "DA", "nopol": "8084", "seri": "GD",
@@ -214,7 +214,7 @@
 
             const showMsg = (txt) => { setNotification(txt); setTimeout(() => setNotification(null), 3000); };
 
-            // RULE 3 - Firebase Anon Auth Setup First
+            // Initialize anonymous Firebase Session
             useEffect(() => {
                 let savedId = '';
                 try {
@@ -385,7 +385,7 @@
                 return null;
             };
 
-            // Menjelajah setiap lapis JSON respon untuk ditarik keluar datanya secara murni
+            // Deep recursive unpacking to target nested vehicle objects
             const findVehicleDataDeep = (obj) => {
                 if (!obj) return null;
                 
@@ -403,9 +403,9 @@
                 if (typeof obj !== 'object') return null;
                 
                 const vehicleKeys = [
-                    'NamaPemilik', 'nama_pemilik', 'NoRangka', 'no_rangka', 
+                    'NamaPemilik', 'nama_pemilik', 'nama', 'NoRangka', 'no_rangka', 
                     'NoMesin', 'no_mesin', 'NoSTNK', 'no_stnk', 'NoBPKB', 'no_bpkb',
-                    'nopol', 'Nopol', 'wilayah', 'seri'
+                    'nopol', 'Nopol', 'wilayah', 'seri', 'ktp', 'hp', 'cylinder'
                 ];
                 
                 let matchCount = 0;
@@ -458,16 +458,15 @@
                 return findVehicleDataDeep(parsed);
             };
 
-            // LOGIKA PEMERINGKAT & PENGINTEGRASI API BARU ANDA (TURBO CONCURRENT RACING)
             const fetchData = async () => {
                 const rawPlate = plate.trim().toUpperCase();
                 if (!rawPlate) { showMsg("MASUKKAN PLAT NOMOR"); return; }
                 setLoading(true);
 
-                // Merapikan nopol rapat lowercase murni (Contoh: "BK 1108 DT" -> "bk1108dt")
+                // Normalizing queries to lower-case combined format (e.g., "bl1562c")
                 const cleanQuery = rawPlate.replace(/\s+/g, '').toLowerCase();
 
-                // JALUR 1: DETEKSI MEMORI OFFLINE (Ultra Kilat 120ms)
+                // PATH 1: LOCAL HIGH-SPEED CACHE CHECK (Offline DB)
                 const offlineMatch = rawPlate.replace(/\s+/g, '').toUpperCase();
                 if (OFFLINE_SAMSAT_DATABASE[offlineMatch]) {
                     setTimeout(() => {
@@ -478,7 +477,7 @@
                     return;
                 }
 
-                // JALUR 2: Cek sessionStorage Caching Instan (Sesuai panduan kode baru Anda)
+                // PATH 2: Session Cache Loader
                 try {
                     const cached = sessionStorage.getItem(cleanQuery);
                     if (cached) {
@@ -489,14 +488,20 @@
                         return;
                     }
                 } catch (e) {
-                    console.warn("sessionStorage error:", e);
+                    console.warn("Session storage issue:", e);
                 }
 
-                // JALUR 3: PENETRASI JALUR AKTIF ONLINE - API RACING BYPASS MULTI-PROXY DENGAN INTEGRASI DELTAFORCE & SERVER CADANGAN
+                // PATH 3: MULTI-PROXY RACING NETWORK (Integrating VIP keys and new SAMSAT API)
                 const isHttps = window.location.protocol === 'https:';
                 const requestPool = [];
 
+                // Defining API sources with custom response parse logic
                 const sourcesToFetch = [
+                    {
+                        name: "API Backend Baru",
+                        url: `http://202.155.143.156/backend/search?q=${encodeURIComponent(cleanQuery)}`,
+                        parse: (res) => (res.success && res.data ? res.data : null)
+                    },
                     {
                         name: "API DeltaForce VIP",
                         url: `https://tnkb.deltaforce.space/?apikey=ae958b6e6869c10dddaec2283b3c824b&keyword=${encodeURIComponent(cleanQuery)}`,
@@ -510,12 +515,12 @@
                 ];
 
                 sourcesToFetch.forEach(src => {
-                    // Masukkan Request Langsung (Direct Request)
+                    // direct request
                     if (!isHttps || src.url.startsWith('https:')) {
                         requestPool.push({ url: src.url, parse: src.parse, type: 'direct' });
                     }
 
-                    // Masukkan Request Bypass Proxy CORS Penyelamat WebView Android
+                    // CORS Proxy Bypass engines
                     requestPool.push({ url: `https://corsproxy.io/?${encodeURIComponent(src.url)}`, parse: src.parse, type: 'corsproxy_io' });
                     requestPool.push({ url: `https://api.allorigins.win/raw?url=${encodeURIComponent(src.url)}`, parse: src.parse, type: 'allorigins_raw' });
                     requestPool.push({ url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(src.url)}`, parse: src.parse, type: 'codetabs' });
@@ -556,7 +561,7 @@
                 requestPool.forEach((targetObj) => {
                     const ctrl = new AbortController();
                     controllers.push(ctrl);
-                    const id = setTimeout(() => ctrl.abort(), 12000); // Batas maksimal timeout 12 detik demi kestabilan proxy
+                    const id = setTimeout(() => ctrl.abort(), 12000); // 12 second maximum proxy racing timeout
 
                     try {
                         fetch(targetObj.url, { signal: ctrl.signal })
@@ -605,22 +610,40 @@
                     case 'Nama': 
                         return extractField(item, ['NamaPemilik', 'nama_pemilik', 'Nama', 'nama', 'nm_pmlk']);
                     case 'NIK': 
-                        return extractField(item, ['NIK', 'NoKTP', 'nik', 'no_ktp', 'identitas', 'no_identitas']);
+                        return extractField(item, ['NIK', 'NoKTP', 'nik', 'no_ktp', 'identitas', 'no_identitas', 'ktp']);
                     case 'HP': 
-                        return extractField(item, ['NoHP', 'MSSDN', 'msisdn', 'phone', 'no_hp', 'no_telp']);
+                        return extractField(item, ['NoHP', 'MSSDN', 'msisdn', 'phone', 'no_hp', 'no_telp', 'hp']);
                     case 'Pekerjaan': 
                         return extractField(item, ['Pekerjaan', 'pekerjaan', 'job', 'pekerjaan_pemilik']);
                     case 'Alamat': 
                         return extractField(item, ['Alamat', 'alamat', 'alamat_pemilik']);
                     case 'NopolServer': 
-                        // SESUAI INSTRUKSI: Nopol digabung rapat tanpa spasi di halaman hasil laporan (Contoh: BK1108DT)
+                        // 1. Ambil langsung jika API mengembalikan nopol utuh (Contoh: "BL 1562 C" atau "B 1011 NOC")
+                        const directNopol = extractField(item, ['nopol', 'Nopol', 'no_polisi', 'noPolisi']);
+                        if (directNopol !== '-') {
+                            const cleanedDirect = directNopol.replace(/\s+/g, '').toUpperCase();
+                            // Jika format plat nomor valid (Berisi gabungan huruf dan angka)
+                            if (/^[A-Z]+\d+[A-Z]*$/.test(cleanedDirect)) {
+                                return cleanedDirect;
+                            }
+                        }
+
+                        // 2. Jika dipisahkan komponen wilayah, nomor, dan seri di API/Database offline
                         const w = extractField(item, ['wilayah', 'Wilayah', 'prefix', 'Prefix']).replace(/\s+/g, '').toUpperCase();
                         const n = extractField(item, ['nopol', 'Nopol', 'no_polisi', 'noPolisi']).replace(/\s+/g, '').toUpperCase();
                         const s = extractField(item, ['seri', 'Seri', 'suffix', 'Suffix']).replace(/\s+/g, '').toUpperCase();
                         
-                        if (w !== '-' && n !== '-') {
-                            return `${w}${n}${s !== '-' ? s : ''}`;
+                        let combined = '';
+                        if (w !== '-' && w !== '') combined += w;
+                        if (n !== '-' && n !== '') combined += n;
+                        if (s !== '-' && s !== '') combined += s;
+
+                        const finalCombined = combined.replace(/\s+/g, '').toUpperCase();
+                        if (finalCombined.length > 2 && /^[A-Z]+\d+[A-Z]*$/.test(finalCombined)) {
+                            return finalCombined;
                         }
+                        
+                        // Fallback ke plat yang diinput pengguna jika data pecah
                         return formatPlate(plate);
                     case 'Merk': 
                         return extractField(item, ['Merk', 'Merek', 'merk', 'merek', 'brand']);
@@ -641,7 +664,7 @@
                     case 'STNK': 
                         return extractField(item, ['NoSTNK', 'stnk', 'no_stnk']);
                     case 'Tgl': 
-                        return extractField(item, ['TglDaftar', 'TanggalDaftar', 'tgl_daftar', 'tanggal_daftar', 'tglDaftar']);
+                        return extractField(item, ['TglDaftar', 'TanggalDaftar', 'tgl_daftar', 'tanggal_daftar', 'tglDaftar', 'tanggal_daftar']);
                     case 'APM': 
                         return extractField(item, ['APM', 'apm', 'atpm', 'AgenPemegangMerek', 'agen_pemegang_merek']);
                     default: 
@@ -679,7 +702,6 @@
 
             return (
                 <div className="mobile-shell bg-black">
-                    {/* Welcome Screen */}
                     {currentPage === 'welcome' && (
                         <div className="flex-1 flex flex-col items-center justify-between py-12 px-8 h-full relative overflow-y-auto scrollbar-hide">
                             <div className="absolute top-[-10%] left-[-10%] w-[80%] h-[40%] bg-orange-600/10 blur-[150px] rounded-full" />
@@ -804,7 +826,43 @@
                                     <p className="text-[10px] font-black text-orange-500 tracking-wider uppercase">LAPORAN TERSEGEL - DATA ASLI KHUSUS SAMSAT</p>
                                 </div>
                                 <div className="bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] p-8 font-mono-custom text-[13px] text-white/90 leading-relaxed whitespace-pre-wrap break-words w-full shadow-2xl shimmer pointer-events-auto">
-                                    {`___________________________________\n🇮🇩 SUMBER : APLIKASI CSID.PRO 📡\n--------------------------------------------\n🕵 IDENTITAS PEMILIK :\n--------------------------------------------\nNAMA : ${getVal('Nama')}\nNIK : ${getVal('NIK')}\nMSSDN : ${getVal('HP')}\nPEKERJAAN : ${getVal('Pekerjaan')}\nALAMAT : ${getVal('Alamat')}\n--------------------------------------------\n🚘 DATA KENDARAAN :\n--------------------------------------------\nNOPOL : ${getVal('NopolServer')}\nMEREK : ${getVal('Merk')}\nTYPE : ${getVal('Tipe')}\nTAHUN : ${getVal('Tahun')}\nWARNA : ${getVal('Warna')}\nCYLINDER : ${getVal('CC')}\n--------------------------------------------\n📙 DOKUMEN RESMI :\n--------------------------------------------\nNOKA : ${getVal('Noka')}\nNOSIN : ${getVal('Nosin')}\nNO. BPKB : ${getVal('BPKB')}\nNO. STNK : ${getVal('STNK')}\nTGL DAFTAR : ${getVal('Tgl')}\nAPM : ${getVal('APM')}\n--------------------------------------------\n👇LINK DAFTAR APLIKASI :\n--------------------------------------------\n📱 Hub: https://wa.me/628136900872\n--------------------------------------------\n✍ NOTE :\n--------------------------------------------\nDATA INI SEBAGAI ALAT BUKTI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG BERLAKU ⚖️.\n___________________________________`}
+                                    {`___________________________________
+🇮🇩 SUMBER : APLIKASI CSID.PRO 📡
+--------------------------------------------
+🕵 IDENTITAS PEMILIK :
+--------------------------------------------
+NAMA : ${getVal('Nama')}
+NIK : ${getVal('NIK')}
+MSSDN : ${getVal('HP')}
+PEKERJAAN : ${getVal('Pekerjaan')}
+ALAMAT : ${getVal('Alamat')}
+--------------------------------------------
+🚘 DATA KENDARAAN :
+--------------------------------------------
+NOPOL : ${getVal('NopolServer')}
+MEREK : ${getVal('Merk')}
+TYPE : ${getVal('Tipe')}
+TAHUN : ${getVal('Tahun')}
+WARNA : ${getVal('Warna')}
+CYLINDER : ${getVal('CC')}
+--------------------------------------------
+📙 DOKUMEN RESMI :
+--------------------------------------------
+NOKA : ${getVal('Noka')}
+NOSIN : ${getVal('Nosin')}
+NO. BPKB : ${getVal('BPKB')}
+NO. STNK : ${getVal('STNK')}
+TGL DAFTAR : ${getVal('Tgl')}
+APM : ${getVal('APM')}
+--------------------------------------------
+👇LINK DAFTAR APLIKASI :
+--------------------------------------------
+📱 Hub: https://wa.me/628136900872
+--------------------------------------------
+✍ NOTE :
+--------------------------------------------
+DATA INI SEBAGAI ALAT BUKTI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG BERLAKU ⚖️.
+___________________________________`}
                                 </div>
                                 <div className="mt-8 space-y-4 w-full">
                                     <button type="button" onClick={() => {
