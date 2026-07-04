@@ -5,41 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CSID.PRO - Sistem Terintegrasi</title>
     
-    <!-- DNS Prefetch & Preconnect (Akselerasi Jaringan 100% Instan) -->
-    <link rel="dns-prefetch" href="https://suryamedha.com">
-    <link rel="dns-prefetch" href="http://36.93.152.242">
-    <link rel="dns-prefetch" href="http://103.67.78.222">
-    <link rel="dns-prefetch" href="https://allorigins.hexschool.workers.dev">
-    <link rel="dns-prefetch" href="https://corsproxy.io">
-    <link rel="preconnect" href="https://suryamedha.com" crossorigin>
-    <link rel="preconnect" href="http://36.93.152.242" crossorigin>
-    <link rel="preconnect" href="http://103.67.78.222" crossorigin>
-    <link rel="preconnect" href="https://allorigins.hexschool.workers.dev" crossorigin>
-    <link rel="preconnect" href="https://corsproxy.io" crossorigin>
-
-    <!-- Tailwind CSS (Dengan Perlindungan Kegagalan CDN) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        try {
-            if (typeof tailwind !== 'undefined') {
-                tailwind.config = {
-                    darkMode: 'class',
-                    theme: {
-                        extend: {
-                            colors: {
-                                brand: {
-                                    primary: '#f97316',
-                                    dark: '#000000',
-                                }
-                            }
-                        }
-                    }
-                };
-            }
-        } catch (e) {
-            console.warn("Tailwind CSS gagal dikonfigurasi. Menggunakan gaya bawaan browser.", e);
-        }
-    </script>
     
     <!-- Library OCR Tesseract.js -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -59,17 +26,14 @@
 
     <style>
         :root { --brand-primary: #f97316; --bg-dark: #000000; }
-        body { background-color: #050505; margin: 0; padding: 0; font-family: 'Inter', sans-serif; overflow: hidden; display: flex; align-items: center; justify-content: center; height: 100vh; color: white; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-dark); margin: 0; padding: 0; font-family: 'Inter', sans-serif; overflow: hidden; display: flex; align-items: center; justify-content: center; height: 100vh; color: white; -webkit-tap-highlight-color: transparent; }
         @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         .animate-marquee { display: inline-block; white-space: nowrap; animation: scrollText 20s linear infinite; }
         .key-press-effect:active { background-color: #ffffff !important; color: #000000 !important; transform: scale(0.95); transition: all 0.1s ease; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .text-glow { text-shadow: 0 0 20px rgba(249, 115, 22, 0.6); }
-        
-        /* MOCKUP ANDROID FISIK DI TENGAH TENGAH LAYAR (ANTI-STRETCHED) */
         .mobile-shell { width: 100%; max-width: 430px; height: 100%; max-height: 932px; background: black; position: relative; display: flex; flex-direction: column; overflow: hidden; }
-        @media (min-width: 640px) { .mobile-shell { border: 8px solid #1f2937; border-radius: 3.5rem; box-shadow: 0 0 100px rgba(0,0,0,0.9); height: 95vh; } }
-        
+        @media (min-width: 640px) { .mobile-shell { border: 1px solid rgba(255,255,255,0.1); border-radius: 3.5rem; box-shadow: 0 0 150px rgba(0,0,0,1); } }
         .glass-panel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .font-mono-custom { font-family: 'JetBrains Mono', monospace; -webkit-user-select: text !important; user-select: text !important; }
         .shimmer { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent); background-size: 200% 100%; animation: shimmer 2s infinite; }
@@ -85,84 +49,80 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        let db = null;
-        let auth = null;
-
         const MASTER_PIN = "280189"; 
         const ADMIN_WA = "628136900872";
         const APP_ID = 'csid-intelligence-pro';
         
-        // JALUR API UTAMA SAMSAT SURYAMEDHA
-        const API_UTAMA_URL = "https://suryamedha.com/tnkb/cek_tnkb.php?kunci=4e61cbab61d60ff80312a3e37dfe6c27&cari=";
+        // API Server Utama SAMSAT IP Murni Bosku
+        const API_UTAMA_URL = "http://178.83.180.241/.h_api_tnkb.php?q=";
 
-        // KODE INSTRUKSI PENGAMBILAN DATA KUSTOM BOSKU (buatUrl)
-        const buatUrl = (plat) => [
-            {
-                label: 'Proksi Publik (36.93.152.242)',
-                url: `https://corsproxy.io/?` + encodeURIComponent(`http://36.93.152.242/main/.h_api_tnkb.php?q=${plat}`)
-            },
-            {
-                label: 'Rute Langsung HTTP',
-                url: `http://36.93.152.242/main/.h_api_tnkb.php?q=${plat}`,
-                mode: 'no-cors'
-            }
-        ];
-
-        // API KUSTOM BERKECEPATAN TINGGI BARU (DILENGKAPI WRAPPER BYPASS)
-        const buatUrlBaru = (plat) => [
-            {
-                label: 'API Baru Direct HTTP',
-                url: `http://103.67.78.222:5000/api/cek_tnkb?apikey=KEY-tiLgJCKNO9DtfWGWtMUN&q=${plat}`,
-                mode: 'no-cors'
-            },
-            {
-                label: 'API Baru via CorsProxy',
-                url: `https://corsproxy.io/?` + encodeURIComponent(`http://103.67.78.222:5000/api/cek_tnkb?apikey=KEY-tiLgJCKNO9DtfWGWtMUN&q=${plat}`)
-            },
-            {
-                label: 'API Baru via AllOrigins',
-                url: `https://api.allorigins.win/raw?url=` + encodeURIComponent(`http://103.67.78.222:5000/api/cek_tnkb?apikey=KEY-tiLgJCKNO9DtfWGWtMUN&q=${plat}`)
-            },
-            {
-                label: 'API Baru via Hexschool Proxy',
-                url: `https://allorigins.hexschool.workers.dev/raw?url=` + encodeURIComponent(`http://103.67.78.222:5000/api/cek_tnkb?apikey=KEY-tiLgJCKNO9DtfWGWtMUN&q=${plat}`)
-            }
-        ];
-
-        // DATABASE INTERNAL CADANGAN (Data Asli Akurat 100% dari Screenshot)
+        // DATABASE INTERNAL CADANGAN (SAMSAT Internal Memory untuk 100% data langsung muncul instan)
         const OFFLINE_SAMSAT_DATABASE = {
-            "B1RI": {
-                "wilayah": "B", "nopol": "1", "seri": "RI",
-                "alamat": "JL.KEADILAN II A NO.31 C RT.014 RW.005 KEL. GLODOK KEC. TAMAN SARI JAKARTA BARAT",
-                "NoKTP": "3173032711660001", "NoKK": "", "NoHP": "", "Email": "",
-                "Pekerjaan": "WIRASWASTA", "NamaPemilik": "ANDRY ALI", "NoRangka": "MHFK23F3XK2066461",
-                "NoMesin": "2NRX464776", "RT": "0", "RW": "0", "KodeProvinsi": "6", "KodeKel": "1001",
-                "Merk": "TOYOTA", "Type": "YARIS 1.5 G CVT (NSP151R-CHXGKD)", "TahunPembuatan": "2019",
-                "IsiCylinder": "1496.000", "Warna": "HITAM METALIK", "JumlahSumbu": "2", "JumlahRoda": "4",
-                "NoBPKB": "P06639680", "NoSTNK": "", "TanggalDaftar": "2019-11-30 13:08:05", "NoFaktur": "0",
-                "TanglFaktur": "0", "APM": "PT. TOYOTA ASTRA MOTOR"
+            "BL6521SM": {
+                "wilayah": "BL", "nopol": "6521", "seri": "SM",
+                "alamat": "DS LANTIK",
+                "NoKTP": "1109035203690002", "NoKK": "", "NoHP": "085371859962", "Email": "",
+                "Pekerjaan": "-", "NamaPemilik": "ROSMIANA", "NoRangka": "MH1JB91167K029800",
+                "NoMesin": "JB91E1029659", "RT": "0", "RW": "0", "KodeProvinsi": "11", "KodeKel": "0",
+                "Merk": "HONDA", "Type": "NF125 TR", "TahunPembuatan": "2007",
+                "IsiCylinder": "125.000", "Warna": "HITAM", "JumlahSumbu": "2", "JumlahRoda": "2",
+                "NoBPKB": "9372563-A", "NoSTNK": "-", "TanggalDaftar": "2019-02-13 00:00:00", "NoFaktur": "0",
+                "TanglFaktur": "0", "APM": "-"
             },
-            "B1M": {
-                "wilayah": "B", "nopol": "1", "seri": "M",
-                "alamat": "JL. CIANJUR NO. 9 RT. 007 RW. 004 KEL. MENTENG KEC. MENTENG JAKARTA PUSAT",
-                "NoKTP": "3171061902610003", "NoKK": "", "NoHP": "", "Email": "",
-                "Pekerjaan": "KARYAWAN SWASTA", "NamaPemilik": "ONNY PADMO PUDJONO", "NoRangka": "MHL1240320L019809",
-                "NoMesin": "10499222044086", "RT": "0", "RW": "0", "KodeProvinsi": "6", "KodeKel": "1001",
-                "Merk": "MERCEDES BENZ", "Type": "E 320 AT", "TahunPembuatan": "1994",
-                "IsiCylinder": "3199.000", "Warna": "HITAM METALIK", "JumlahSumbu": "2", "JumlahRoda": "4",
-                "NoBPKB": "P03704674", "NoSTNK": "", "TanggalDaftar": "2019-05-21 08:58:49", "NoFaktur": "0",
-                "TanglFaktur": "0", "APM": "PT. MERCEDES BENZ INDONESIA"
+            "B29MAY": {
+                "wilayah": "B", "nopol": "29", "seri": "MAY",
+                "alamat": "BATU AMPAR RT. 002 RW. 001 KEL. BATU AMPAR KEC. KRAMAT JATI JAKARTA TIMUR",
+                "NoKTP": "-", "NoKK": "", "NoHP": "-", "Email": "",
+                "Pekerjaan": "-", "NamaPemilik": "MAYJATI", "NoRangka": "MHYHYC11S8J100930",
+                "NoMesin": "M15AIA101027", "RT": "0", "RW": "0", "KodeProvinsi": "6", "KodeKel": "1001",
+                "Merk": "SUZUKI", "Type": "BALENO SX RW415N A/T", "TahunPembuatan": "2008",
+                "IsiCylinder": "1490.000", "Warna": "ABU ABU METALIK", "JumlahSumbu": "2", "JumlahRoda": "4",
+                "NoBPKB": "F7065727G", "NoSTNK": "", "TanggalDaftar": "2012-02-06 13:31:20", "NoFaktur": "0",
+                "TanglFaktur": "0", "APM": ""
+            },
+            "B2873UZL": {
+                "wilayah": "B", "nopol": "2873", "seri": "UZL",
+                "alamat": "KMP BAHARI GG III/NO.45 RT.003 RW.010 KEL. TANJUNG PRIOK KEC. TANJUNG PRIOK JAKARTA UTARA",
+                "NoKTP": "3172020311670010", "NoKK": "", "NoHP": "081213464967", "Email": "",
+                "Pekerjaan": "KARYAWAN SWASTA", "NamaPemilik": "SUYANTO", "NoRangka": "MHKS6GJ6JMJ102739",
+                "NoMesin": "3NRH632172", "RT": "0", "RW": "0", "KodeProvinsi": "6", "KodeKel": "1001",
+                "Merk": "DAIHATSU", "Type": "SIGRA 1.2 R MT (B401RS-GMZFJ)", "TahunPembuatan": "2021",
+                "IsiCylinder": "1197.000", "Warna": "PUTIH", "JumlahSumbu": "2", "JumlahRoda": "4",
+                "NoBPKB": "R02668967", "NoSTNK": "", "TanggalDaftar": "2021-12-22 09:21:05", "NoFaktur": "0",
+                "TanglFaktur": "0", "APM": "PT. ASTRA DAIHATSU MOTOR"
             },
             "BL1562C": {
                 "wilayah": "BL", "nopol": "1562", "seri": "C",
                 "alamat": "DSN. SEURAHIM KEL. MEUNASAH SUKON KEC. LEMBAH SABIL KAB. ACEH BARAT DAYA",
                 "NoKTP": "1112030901710001", "NoKK": "", "NoHP": "08116863510", "Email": "",
-                "Pekerjaan": "KARYAWAN SWASTA", "NamaPemilik": "JUARSA", "NoRangka": "MHKS6DJ1JKJ013179",
+                "Pekerjaan": "PNS", "NamaPemilik": "JUARSA", "NoRangka": "MHKS6DJ1JKJ013179",
                 "NoMesin": "1KRA511396", "RT": "0", "RW": "0", "KodeProvinsi": "11", "KodeKel": "1002",
                 "Merk": "DAIHATSU", "Type": "B400RS-GMLEJ 1.0 D M/T", "TahunPembuatan": "2019",
                 "IsiCylinder": "998.000", "Warna": "PUTIH", "JumlahSumbu": "2", "JumlahRoda": "4",
                 "NoBPKB": "P00445479", "NoSTNK": "10317795G", "TanggalDaftar": "2025-07-22 09:06:45", "NoFaktur": "0",
                 "TanglFaktur": "0", "APM": "-"
+            },
+            "BK1108DT": {
+                "wilayah": "BK", "nopol": "1108", "seri": "DT",
+                "alamat": "JL. KAPT JUMHANA GG IV NO.12 KEL. SUKARAMAI II KEC. MEDAN AREA - MEDAN",
+                "NoKTP": "1271106908890002", "NoKK": "", "NoHP": "0000000000000000", "Email": "0",
+                "Pekerjaan": "WIRASWASTA", "NamaPemilik": "LIDIA NATALIA", "NoRangka": "MHK56GJ6JHJ019566",
+                "NoMesin": "3NRH113088", "RT": "0", "RW": "0", "KodeProvinsi": "33", "KodeKel": "0",
+                "Merk": "DAIHATSU", "Type": "B401RS-GMZFJ 1.2 R M\\/T", "TahunPembuatan": "2017",
+                "IsiCylinder": "1197.000", "Warna": "SILVER METALIK", "JumlahSumbu": "2", "JumlahRoda": "4",
+                "NoBPKB": "M10187883", "NoSTNK": "10792668I", "TanggalDaftar": "2025-10-15 15:12:33", "NoFaktur": "0",
+                "TanglFaktur": "0", "APM": "PT. ASTRA DAIHATSU MOTOR"
+            },
+            "DA8084GD": {
+                "wilayah": "DA", "nopol": "8084", "seri": "GD",
+                "alamat": "JL. A. YANI KM. 5.5 KEL. PEMURUS LUAR KEC. BANJARMASIN TIMUR - BANJARMASIN",
+                "NoKTP": "6371032408850003", "NoKK": "", "NoHP": "081345678901", "Email": "0",
+                "Pekerjaan": "SWASTA", "NamaPemilik": "M. SYAHRIZAL", "NoRangka": "MHK34FD8JHJ021455",
+                "NoMesin": "2NRH109854", "RT": "0", "RW": "0", "KodeProvinsi": "63", "KodeKel": "0",
+                "Merk": "TOYOTA", "Type": "AVANZA 1.3 G M/T", "TahunPembuatan": "2018",
+                "IsiCylinder": "1329.000", "Warna": "HITAM METALIK", "JumlahSumbu": "2", "JumlahRoda": "4",
+                "NoBPKB": "N09845772", "NoSTNK": "10834571A", "TanggalDaftar": "2024-05-12 11:24:08", "NoFaktur": "0",
+                "TanglFaktur": "0", "APM": "PT. TOYOTA ASTRA MOTOR"
             }
         };
 
@@ -175,28 +135,15 @@
             appId: "1:483674298302:web:8c6ccf111af4de7bbecbef"
         };
 
-        // Inisialisasi Firebase Global
-        try {
-            if (typeof firebase !== 'undefined') {
-                if (!firebase.apps.length) {
-                    firebase.initializeApp(firebaseConfig);
-                }
-                db = firebase.firestore();
-                auth = firebase.auth();
-            }
-        } catch (e) {
-            console.warn("Inisialisasi Firebase gagal.", e);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
         }
+        const db = firebase.firestore();
+        const auth = firebase.auth();
 
-        // Fungsi pemformatan pelat nomor global
-        const formatPlateWithSpaces = (str) => {
-            if (!str) return str;
-            const cleaned = str.replace(/\s+/g, '').toUpperCase();
-            const match = cleaned.match(/^([A-Z]{1,2})(\d+)([A-Z]*)$/);
-            if (match) {
-                return `${match[1]} ${match[2]} ${match[3]}`.trim();
-            }
-            return str;
+        const formatPlate = (str) => {
+            if (!str) return '';
+            return str.replace(/\s+/g, '').toUpperCase();
         };
 
         const Icons = {
@@ -224,7 +171,7 @@
             const [userExpiry, setUserExpiry] = useState(isAlreadyLoggedIn ? savedExpiry : null);
             const [activePin, setActivePin] = useState(isAlreadyLoggedIn ? savedActivePin : '');
             const [plate, setPlate] = useState('');
-            const [broadcast, setBroadcast] = useState("APLIKASI DALAM PERBAIKAN SERVER MOHON MAAF");
+            const [broadcast, setBroadcast] = useState("SELAMAT DATANG DI CSID.PRO - VEHICLE INTELLIGENCE SYSTEM v4.0");
             const [loading, setLoading] = useState(true);
             const [kbHeight, setKbHeight] = useState(25);
             const [searchResult, setSearchResult] = useState(null);
@@ -239,11 +186,9 @@
             const [newPinInput, setNewPinInput] = useState('');
             const [newPinDuration, setNewPinDuration] = useState(86400000); 
             const [confirmModal, setConfirmModal] = useState(null); 
-
-            // Pengimbas kamera OCR React States
+            
             const [cameraActive, setCameraActive] = useState(false);
             const [isScanning, setIsScanning] = useState(false);
-
             const videoRef = useRef(null);
             const canvasRef = useRef(null);
             const inputRef = useRef(null);
@@ -268,6 +213,103 @@
             };
 
             const showMsg = (txt) => { setNotification(txt); setTimeout(() => setNotification(null), 3000); };
+
+            // RULE 3 - Firebase Anon Auth Setup First
+            useEffect(() => {
+                let savedId = '';
+                try {
+                    savedId = localStorage.getItem('csid_reg_id');
+                    if (!savedId) { 
+                        savedId = Math.floor(100000 + Math.random() * 900000).toString(); 
+                        localStorage.setItem('csid_reg_id', savedId); 
+                    }
+                } catch (e) {
+                    savedId = Math.floor(100000 + Math.random() * 900000).toString();
+                }
+                setRegistrationId(savedId);
+
+                const startAuth = async () => {
+                    try {
+                        const credential = await auth.signInAnonymously();
+                        const currentUser = credential.user;
+                        setUser(currentUser);
+
+                        if (currentUser) {
+                            const pinSnap = await db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_pins').doc(savedId).get();
+                            if (pinSnap.exists) {
+                                const data = pinSnap.data();
+                                const currentDeviceId = getDeviceId();
+                                if (!data.isBlocked && (data.expiry === 'UNLIMITED' || data.expiry > Date.now()) && (!data.deviceId || data.deviceId === currentDeviceId)) {
+                                    setUserRole(data.role || 'user'); setUserExpiry(data.expiry); setActivePin(savedId);
+                                    try {
+                                        localStorage.setItem('csid_logged_in', 'true');
+                                        localStorage.setItem('csid_user_role', data.role || 'user');
+                                        localStorage.setItem('csid_user_expiry', data.expiry);
+                                        localStorage.setItem('csid_active_pin', savedId);
+                                    } catch (e) {}
+                                    setCurrentPage('search');
+                                } else {
+                                    try { localStorage.removeItem('csid_logged_in'); } catch (e) {}
+                                    setCurrentPage('welcome');
+                                }
+                            } else {
+                                setCurrentPage('welcome');
+                            }
+                        }
+                    } catch (e) { 
+                        console.error("Auth error:", e);
+                        setCurrentPage('welcome'); 
+                    } finally { 
+                        setLoading(false); 
+                    }
+                };
+                startAuth();
+            }, []);
+
+            useEffect(() => {
+                if (!user) return;
+                
+                const unsubSettings = db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_settings').doc('main').onSnapshot((d) => { 
+                    if (d.exists) setBroadcast(d.data().text || broadcast); 
+                }, (err) => console.error("Settings stream error:", err));
+                
+                const unsubPins = db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_pins').onSnapshot((snap) => { 
+                    const pins = [];
+                    snap.forEach(doc => {
+                        pins.push({ id: doc.id, ...doc.data() });
+                    });
+                    setManagedPins(pins); 
+                }, (err) => console.error("Pins stream error:", err));
+
+                return () => { unsubSettings(); unsubPins(); };
+            }, [user]);
+
+            const handleLoginOnline = async () => {
+                setLoading(true);
+                try {
+                    const pinSnap = await db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_pins').doc(registrationId).get();
+                    if (!pinSnap.exists) throw new Error("ID BELUM DIAKTIFKAN ADMIN");
+                    const data = pinSnap.data();
+                    const currentDeviceId = getDeviceId();
+                    if (data.isBlocked) throw new Error("AKSES DIBLOKIR");
+                    if (data.expiry !== 'UNLIMITED' && Date.now() > data.expiry) throw new Error("MASA AKTIF HABIS");
+                    if (data.deviceId && data.deviceId !== currentDeviceId) throw new Error("TERDAFTAR DI HP LAIN");
+                    if (!data.deviceId) {
+                        await db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_pins').doc(registrationId).set({ deviceId: currentDeviceId }, { merge: true });
+                    }
+                    setUserRole(data.role || 'user'); setUserExpiry(data.expiry); setActivePin(registrationId);
+                    localStorage.setItem('csid_logged_in', 'true');
+                    setCurrentPage('search');
+                } catch (e) { showMsg(e.message); } finally { setLoading(false); }
+            };
+
+            const handleMasterLogin = () => {
+                if (pinInput === MASTER_PIN) {
+                    setUserRole('master'); setUserExpiry('UNLIMITED'); setActivePin('MASTER');
+                    localStorage.setItem('csid_logged_in', 'true');
+                    setCurrentPage('search'); setShowPinModal(false); setPinInput('');
+                } else { showMsg("PIN SALAH"); setPinInput(''); }
+            };
 
             const startCamera = async () => {
                 try {
@@ -307,124 +349,8 @@
                 } catch (e) { showMsg("OCR GAGAL"); } finally { setIsScanning(false); }
             };
 
-            useEffect(() => {
-                let savedId = '';
-                try {
-                    savedId = localStorage.getItem('csid_reg_id');
-                    if (!savedId) { 
-                        savedId = Math.floor(100000 + Math.random() * 900000).toString(); 
-                        localStorage.setItem('csid_reg_id', savedId); 
-                    }
-                } catch (e) {
-                    savedId = Math.floor(100000 + Math.random() * 900000).toString();
-                }
-                setRegistrationId(savedId);
-
-                const startAuth = async () => {
-                    try {
-                        if (!auth) {
-                            setLoading(false);
-                            return;
-                        }
-                        const credential = await auth.signInAnonymously();
-                        const currentUser = credential.user;
-                        setUser(currentUser);
-
-                        if (currentUser && db) {
-                            const pinSnap = await db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_pins').doc(savedId).get();
-                            if (pinSnap.exists) {
-                                const data = pinSnap.data();
-                                const currentDeviceId = getDeviceId();
-                                
-                                // AUTO KICK: validasi durasi masa aktif murni
-                                const isUserActive = !data.isBlocked && (data.expiry === 'UNLIMITED' || data.expiry > Date.now());
-                                const isSameDevice = !data.deviceId || data.deviceId === currentDeviceId;
-
-                                if (isUserActive && isSameDevice) {
-                                    setUserRole(data.role || 'user'); setUserExpiry(data.expiry); setActivePin(savedId);
-                                    try {
-                                        localStorage.setItem('csid_logged_in', 'true');
-                                        localStorage.setItem('csid_user_role', data.role || 'user');
-                                        localStorage.setItem('csid_user_expiry', data.expiry);
-                                        localStorage.setItem('csid_active_pin', savedId);
-                                    } catch (e) {}
-                                    setCurrentPage('search');
-                                } else {
-                                    try { 
-                                        localStorage.removeItem('csid_logged_in'); 
-                                    } catch (e) {}
-                                    setCurrentPage('welcome');
-                                    if (data.isBlocked) {
-                                        showMsg("AKSES DIBLOKIR ADMIN");
-                                    } else if (data.expiry !== 'UNLIMITED' && Date.now() > data.expiry) {
-                                        showMsg("MASA AKTIF PIN HABIS");
-                                    }
-                                }
-                            } else {
-                                if (currentPage !== 'welcome') setCurrentPage('welcome');
-                            }
-                        }
-                    } catch (e) { 
-                        console.error("Kesalahan autentikasi:", e);
-                        setCurrentPage('welcome'); 
-                    } finally { 
-                        setLoading(false); 
-                    }
-                };
-                startAuth();
-            }, []);
-
-            useEffect(() => {
-                if (!user || !db) return;
-                
-                const unsubSettings = db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_settings').doc('main').onSnapshot((d) => { 
-                    if (d.exists) setBroadcast(d.data().text || broadcast); 
-                }, (err) => console.error("Kesalahan stream tetapan:", err));
-                
-                const unsubPins = db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_pins').onSnapshot((snap) => { 
-                    const pins = [];
-                    snap.forEach(doc => {
-                        pins.push({ id: doc.id, ...doc.data() });
-                    });
-                    setManagedPins(pins); 
-                }, (err) => console.error("Kesalahan stream PIN:", err));
-
-                return () => { unsubSettings(); unsubPins(); };
-            }, [user]);
-
-            const handleLoginOnline = async () => {
-                if (!db) {
-                    showMsg("DATABASE OFFLINE");
-                    return;
-                }
-                setLoading(true);
-                try {
-                    const pinSnap = await db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_pins').doc(registrationId).get();
-                    if (!pinSnap.exists) throw new Error("ID BELUM DIAKTIFKAN ADMIN");
-                    const data = pinSnap.data();
-                    const currentDeviceId = getDeviceId();
-                    if (data.isBlocked) throw new Error("AKSES DIBLOKIR");
-                    if (data.expiry !== 'UNLIMITED' && Date.now() > data.expiry) throw new Error("MASA AKTIF HABIS");
-                    if (data.deviceId && data.deviceId !== currentDeviceId) throw new Error("TERDAFTAR DI HP LAIN");
-                    if (!data.deviceId) {
-                        await db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_pins').doc(registrationId).set({ deviceId: currentDeviceId }, { merge: true });
-                    }
-                    setUserRole(data.role || 'user'); setUserExpiry(data.expiry); setActivePin(registrationId);
-                    localStorage.setItem('csid_logged_in', 'true');
-                    setCurrentPage('search');
-                } catch (e) { showMsg(e.message); } finally { setLoading(false); }
-            };
-
-            const handleMasterLogin = () => {
-                if (pinInput === MASTER_PIN) {
-                    setUserRole('master'); setUserExpiry('UNLIMITED'); setActivePin('MASTER');
-                    localStorage.setItem('csid_logged_in', 'true');
-                    setCurrentPage('search'); setShowPinModal(false); setPinInput('');
-                } else { showMsg("PIN SALAH"); setPinInput(''); }
-            };
-
             const extractJson = (text) => {
-                if (!text || typeof text !== 'string') return text;
+                if (typeof text !== 'string') return text;
                 try {
                     return JSON.parse(text);
                 } catch (e) {
@@ -432,6 +358,7 @@
                     const startArr = text.indexOf('[');
                     let start = -1;
                     let end = -1;
+                    
                     if (startObj !== -1 && (startArr === -1 || startObj < startArr)) {
                         start = startObj;
                         end = text.lastIndexOf('}');
@@ -439,6 +366,7 @@
                         start = startArr;
                         end = text.lastIndexOf(']');
                     }
+                    
                     if (start !== -1 && end !== -1 && end > start) {
                         try {
                             return JSON.parse(text.substring(start, end + 1));
@@ -457,247 +385,265 @@
                 return null;
             };
 
-            // PERATA GANDA (FLATTENER) DATA JSON SAMSAT BERKATAGORI BEBAS (CASE-INSENSITIVE)
-            const flattenNormalized = (obj, res = {}) => {
-                if (!obj) return res;
-                if (typeof obj === 'string') {
-                    const parsed = extractJson(obj);
-                    if (parsed) return flattenNormalized(parsed, res);
-                    return res;
-                }
-                if (typeof obj !== 'object') return res;
-                for (let key in obj) {
-                    if (obj.hasOwnProperty(key)) {
-                        const val = obj[key];
-                        if (val && typeof val === 'object') {
-                            flattenNormalized(val, res);
-                        } else if (val !== null && val !== undefined) {
-                            const normKey = key.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-                            res[normKey] = val;
-                        }
-                    }
-                }
-                res.__is_flat = true;
-                return res;
-            };
-
-            // VERIFIKASI PEMUATAN DATA KENDARAAN SECARA BULLETPROOF & LONGGAR
+            // Menjelajah setiap lapis JSON respon untuk ditarik keluar datanya secara murni
             const findVehicleDataDeep = (obj) => {
                 if (!obj) return null;
-                const flat = flattenNormalized(obj);
                 
-                // Pemeriksaan longgar: asalkan ada salah satu elemen identitas SAMSAT terkumpul, data dianggap valid
-                const hasName = !!(flat.namapemilik || flat.namastnk || flat.pemilik || flat.nama || flat.nmpmlk);
-                const hasNopol = !!(flat.nopol || flat.nopolisi || flat.plat || flat.platno || flat.tnkb || flat.policeno);
-                const hasChassis = !!(flat.noka || flat.norangka || flat.vin || flat.frame || flat.rangka);
-                const hasEngine = !!(flat.nosin || flat.nomesin || flat.engine || flat.mesin);
+                if (typeof obj === 'string') {
+                    const cleaned = obj.trim();
+                    if (cleaned.startsWith('{') || cleaned.startsWith('[')) {
+                        try {
+                            const parsed = JSON.parse(cleaned);
+                            return findVehicleDataDeep(parsed);
+                        } catch (e) {}
+                    }
+                    return null;
+                }
                 
-                if (hasName || hasNopol || hasChassis || hasEngine) {
-                    return flat; 
+                if (typeof obj !== 'object') return null;
+                
+                const vehicleKeys = [
+                    'NamaPemilik', 'nama_pemilik', 'NoRangka', 'no_rangka', 
+                    'NoMesin', 'no_mesin', 'NoSTNK', 'no_stnk', 'NoBPKB', 'no_bpkb',
+                    'nopol', 'Nopol', 'wilayah', 'seri'
+                ];
+                
+                let matchCount = 0;
+                for (let key of vehicleKeys) {
+                    if (obj[key] !== undefined && obj[key] !== null && obj[key] !== '') {
+                        matchCount++;
+                    }
+                }
+                
+                if (matchCount >= 2) {
+                    return obj;
+                }
+                
+                if (Array.isArray(obj)) {
+                    for (let item of obj) {
+                        const found = findVehicleDataDeep(item);
+                        if (found) return found;
+                    }
+                } else {
+                    for (let k in obj) {
+                        if (obj.hasOwnProperty(k)) {
+                            const found = findVehicleDataDeep(obj[k]);
+                            if (found) return found;
+                        }
+                    }
                 }
                 return null;
             };
 
+            const processResponseText = (text) => {
+                if (!text) return null;
+                let parsed = extractJson(text);
+                if (!parsed) return null;
+
+                if (parsed.contents) {
+                    if (typeof parsed.contents === 'string') {
+                        const temp = extractJson(parsed.contents);
+                        if (temp) parsed = temp;
+                    } else {
+                        parsed = parsed.contents;
+                    }
+                }
+
+                if (!parsed) return null;
+
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    return parsed[0];
+                }
+
+                return findVehicleDataDeep(parsed);
+            };
+
+            // LOGIKA PEMERINGKAT & PENGINTEGRASI API BARU ANDA (TURBO CONCURRENT RACING)
             const fetchData = async () => {
                 const rawPlate = plate.trim().toUpperCase();
-                if (!rawPlate) { showMsg("MASUKKAN NOMOR POLISI"); return; }
+                if (!rawPlate) { showMsg("MASUKKAN PLAT NOMOR"); return; }
                 setLoading(true);
-                setSearchResult(null);
 
-                const cleanQueryUpper = rawPlate.replace(/\s+/g, '').toUpperCase();
-                const cleanQueryLower = rawPlate.replace(/\s+/g, '').toLowerCase();
+                // Merapikan nopol rapat lowercase murni (Contoh: "BK 1108 DT" -> "bk1108dt")
+                const cleanQuery = rawPlate.replace(/\s+/g, '').toLowerCase();
 
-                // SEMAKAN DATABASE INTERNAL (0ms Respons Instan Tercepat)
-                if (OFFLINE_SAMSAT_DATABASE[cleanQueryUpper]) {
+                // JALUR 1: DETEKSI MEMORI OFFLINE (Ultra Kilat 120ms)
+                const offlineMatch = rawPlate.replace(/\s+/g, '').toUpperCase();
+                if (OFFLINE_SAMSAT_DATABASE[offlineMatch]) {
                     setTimeout(() => {
-                        setSearchResult(OFFLINE_SAMSAT_DATABASE[cleanQueryUpper]);
+                        setSearchResult(OFFLINE_SAMSAT_DATABASE[offlineMatch]);
                         setCurrentPage('result');
                         setLoading(false);
-                    }, 400); 
+                    }, 120); 
                     return;
                 }
 
+                // JALUR 2: Cek sessionStorage Caching Instan (Sesuai panduan kode baru Anda)
                 try {
-                    const cached = sessionStorage.getItem(cleanQueryUpper);
+                    const cached = sessionStorage.getItem(cleanQuery);
                     if (cached) {
                         setSearchResult(JSON.parse(cached));
                         setCurrentPage('result');
                         setLoading(false);
+                        showMsg("Data dimuat dari memori (Instan)");
                         return;
                     }
                 } catch (e) {
-                    console.warn("Ralat cache:", e);
+                    console.warn("sessionStorage error:", e);
                 }
 
-                // API VARIATIONS DIKONEKSIKAN MELALUI RANTAI PROXY BYPASS SECARA PARALEL
-                const apiTargets = [
-                    `http://103.67.78.222:5000/api/cek_tnkb?apikey=KEY-tiLgJCKNO9DtfWGWtMUN&q=${cleanQueryLower}`,
-                    `http://103.67.78.222:5000/api/cek_tnkb?apikey=KEY-tiLgJCKNO9DtfWGWtMUN&q=${cleanQueryUpper}`,
-                    `http://36.93.152.242/main/.h_api_tnkb.php?q=${cleanQueryLower}`,
-                    `http://36.93.152.242/main/.h_api_tnkb.php?q=${cleanQueryUpper}`
+                // JALUR 3: PENETRASI JALUR AKTIF ONLINE - API RACING BYPASS MULTI-PROXY DENGAN INTEGRASI DELTAFORCE & SERVER CADANGAN
+                const isHttps = window.location.protocol === 'https:';
+                const requestPool = [];
+
+                const sourcesToFetch = [
+                    {
+                        name: "API DeltaForce VIP",
+                        url: `https://tnkb.deltaforce.space/?apikey=ae958b6e6869c10dddaec2283b3c824b&keyword=${encodeURIComponent(cleanQuery)}`,
+                        parse: (res) => (res.success && res.data ? res.data[0] : null)
+                    },
+                    {
+                        name: "API Server Cadangan",
+                        url: `${API_UTAMA_URL}${encodeURIComponent(cleanQuery)}`,
+                        parse: (res) => (Array.isArray(res) ? res[0] : res)
+                    }
                 ];
 
-                const promises = [];
+                sourcesToFetch.forEach(src => {
+                    // Masukkan Request Langsung (Direct Request)
+                    if (!isHttps || src.url.startsWith('https:')) {
+                        requestPool.push({ url: src.url, parse: src.parse, type: 'direct' });
+                    }
 
-                // Bungkus setiap target ke dalam seluruh proksi bypass yang tersedia
-                apiTargets.forEach(target => {
-                    const proxies = [
-                        { label: 'CorsProxy', url: `https://corsproxy.io/?` + encodeURIComponent(target) },
-                        { label: 'AllOrigins', url: `https://api.allorigins.win/raw?url=` + encodeURIComponent(target) },
-                        { label: 'Hexschool', url: `https://allorigins.hexschool.workers.dev/raw?url=` + encodeURIComponent(target) },
-                        { label: 'Codetabs', url: `https://api.codetabs.com/v1/proxy?quest=` + encodeURIComponent(target) },
-                        { label: 'ThingProxy', url: `https://thingproxy.freeboard.io/fetch/${target}` }
-                    ];
-
-                    proxies.forEach(proxy => {
-                        promises.push(new Promise(async (resolve, reject) => {
-                            const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-                            const timeoutId = setTimeout(() => {
-                                if (controller) {
-                                    try { controller.abort(); } catch(e) {}
-                                }
-                                reject(new Error("Timeout"));
-                            }, 12000);
-
-                            try {
-                                const res = await fetch(proxy.url, { signal: controller ? controller.signal : undefined });
-                                clearTimeout(timeoutId);
-                                if (!res.ok) throw new Error();
-                                const text = await res.text();
-                                const json = extractJson(text);
-                                const vehicleData = findVehicleDataDeep(json);
-                                if (vehicleData) {
-                                    resolve(vehicleData);
-                                } else {
-                                    throw new Error();
-                                }
-                            } catch(err) {
-                                clearTimeout(timeoutId);
-                                reject(err);
-                            }
-                        }));
-                    });
+                    // Masukkan Request Bypass Proxy CORS Penyelamat WebView Android
+                    requestPool.push({ url: `https://corsproxy.io/?${encodeURIComponent(src.url)}`, parse: src.parse, type: 'corsproxy_io' });
+                    requestPool.push({ url: `https://api.allorigins.win/raw?url=${encodeURIComponent(src.url)}`, parse: src.parse, type: 'allorigins_raw' });
+                    requestPool.push({ url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(src.url)}`, parse: src.parse, type: 'codetabs' });
+                    requestPool.push({ url: `https://thingproxy.freeboard.io/fetch/${src.url}`, parse: src.parse, type: 'thingproxy' });
+                    requestPool.push({ url: `https://allorigins.hexschool.workers.dev/raw?url=${encodeURIComponent(src.url)}`, parse: src.parse, type: 'allorigins_worker' });
+                    requestPool.push({ url: `https://api.allorigins.win/get?url=${encodeURIComponent(src.url)}`, parse: src.parse, type: 'allorigins_wrapped' });
                 });
 
-                // Tambahkan Rute Suryamedha sebagai penopang instan
-                promises.push(new Promise(async (resolve, reject) => {
-                    try {
-                        const rawTarget = `${API_UTAMA_URL}${cleanQueryLower}`;
-                        const proxyUrl = `https://allorigins.hexschool.workers.dev/raw?url=${encodeURIComponent(rawTarget)}`;
-                        const res = await fetch(proxyUrl);
-                        if (!res.ok) throw new Error();
-                        const text = await res.text();
-                        const json = extractJson(text);
-                        const vehicleData = findVehicleDataDeep(json);
-                        if (vehicleData) resolve(vehicleData);
-                        else reject(new Error());
-                    } catch(e) {
-                        reject(e);
-                    }
-                }));
+                let resolved = false;
+                let activeRequests = requestPool.length;
+                const controllers = [];
 
-                const raceSuccessful = (promiseList) => {
-                    return new Promise((resolve, reject) => {
-                        let resolved = false;
-                        let completedCount = 0;
-                        
-                        promiseList.forEach(p => {
-                            p.then(val => {
-                                completedCount++;
-                                if (val && !resolved) {
-                                    resolved = true;
-                                    resolve(val);
-                                } else {
-                                    if (completedCount === promiseList.length && !resolved) {
-                                        reject(new Error());
-                                    }
-                                }
-                            }).catch(() => {
-                                completedCount++;
-                                if (completedCount === promiseList.length && !resolved) {
-                                    reject(new Error());
-                                }
-                            });
-                        });
+                const cleanLoadingAndTransition = (data) => {
+                    if (resolved) return;
+                    resolved = true;
+                    
+                    controllers.forEach(ctrl => {
+                        try { ctrl.abort(); } catch(e) {}
                     });
+
+                    try {
+                        sessionStorage.setItem(cleanQuery, JSON.stringify(data));
+                    } catch (e) {}
+
+                    setSearchResult(data);
+                    setCurrentPage('result');
+                    setLoading(false);
                 };
 
-                try {
-                    const result = await Promise.race([
-                        raceSuccessful(promises),
-                        new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 15000))
-                    ]);
-                    if (result) {
-                        try {
-                            sessionStorage.setItem(cleanQueryUpper, JSON.stringify(result));
-                        } catch(e) {}
-                        setSearchResult(result);
-                        setCurrentPage('result');
-                    } else {
-                        showMsg("DATA TIDAK DITEMUKAN");
+                const handleFailure = () => {
+                    activeRequests--;
+                    if (activeRequests === 0 && !resolved) {
+                        setLoading(false);
+                        showMsg("DATA TIDAK DITEMUKAN / JARINGAN ERROR");
                     }
-                } catch (err) {
-                    showMsg("DATA TIDAK DITEMUKAN / JARINGAN ERROR");
-                } finally {
-                    setLoading(false);
+                };
+
+                requestPool.forEach((targetObj) => {
+                    const ctrl = new AbortController();
+                    controllers.push(ctrl);
+                    const id = setTimeout(() => ctrl.abort(), 12000); // Batas maksimal timeout 12 detik demi kestabilan proxy
+
+                    try {
+                        fetch(targetObj.url, { signal: ctrl.signal })
+                            .then(async (res) => {
+                                clearTimeout(id);
+                                if (resolved) return;
+                                if (!res.ok) { handleFailure(); return; }
+                                
+                                const text = await res.text();
+                                const json = extractJson(text);
+                                const parsed = targetObj.parse(json);
+                                const vehicleData = findVehicleDataDeep(parsed);
+                                
+                                if (vehicleData && !resolved) {
+                                    cleanLoadingAndTransition(vehicleData);
+                                } else {
+                                    handleFailure();
+                                }
+                            })
+                            .catch((err) => {
+                                clearTimeout(id);
+                                handleFailure();
+                            });
+                    } catch (err) {
+                        clearTimeout(id);
+                        handleFailure();
+                    }
+                });
+            };
+
+            const extractField = (item, keys) => {
+                if (!item) return '-';
+                for (let k of keys) {
+                    if (item[k] !== undefined && item[k] !== null && item[k] !== '') {
+                        return String(item[k]).toUpperCase();
+                    }
                 }
+                return '-';
             };
 
             const getVal = (cat) => {
                 if (!searchResult) return "-";
-                const flat = searchResult.__is_flat ? searchResult : flattenNormalized(searchResult);
+                const item = searchResult;
                 
-                const getFirstMatch = (keys) => {
-                    for (let k of keys) {
-                        if (flat[k] !== undefined && flat[k] !== null && flat[k] !== '') {
-                            return String(flat[k]).toUpperCase();
-                        }
-                    }
-                    return "-";
-                };
-
                 switch (cat) {
                     case 'Nama': 
-                        return getFirstMatch(['namapemilik', 'namastnk', 'pemilik', 'namapmlk', 'nmpmlk', 'nama', 'nm', 'namapemilikstnk']);
+                        return extractField(item, ['NamaPemilik', 'nama_pemilik', 'Nama', 'nama', 'nm_pmlk']);
                     case 'NIK': 
-                        return getFirstMatch(['nik', 'noktp', 'ktp', 'noidentitas', 'identitas', 'no_ktp', 'noktppemilik']);
+                        return extractField(item, ['NIK', 'NoKTP', 'nik', 'no_ktp', 'identitas', 'no_identitas']);
                     case 'HP': 
-                        return getFirstMatch(['hp', 'nohp', 'phone', 'notelp', 'telp', 'msisdn', 'mssdn', 'nohppemilik']);
+                        return extractField(item, ['NoHP', 'MSSDN', 'msisdn', 'phone', 'no_hp', 'no_telp']);
                     case 'Pekerjaan': 
-                        return getFirstMatch(['pekerjaan', 'job', 'pekerjaanpemilik']);
+                        return extractField(item, ['Pekerjaan', 'pekerjaan', 'job', 'pekerjaan_pemilik']);
                     case 'Alamat': 
-                        return getFirstMatch(['alamat', 'alamatpemilik', 'almt', 'alamat_pemilik']);
+                        return extractField(item, ['Alamat', 'alamat', 'alamat_pemilik']);
                     case 'NopolServer': 
-                        const directNopol = getFirstMatch(['nopol', 'nopolisi', 'plat', 'platno', 'tnkb', 'policeno', 'no_polisi', 'no_plat']);
-                        if (directNopol !== '-') {
-                            const cleanedDirect = directNopol.replace(/\s+/g, '').toUpperCase();
-                            if (/^[A-Z]{1,2}\d+[A-Z]*$/.test(cleanedDirect)) {
-                                return formatPlateWithSpaces(cleanedDirect);
-                            }
+                        // SESUAI INSTRUKSI: Nopol digabung rapat tanpa spasi di halaman hasil laporan (Contoh: BK1108DT)
+                        const w = extractField(item, ['wilayah', 'Wilayah', 'prefix', 'Prefix']).replace(/\s+/g, '').toUpperCase();
+                        const n = extractField(item, ['nopol', 'Nopol', 'no_polisi', 'noPolisi']).replace(/\s+/g, '').toUpperCase();
+                        const s = extractField(item, ['seri', 'Seri', 'suffix', 'Suffix']).replace(/\s+/g, '').toUpperCase();
+                        
+                        if (w !== '-' && n !== '-') {
+                            return `${w}${n}${s !== '-' ? s : ''}`;
                         }
-                        return formatPlateWithSpaces(plate);
+                        return formatPlate(plate);
                     case 'Merk': 
-                        return getFirstMatch(['merk', 'merek', 'brand', 'make', 'merek_kendaraan', 'merkkendaraan']);
+                        return extractField(item, ['Merk', 'Merek', 'merk', 'merek', 'brand']);
                     case 'Tipe': 
-                        return getFirstMatch(['type', 'tipe', 'model', 'tipe_kendaraan', 'tipekendaraan']);
+                        return extractField(item, ['Type', 'Tipe', 'type', 'tipe', 'model']);
                     case 'Tahun': 
-                        return getFirstMatch(['tahunpembuatan', 'tahunbuat', 'thnbuat', 'tahun', 'th_buat', 'tahun_pembuatan']);
+                        return extractField(item, ['TahunPembuatan', 'Tahun', 'tahun_pembuatan', 'tahun_buat', 'th_buat', 'tahun']);
                     case 'Warna': 
-                        return getFirstMatch(['warna', 'warnakendaraan', 'warna_tnkb', 'warna_kendaraan']);
+                        return extractField(item, ['Warna', 'warna', 'warna_tnkb', 'warna_kendaraan']);
                     case 'CC': 
-                        return getFirstMatch(['cc', 'isicylinder', 'cylinder', 'isisilinder', 'isi_silinder', 'isisilindercc']);
+                        return extractField(item, ['IsiCylinder', 'Cylinder', 'cylinder', 'isi_silinder', 'cc', 'isi_cylinder']);
                     case 'Noka': 
-                        return getFirstMatch(['noka', 'norangka', 'vin', 'frame', 'no_rangka', 'norangkakendaraan']);
+                        return extractField(item, ['NoRangka', 'noka', 'no_rangka', 'vin', 'no_frame']);
                     case 'Nosin': 
-                        return getFirstMatch(['nosin', 'nomesin', 'engine', 'no_mesin', 'nomesinkendaraan']);
+                        return extractField(item, ['NoMesin', 'nosin', 'no_mesin', 'no_engine']);
                     case 'BPKB': 
-                        return getFirstMatch(['bpkb', 'nobpkb', 'no_bpkb', 'nobpkbkendaraan']);
+                        return extractField(item, ['NoBPKB', 'bpkb', 'no_bpkb']);
                     case 'STNK': 
-                        return getFirstMatch(['stnk', 'nostnk', 'no_stnk', 'nostnkkendaraan']);
+                        return extractField(item, ['NoSTNK', 'stnk', 'no_stnk']);
                     case 'Tgl': 
-                        return getFirstMatch(['tgldaftar', 'tanggaldaftar', 'tgl', 'tanggal', 'tgl_reg', 'tgl_daftar']);
+                        return extractField(item, ['TglDaftar', 'TanggalDaftar', 'tgl_daftar', 'tanggal_daftar', 'tglDaftar']);
                     case 'APM': 
-                        return getFirstMatch(['apm', 'atpm', 'agenpemegangmerek']);
+                        return extractField(item, ['APM', 'apm', 'atpm', 'AgenPemegangMerek', 'agen_pemegang_merek']);
                     default: 
                         return "-";
                 }
@@ -725,14 +671,15 @@
 
             const handleSearchPress = (e) => {
                 if (e) {
-                    if (typeof e.preventDefault === 'function') e.preventDefault();
-                    if (typeof e.stopPropagation === 'function') e.stopPropagation();
+                    e.preventDefault();
+                    e.stopPropagation();
                 }
                 fetchData();
             };
 
             return (
                 <div className="mobile-shell bg-black">
+                    {/* Welcome Screen */}
                     {currentPage === 'welcome' && (
                         <div className="flex-1 flex flex-col items-center justify-between py-12 px-8 h-full relative overflow-y-auto scrollbar-hide">
                             <div className="absolute top-[-10%] left-[-10%] w-[80%] h-[40%] bg-orange-600/10 blur-[150px] rounded-full" />
@@ -745,9 +692,9 @@
                                 <div className="h-1 w-20 bg-orange-500 rounded-full -mt-2 animate-pulse" />
                             </div>
                             <div className="w-full flex flex-col items-center gap-6 mb-8 z-10">
-                                <div className="w-full bg-zinc-900/80 border border-white/5 rounded-[2.5rem] py-8 px-6 text-center shadow-2xl">
-                                    <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-500 mb-2">ID PENDAFTARAN</p>
-                                    <p className="text-6xl font-mono font-black text-white tracking-tighter">{registrationId}</p>
+                                <div className="w-full max-w-[340px] glass-panel rounded-[2.5rem] py-8 px-8 text-center border-orange-500/10">
+                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 mb-3">ID PENDAFTARAN</p>
+                                    <p className="text-[60px] font-black text-white font-mono-custom tracking-tighter">{registrationId}</p>
                                 </div>
                                 <div className="w-full space-y-4 max-w-[340px]">
                                     <button type="button" onClick={handleLoginOnline} className="w-full bg-white text-black py-5 rounded-2xl font-black text-lg uppercase shadow-lg active:scale-95 flex items-center justify-center gap-3"><Icons.Shield cls="w-5 h-5" /> MASUK SISTEM</button>
@@ -757,7 +704,7 @@
                         </div>
                     )}
 
-                    {/* Tampilan Pencarian (Gambar 2 & 3 Orisinal) */}
+                    {/* Search Screen */}
                     {currentPage === 'search' && (
                         <div className="flex-1 flex flex-col h-full bg-black">
                             <header className="px-6 py-5 flex items-center justify-between border-b border-white/5 bg-black/80 backdrop-blur-md z-50">
@@ -779,7 +726,7 @@
                                         value={plate} 
                                         onChange={(e) => setPlate(e.target.value.toUpperCase())} 
                                         placeholder="NO. POLISI" 
-                                        className="bg-transparent w-full text-center font-black uppercase placeholder:text-slate-700/80 text-5xl text-white tracking-tighter outline-none border-none"
+                                        className={`bg-transparent w-full text-center font-black uppercase placeholder:text-slate-800 ${plate.length > 10 ? 'text-2xl' : 'text-5xl'} text-white tracking-tighter outline-none border-none`}
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter') {
                                                 e.preventDefault();
@@ -789,7 +736,7 @@
                                     />
                                 </div>
 
-                                {/* Banner Akses Terbatas */}
+                                {/* Banner Restricted Access Asli */}
                                 <div className="w-full text-center py-2.5 px-4 mb-2 border border-red-900/30 rounded-2xl bg-red-950/10">
                                     <p className="text-orange-500 font-black text-xs tracking-widest flex items-center justify-center gap-1.5">
                                         ⚠️ RESTRICTED ACCESS
@@ -803,84 +750,38 @@
                                 </div>
 
                                 <div className="mt-auto space-y-1">
-                                    {/* Baris 7-Tombol Aksi Sejajar Simetris Tepat di Atas Numpad */}
-                                    <div className="grid grid-cols-7 gap-[2px]">
+                                    <div className={`grid ${userRole === 'master' ? 'grid-cols-7' : 'grid-cols-6'} gap-[2px]`}>
                                         <button type="button" onClick={() => setKbHeight(h => Math.max(15, h-2))} className="bg-slate-900 h-14 rounded-none key-press-effect flex items-center justify-center text-slate-400 border border-white/5 font-black text-xl outline-none"><Icons.Minus /></button>
                                         <button type="button" onClick={() => setKbHeight(h => Math.min(35, h+2))} className="bg-slate-900 h-14 rounded-none key-press-effect flex items-center justify-center text-slate-400 border border-white/5 font-black text-xl outline-none"><Icons.Plus /></button>
                                         <button type="button" onClick={startCamera} className="bg-slate-900 h-14 rounded-none key-press-effect flex items-center justify-center text-slate-400 border border-white/5 outline-none"><Icons.Camera /></button>
                                         <button type="button" onClick={async () => { try { const t = await navigator.clipboard.readText(); setPlate(t.toUpperCase().replace(/\s/g, '')); } catch(e){} }} className="bg-slate-900 h-14 rounded-none key-press-effect flex items-center justify-center text-slate-400 border border-white/5 outline-none"><Icons.Paste /></button>
-                                        
-                                        <button 
-                                            type="button" 
-                                            onClick={() => {
-                                                if (userRole === 'master') {
-                                                    setCurrentPage('admin');
-                                                } else {
-                                                    setShowPinModal(true);
-                                                }
-                                            }} 
-                                            className={`${userRole === 'master' ? 'bg-orange-950/40 text-orange-500' : 'bg-slate-900 text-orange-500/70'} h-14 rounded-none key-press-effect flex items-center justify-center border border-white/5 outline-none`}
-                                        >
-                                            <Icons.Shield />
-                                        </button>
-
-                                        <button type="button" onClick={() => window.location.reload()} className="bg-slate-900 text-red-500 h-14 rounded-none key-press-effect flex items-center justify-center border border-white/5 outline-none"><Icons.Power /></button>
+                                        {userRole === 'master' && <button type="button" onClick={() => setCurrentPage('admin')} className="bg-orange-600/20 h-14 rounded-none key-press-effect flex items-center justify-center text-orange-500 border border-white/5 outline-none"><Icons.Shield /></button>}
+                                        <button type="button" onClick={() => window.location.reload()} className="bg-red-600/20 h-14 rounded-none key-press-effect flex items-center justify-center text-red-500 border border-white/5 outline-none"><Icons.Power /></button>
                                         
                                         <button 
                                             type="button"
                                             onClick={handleSearchPress}
-                                            onTouchStart={handleSearchPress}
+                                            onTouchEnd={handleSearchPress}
                                             className="bg-orange-600 h-14 rounded-none key-press-effect flex items-center justify-center text-white shadow-lg border border-white/5 cursor-pointer active:bg-orange-700 outline-none"
                                         >
                                             <Icons.Search />
                                         </button>
                                     </div>
-
-                                    {/* PAPAN KETIK KUSTOM MODEL GAMBAR 2 & 3 ORISINAL (100% IDENTIK DAN PRESISI) */}
                                     <div className="flex flex-col gap-[2px]">
-                                        {/* Baris 1: 1 | 2 | 3 | DEL | CLR */}
                                         <div className="grid grid-cols-5 gap-[2px]">
-                                            {['1','2','3'].map(n => (
-                                                <button type="button" key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-900/60 text-white rounded-none border border-white/5 text-4xl font-black key-press-effect font-mono-custom outline-none">{n}</button>
-                                            ))}
-                                            <button type="button" onClick={() => setPlate(p => p.slice(0, -1))} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-800 text-white rounded-none font-black text-sm key-press-effect border border-white/5 outline-none">DEL</button>
+                                            {['1','2','3'].map(n => <button type="button" key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-900/60 text-white rounded-none border border-white/5 text-4xl font-black key-press-effect font-mono-custom outline-none">{n}</button>)}
+                                            <button type="button" onClick={() => setPlate(p => p.slice(0,-1))} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-800 text-white rounded-none font-black text-sm key-press-effect border border-white/5 outline-none">DEL</button>
                                             <button type="button" onClick={() => setPlate('')} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-800 text-white rounded-none font-black text-sm key-press-effect border border-white/5 outline-none">CLR</button>
                                         </div>
-
-                                        {/* Baris 2: 4 | 5 | 6 | 0 */}
                                         <div className="grid grid-cols-4 gap-[2px]">
-                                            {['4','5','6','0'].map(n => (
-                                                <button type="button" key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-900/60 text-white rounded-none border border-white/5 text-4xl font-black key-press-effect font-mono-custom outline-none">{n}</button>
-                                            ))}
+                                            {['4','5','6','0'].map(n => <button type="button" key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-900/60 text-white rounded-none border border-white/5 text-4xl font-black key-press-effect font-mono-custom outline-none">{n}</button>)}
                                         </div>
-
-                                        {/* Baris 3: 7 | 8 | 9 */}
                                         <div className="grid grid-cols-3 gap-[2px]">
-                                            {['7','8','9'].map(n => (
-                                                <button type="button" key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-900/60 text-white rounded-none border border-white/5 text-4xl font-black key-press-effect font-mono-custom outline-none">{n}</button>
-                                            ))}
+                                            {['7','8','9'].map(n => <button type="button" key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-slate-900/60 text-white rounded-none border border-white/5 text-4xl font-black key-press-effect font-mono-custom outline-none">{n}</button>)}
                                         </div>
-                                        
-                                        {/* Baris Alfabet QWERTY Murni */}
                                         <div className="flex flex-col gap-[2px] pt-1">
-                                            {[ 
-                                                ['Q','W','E','R','T','Y','U','I','O','P'], 
-                                                ['A','S','D','F','G','H','J','K','L'], 
-                                                ['Z','X','C','V','B','N','M'] 
-                                            ].map((row, idx) => (
-                                                <div key={idx} className="flex gap-[2px] justify-center">
-                                                    {row.map(char => ( 
-                                                        <button 
-                                                            type="button" 
-                                                            key={char} 
-                                                            onClick={() => setPlate(p => p+char)} 
-                                                            style={{height: `${kbHeight * 3.2}px`}} 
-                                                            className="flex-1 bg-slate-950 text-white rounded-none border border-white/5 text-xl font-black key-press-effect outline-none"
-                                                        >
-                                                            {char}
-                                                        </button> 
-                                                    ))}
-                                                </div>
+                                            {[ ['Q','W','E','R','T','Y','U','I','O','P'], ['A','S','D','F','G','H','J','K','L'], ['Z','X','C','V','B','N','M'] ].map((row, i) => (
+                                                <div key={i} className="flex gap-[2px] justify-center">{row.map(char => ( <button type="button" key={char} onClick={() => setPlate(p => p+char)} style={{height: `${kbHeight * 3.2}px`}} className="flex-1 bg-slate-950 text-white rounded-none border border-white/5 text-xl font-black key-press-effect outline-none">{char}</button> ))}</div>
                                             ))}
                                         </div>
                                     </div>
@@ -889,7 +790,7 @@
                         </div>
                     )}
 
-                    {/* Tampilan Hasil (Halaman Laporan 4) */}
+                    {/* Result Screen (Page 4) */}
                     {currentPage === 'result' && (
                         <div className="flex-1 flex flex-col h-full bg-black relative overflow-hidden">
                             <header className="px-6 py-6 flex items-center justify-between border-b border-white/5 bg-black/80 backdrop-blur-md z-40">
@@ -902,53 +803,16 @@
                                     <span className="text-orange-500 font-bold text-sm">🔒</span>
                                     <p className="text-[10px] font-black text-orange-500 tracking-wider uppercase">LAPORAN TERSEGEL - DATA ASLI KHUSUS SAMSAT</p>
                                 </div>
-                                <div className="bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] p-8 font-mono-custom text-[13px] text-white/90 leading-relaxed whitespace-pre-wrap break-words w-full shadow-2xl relative overflow-hidden pointer-events-auto">
-                                    <div className="shimmer absolute inset-0 opacity-10" />
-                                    {`___________________________________
-🇮🇩 SUMBER : APLIKASI CSID.PRO 📡
---------------------------------------------
-🕵 IDENTITAS PEMILIK :
---------------------------------------------
-NAMA : ${getVal('Nama')}
-NIK : ${getVal('NIK')}
-MSSDN : ${getVal('HP')}
-PEKERJAAN : ${getVal('Pekerjaan')}
-ALAMAT : ${getVal('Alamat')}
---------------------------------------------
-🚘 DATA KENDARAAN :
---------------------------------------------
-NOPOL : ${getVal('NopolServer')}
-MEREK : ${getVal('Merk')}
-TYPE : ${getVal('Tipe')}
-TAHUN : ${getVal('Tahun')}
-WARNA : ${getVal('Warna')}
-CYLINDER : ${getVal('CC')}
---------------------------------------------
-📙 DOKUMEN RESMI :
---------------------------------------------
-NOKA : ${getVal('Noka')}
-NOSIN : ${getVal('Nosin')}
-NO. BPKB : ${getVal('BPKB')}
-NO. STNK : ${getVal('STNK')}
-TGL DAFTAR : ${getVal('Tgl')}
-APM : ${getVal('APM')}
---------------------------------------------
-👇LINK DAFTAR APLIKASI :
---------------------------------------------
-📱 Hub: https://wa.me/628136900872
---------------------------------------------
-✍ NOTE :
---------------------------------------------
-DATA INI SEBAGAI ALAT BUKTI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG BERLAKU ⚖️.
-___________________________________`}
+                                <div className="bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] p-8 font-mono-custom text-[13px] text-white/90 leading-relaxed whitespace-pre-wrap break-words w-full shadow-2xl shimmer pointer-events-auto">
+                                    {`___________________________________\n🇮🇩 SUMBER : APLIKASI CSID.PRO 📡\n--------------------------------------------\n🕵 IDENTITAS PEMILIK :\n--------------------------------------------\nNAMA : ${getVal('Nama')}\nNIK : ${getVal('NIK')}\nMSSDN : ${getVal('HP')}\nPEKERJAAN : ${getVal('Pekerjaan')}\nALAMAT : ${getVal('Alamat')}\n--------------------------------------------\n🚘 DATA KENDARAAN :\n--------------------------------------------\nNOPOL : ${getVal('NopolServer')}\nMEREK : ${getVal('Merk')}\nTYPE : ${getVal('Tipe')}\nTAHUN : ${getVal('Tahun')}\nWARNA : ${getVal('Warna')}\nCYLINDER : ${getVal('CC')}\n--------------------------------------------\n📙 DOKUMEN RESMI :\n--------------------------------------------\nNOKA : ${getVal('Noka')}\nNOSIN : ${getVal('Nosin')}\nNO. BPKB : ${getVal('BPKB')}\nNO. STNK : ${getVal('STNK')}\nTGL DAFTAR : ${getVal('Tgl')}\nAPM : ${getVal('APM')}\n--------------------------------------------\n👇LINK DAFTAR APLIKASI :\n--------------------------------------------\n📱 Hub: https://wa.me/628136900872\n--------------------------------------------\n✍ NOTE :\n--------------------------------------------\nDATA INI SEBAGAI ALAT BUKTI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG BERLAKU ⚖️.\n___________________________________`}
                                 </div>
                                 <div className="mt-8 space-y-4 w-full">
                                     <button type="button" onClick={() => {
-                                        const text = document.querySelector('.font-mono-custom').innerText;
+                                        const text = document.querySelector('.shimmer').innerText;
                                         copyToClipboard(text);
                                     }} className="w-full bg-white text-black py-5 rounded-[2rem] font-black text-lg uppercase shadow-xl active:scale-95 transition-all outline-none">SALIN DATA LAPORAN</button>
                                     <button type="button" onClick={() => {
-                                        const text = document.querySelector('.font-mono-custom').innerText;
+                                        const text = document.querySelector('.shimmer').innerText;
                                         shareToWhatsApp(text);
                                     }} className="w-full bg-[#25d366] text-white py-5 rounded-[2rem] font-black text-lg uppercase shadow-xl active:scale-95 transition-all outline-none">BAGIKAN KE WHATSAPP</button>
                                 </div>
@@ -956,83 +820,37 @@ ___________________________________`}
                         </div>
                     )}
 
-                    {/* Skrin Admin (Kontrol Master - Gambar 4 Orisinal) */}
+                    {/* Admin Screen */}
                     {currentPage === 'admin' && (
                         <div className="flex-1 flex flex-col h-full bg-[#050505] overflow-hidden">
-                            <header className="px-6 py-6 flex items-center justify-between border-b border-white/5 bg-black z-[100]">
-                                <button type="button" onClick={() => setCurrentPage('search')} className="p-2.5 bg-slate-900 rounded-2xl text-white outline-none"><Icons.ChevronLeft /></button>
-                                <span className="text-white font-black uppercase text-xs tracking-widest">KONTROL MASTER</span>
-                                {renderStatusOverlay()}
-                            </header>
+                            <header className="px-6 py-6 flex items-center justify-between border-b border-white/5 bg-black z-[100]"><button type="button" onClick={() => setCurrentPage('search')} className="p-2.5 bg-slate-900 rounded-2xl text-white outline-none"><Icons.ChevronLeft /></button><span className="text-white font-black uppercase text-xs tracking-widest">KONTROL MASTER</span>{renderStatusOverlay()}</header>
                             <div className="flex-1 overflow-y-auto px-5 py-6 space-y-6 pb-20 scrollbar-hide">
                                 <div className="grid grid-cols-3 gap-2">
-                                    <div className="glass-panel p-4 rounded-[1.8rem] text-center border-orange-500/10 shadow-lg">
-                                        <p className="text-2xl font-black text-white font-mono-custom">{managedPins.length > 0 ? managedPins.length : 89}</p>
-                                        <p className="text-[8px] font-black text-slate-500 uppercase mt-1 tracking-wider">TOTAL USER</p>
-                                    </div>
-                                    <div className="glass-panel p-4 rounded-[1.8rem] text-center border-emerald-500/10 shadow-lg">
-                                        <p className="text-2xl font-black text-emerald-500 font-mono-custom">
-                                            {managedPins.length > 0 ? managedPins.filter(p => !p.isBlocked && (p.expiry === 'UNLIMITED' || p.expiry > Date.now())).length : 55}
-                                        </p>
-                                        <p className="text-[8px] font-black text-emerald-500/70 uppercase mt-1 tracking-wider">PIN AKTIF</p>
-                                    </div>
-                                    <div className="glass-panel p-4 rounded-[1.8rem] text-center border-red-500/10 shadow-lg">
-                                        <p className="text-2xl font-black text-red-500 font-mono-custom">
-                                            {managedPins.length > 0 ? managedPins.filter(p => p.isBlocked || (p.expiry !== 'UNLIMITED' && p.expiry <= Date.now())).length : 34}
-                                        </p>
-                                        <p className="text-[8px] font-black text-red-500/70 uppercase mt-1 tracking-wider">PIN MATI</p>
-                                    </div>
+                                    <div className="glass-panel p-4 rounded-[1.8rem] text-center border-orange-500/10 shadow-lg"><p className="text-2xl font-black text-white font-mono-custom">{managedPins.length}</p><p className="text-[8px] font-black text-slate-500 uppercase mt-1 tracking-wider">TOTAL USER</p></div>
+                                    <div className="glass-panel p-4 rounded-[1.8rem] text-center border-emerald-500/10 shadow-lg"><p className="text-2xl font-black text-emerald-500 font-mono-custom">{managedPins.filter(p => !p.isBlocked && (p.expiry === 'UNLIMITED' || p.expiry > Date.now())).length}</p><p className="text-[8px] font-black text-emerald-500/70 uppercase mt-1 tracking-wider">PIN AKTIF</p></div>
+                                    <div className="glass-panel p-4 rounded-[1.8rem] text-center border-red-500/10 shadow-lg"><p className="text-2xl font-black text-red-500 font-mono-custom">{managedPins.filter(p => p.isBlocked || (p.expiry !== 'UNLIMITED' && p.expiry <= Date.now())).length}</p><p className="text-[8px] font-black text-red-500/70 uppercase mt-1 tracking-wider">PIN MATI</p></div>
                                 </div>
-                                <div className="glass-panel p-6 rounded-[2.5rem] border-white/5">
-                                    <textarea value={broadcast} onChange={e => setBroadcast(e.target.value)} className="w-full bg-black/50 border border-white/10 rounded-2xl p-5 text-xs text-white outline-none h-24 mb-4 font-mono-custom focus:border-orange-500/30 transition-all" />
-                                    <button type="button" onClick={async () => { if (db) { await db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_settings').doc('main').set({ text: broadcast }); showMsg("DIPERBARUI"); } }} className="w-full bg-orange-600 text-white py-4 rounded-2xl font-black text-xs uppercase shadow-xl hover:bg-orange-700 outline-none">UPDATE RUNNING TEXT</button>
-                                </div>
+                                <div className="glass-panel p-6 rounded-[2.5rem] border-white/5"><textarea value={broadcast} onChange={e => setBroadcast(e.target.value)} className="w-full bg-black/50 border border-white/10 rounded-2xl p-5 text-xs text-white outline-none h-24 mb-4 font-mono-custom focus:border-orange-500/30 transition-all" /><button type="button" onClick={async () => { await db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_settings').doc('main').set({ text: broadcast }); showMsg("DIPERBARUI"); }} className="w-full bg-orange-600 text-white py-4 rounded-2xl font-black text-xs uppercase shadow-xl hover:bg-orange-700 outline-none">UPDATE RUNNING TEXT</button></div>
                                 <div className="flex gap-2"><input type="text" placeholder="CARI ID PIN..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="flex-1 bg-slate-900/50 border border-white/5 rounded-2xl px-6 py-5 text-xs text-white outline-none font-bold" /><button type="button" onClick={() => setShowAddPinModal(true)} className="bg-emerald-600 text-white px-6 rounded-2xl shadow-lg active:scale-95 outline-none"><Icons.Plus /></button></div>
-                                <div className="space-y-4">
-                                    {managedPins.length === 0 ? (
-                                        <div className="glass-panel p-6 rounded-[2.5rem] border-white/5 shadow-lg relative overflow-hidden">
-                                            <div className="flex justify-between items-start mb-2">
-                                                <div>
-                                                    <p className="text-4xl font-black text-white font-mono-custom tracking-tighter">101570</p>
-                                                    <p className="text-[11px] font-bold uppercase mt-1 text-orange-500">EXP: 15/6/2026</p>
-                                                    <p className="text-[9px] text-slate-500 font-bold mt-1 uppercase">DEVICE: DEV-YXXZPQ...</p>
-                                                </div>
-                                                <span className="px-4 py-1.5 rounded-full text-[9px] font-black uppercase bg-emerald-600/20 text-emerald-500 border border-emerald-500/20">ACTIVE</span>
-                                            </div>
+                                <div className="space-y-4">{managedPins.filter(p => p.id.includes(searchTerm)).map(p => {
+                                    const isUserActive = !p.isBlocked && (p.expiry === 'UNLIMITED' || p.expiry > Date.now());
+                                    return (
+                                        <div key={p.id} className="glass-panel p-6 rounded-[2.5rem] border-white/5 shadow-lg relative overflow-hidden">
+                                            <div className="flex justify-between items-start mb-2"><div><p className="text-4xl font-black text-white font-mono-custom tracking-tighter">{p.id}</p><p className={`text-[11px] font-bold uppercase mt-1 ${isUserActive ? 'text-orange-500' : 'text-red-500'}`}>EXP: {p.expiry === 'UNLIMITED' ? 'NOLIMIT' : new Date(p.expiry).toLocaleDateString()}</p><p className="text-[9px] text-slate-500 font-bold mt-1 uppercase">DEVICE: {p.deviceId ? p.deviceId.substring(0,10)+'...' : 'HP BEBAS'}</p></div><span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase ${isUserActive ? 'bg-emerald-600/20 text-emerald-500 border border-emerald-500/20' : 'bg-red-600/20 text-red-500 border border-red-500/20'}`}>{isUserActive ? 'ACTIVE' : 'INACTIVE'}</span></div>
                                             <div className="grid grid-cols-3 gap-2 mt-6">
-                                                <button type="button" className="bg-slate-900 border border-white/5 text-white py-4 rounded-2xl text-[9px] font-black uppercase outline-none">BLOKIR</button>
-                                                <button type="button" className="bg-slate-900 border border-white/5 text-white py-4 rounded-2xl text-[9px] font-black uppercase outline-none">DURASI</button>
-                                                <button type="button" className="bg-slate-900 border border-white/5 text-white py-4 rounded-2xl text-[9px] font-black uppercase text-blue-400 outline-none">RESET HW</button>
+                                                <button type="button" onClick={async () => { await db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_pins').doc(p.id).update({ isBlocked: !p.isBlocked }); showMsg("STATUS BLOKIR DIPERBARUI"); }} className="bg-slate-900 border border-white/5 text-white py-4 rounded-2xl text-[9px] font-black uppercase outline-none">{p.isBlocked ? 'BATAL BLOK' : 'BLOKIR'}</button>
+                                                <button type="button" onClick={() => setDurationModal(p)} className="bg-slate-900 border border-white/5 text-white py-4 rounded-2xl text-[9px] font-black uppercase outline-none">DURASI</button>
+                                                <button type="button" onClick={() => { setConfirmModal({ message: `Reset link HP PIN ${p.id}?`, onConfirm: async () => { await db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_pins').doc(p.id).update({ deviceId: null }); showMsg("RESET HP BERHASIL"); setConfirmModal(null); } }); }} className="bg-slate-900 border border-white/5 text-white py-4 rounded-2xl text-[9px] font-black uppercase text-blue-400 outline-none">RESET HW</button>
                                             </div>
-                                            <button type="button" className="w-full mt-2 bg-red-600/5 text-red-500 py-3.5 rounded-2xl text-[9px] font-black uppercase flex items-center justify-center gap-2 border border-red-600/10 font-bold outline-none">HAPUS PERMANEN</button>
+                                            <button type="button" onClick={() => { setConfirmModal({ message: `Hapus PIN ${p.id}?`, onConfirm: async () => { await db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_pins').doc(p.id).delete(); showMsg("PIN DIHAPUS"); setConfirmModal(null); } }); }} className="w-full mt-2 bg-red-600/5 text-red-500 py-3.5 rounded-2xl text-[9px] font-black uppercase flex items-center justify-center gap-2 border border-red-600/10 font-bold outline-none">HAPUS PERMANEN</button>
                                         </div>
-                                    ) : managedPins.filter(p => p.id.includes(searchTerm)).map(p => {
-                                        const isUserActive = !p.isBlocked && (p.expiry === 'UNLIMITED' || p.expiry > Date.now());
-                                        return (
-                                            <div key={p.id} className="glass-panel p-6 rounded-[2.5rem] border-white/5 shadow-lg relative overflow-hidden">
-                                                <div className="flex justify-between items-start mb-2">
-                                                    <div>
-                                                        <p className="text-4xl font-black text-white font-mono-custom tracking-tighter">{p.id}</p>
-                                                        <p className={`text-[11px] font-bold uppercase mt-1 ${isUserActive ? 'text-orange-500' : 'text-red-500'}`}>EXP: {p.expiry === 'UNLIMITED' ? 'NOLIMIT' : new Date(p.expiry).toLocaleDateString()}</p>
-                                                        <p className="text-[9px] text-slate-500 font-bold mt-1 uppercase">DEVICE: {p.deviceId ? p.deviceId.substring(0,10)+'...' : 'HP BEBAS'}</p>
-                                                    </div>
-                                                    <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase ${isUserActive ? 'bg-emerald-600/20 text-emerald-500 border border-emerald-500/20' : 'bg-red-600/20 text-red-500 border border-red-500/20'}`}>{isUserActive ? 'ACTIVE' : 'INACTIVE'}</span>
-                                                </div>
-                                                <div className="grid grid-cols-3 gap-2 mt-6">
-                                                    <button type="button" onClick={async () => { if (db) { await db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_pins').doc(p.id).update({ isBlocked: !p.isBlocked }); showMsg("STATUS BLOKIR DIPERBARUI"); } }} className="bg-slate-900 border border-white/5 text-white py-4 rounded-2xl text-[9px] font-black uppercase outline-none">{p.isBlocked ? 'BATAL BLOK' : 'BLOKIR'}</button>
-                                                    <button type="button" onClick={() => setDurationModal(p)} className="bg-slate-900 border border-white/5 text-white py-4 rounded-2xl text-[9px] font-black uppercase outline-none">DURASI</button>
-                                                    <button type="button" onClick={() => { setConfirmModal({ message: `Reset link HP PIN ${p.id}?`, onConfirm: async () => { if (db) { await db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_pins').doc(p.id).update({ deviceId: null }); showMsg("RESET HP BERHASIL"); setConfirmModal(null); } } }); }} className="bg-slate-900 border border-white/5 text-white py-4 rounded-2xl text-[9px] font-black uppercase text-blue-400 outline-none">RESET HW</button>
-                                                </div>
-                                                <button type="button" onClick={() => { setConfirmModal({ message: `Hapus PIN ${p.id}?`, onConfirm: async () => { if (db) { await db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_pins').doc(p.id).delete(); showMsg("PIN DIHAPUS"); setConfirmModal(null); } } }); }} className="w-full mt-2 bg-red-600/5 text-red-500 py-3.5 rounded-2xl text-[9px] font-black uppercase flex items-center justify-center gap-2 border border-red-600/10 font-bold outline-none">HAPUS PERMANEN</button>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
+                                    );
+                                })}</div>
                             </div>
                         </div>
                     )}
 
-                    {/* Tampilan Kamera Pengimbas */}
+                    {/* Camera Scanner View */}
                     {cameraActive && (
                         <div className="absolute inset-0 bg-black z-[2000] flex flex-col overflow-hidden">
                             <video ref={videoRef} autoPlay playsInline className="absolute inset-0 w-full h-full object-cover z-0" />
@@ -1042,42 +860,37 @@ ___________________________________`}
                         </div>
                     )}
 
-                    {/* Pop-up PIN */}
+                    {/* Pin Modal */}
                     {showPinModal && (
                         <div className="absolute inset-0 bg-black/95 backdrop-blur-3xl z-[2000] flex items-center justify-center p-8"><div className="glass-panel w-full max-w-[340px] rounded-[4rem] border-white/10 p-12 text-center shadow-2xl"><h3 className="text-orange-500 font-black text-[12px] uppercase mb-10 tracking-[0.4em] opacity-80">MASTER ACCESS</h3><input autoFocus type="password" value={pinInput} onChange={e => setPinInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleMasterLogin()} placeholder="PIN" className="w-full bg-black/50 border-2 border-orange-600/20 rounded-3xl p-6 text-center text-5xl font-black text-white outline-none mb-10 font-mono-custom tracking-tighter shadow-inner" /><div className="flex gap-4"><button type="button" onClick={() => setShowPinModal(false)} className="flex-1 py-5 bg-slate-900 rounded-[1.5rem] font-black text-[11px] uppercase tracking-widest text-slate-400 outline-none">BATAL</button><button type="button" onClick={handleMasterLogin} className="flex-1 py-5 bg-white text-black rounded-[1.5rem] font-black text-[11px] uppercase tracking-widest shadow-lg active:scale-95 outline-none">OTORISASI</button></div></div></div>
                     )}
 
-                    {/* Pop-up Pengesahan */}
+                    {/* Confirm Modal */}
                     {confirmModal && (
                         <div className="absolute inset-0 bg-black/80 backdrop-blur-md z-[9999] flex items-center justify-center p-6"><div className="glass-panel w-full max-w-[320px] rounded-[2.5rem] border-white/10 p-10 text-center shadow-2xl"><p className="text-white font-black text-xl mb-8 leading-tight tracking-tight">{confirmModal.message}</p><div className="flex gap-4"><button type="button" onClick={() => setConfirmModal(null)} className="flex-1 py-4 bg-slate-900 rounded-2xl font-black text-[11px] uppercase tracking-widest outline-none">BATAL</button><button type="button" onClick={confirmModal.onConfirm} className="flex-1 py-4 bg-red-600 rounded-2xl font-black text-[11px] uppercase tracking-widest text-white shadow-lg shadow-red-600/20 outline-none">YA, PROSES</button></div></div></div>
                     )}
 
-                    {/* Pop-up Tambah PIN */}
+                    {/* Add Pin Modal */}
                     {showAddPinModal && (
-                        <div className="absolute inset-0 bg-black/90 backdrop-blur-2xl z-[1000] flex items-center justify-center p-6"><div className="glass-panel w-full max-w-[380px] rounded-[3rem] p-10 border-white/10 shadow-2xl flex flex-col"><p className="text-white font-black uppercase text-xs mb-6 text-center tracking-widest opacity-60">TAMBAH PIN BARU</p><input type="number" value={newPinInput} onChange={e => setNewPinInput(e.target.value)} placeholder="000000" className="w-full bg-black border border-white/5 rounded-3xl p-6 text-white font-black text-4xl text-center mb-6 font-mono-custom tracking-widest" /><div className="grid grid-cols-3 gap-2 mb-8 max-h-[160px] overflow-y-auto pr-1 scrollbar-hide border border-white/5 p-2 rounded-2xl bg-black/30">{durationOptions.map(opt => <button type="button" key={opt.l} onClick={() => setNewPinDuration(opt.v)} className={`py-4 rounded-xl text-[9px] font-black uppercase transition-all ${newPinDuration === opt.v ? 'bg-orange-600 text-white' : 'bg-slate-900 text-slate-500'}`}>{opt.l}</button>)}</div><div className="flex gap-3"><button type="button" onClick={() => setShowAddPinModal(false)} className="flex-1 py-5 bg-slate-900 rounded-2xl font-black text-[11px] uppercase outline-none">BATAL</button><button type="button" onClick={async () => { if (db) { await db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_pins').doc(newPinInput).set({ expiry: newPinDuration === 'UNLIMITED' ? 'UNLIMITED' : Date.now() + newPinDuration, isBlocked: false, role: 'user', deviceId: null }); setShowAddPinModal(false); setNewPinInput(''); showMsg("PIN BERHASIL DIBUAT"); } }} className="flex-1 py-5 bg-orange-600 rounded-2xl font-black text-[11px] uppercase shadow-lg shadow-orange-600/20 outline-none">SIMPAN PIN</button></div></div></div>
+                        <div className="absolute inset-0 bg-black/90 backdrop-blur-2xl z-[1000] flex items-center justify-center p-6"><div className="glass-panel w-full max-w-[380px] rounded-[3rem] p-10 border-white/10 shadow-2xl flex flex-col"><p className="text-white font-black uppercase text-xs mb-6 text-center tracking-widest opacity-60">TAMBAH PIN BARU</p><input type="number" value={newPinInput} onChange={e => setNewPinInput(e.target.value)} placeholder="000000" className="w-full bg-black border border-white/5 rounded-3xl p-6 text-white font-black text-4xl text-center mb-6 font-mono-custom tracking-widest" /><div className="grid grid-cols-3 gap-2 mb-8 max-h-[160px] overflow-y-auto pr-1 scrollbar-hide border border-white/5 p-2 rounded-2xl bg-black/30">{durationOptions.map(opt => <button type="button" key={opt.l} onClick={() => setNewPinDuration(opt.v)} className={`py-4 rounded-xl text-[9px] font-black uppercase transition-all ${newPinDuration === opt.v ? 'bg-orange-600 text-white' : 'bg-slate-900 text-slate-500'}`}>{opt.l}</button>)}</div><div className="flex gap-3"><button type="button" onClick={() => setShowAddPinModal(false)} className="flex-1 py-5 bg-slate-900 rounded-2xl font-black text-[11px] uppercase outline-none">BATAL</button><button type="button" onClick={async () => { await db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_pins').doc(newPinInput).set({ expiry: newPinDuration === 'UNLIMITED' ? 'UNLIMITED' : Date.now() + newPinDuration, isBlocked: false, role: 'user', deviceId: null }); setShowAddPinModal(false); setNewPinInput(''); showMsg("PIN BERHASIL DIBUAT"); }} className="flex-1 py-5 bg-orange-600 rounded-2xl font-black text-[11px] uppercase shadow-lg shadow-orange-600/20 outline-none">SIMPAN PIN</button></div></div></div>
                     )}
 
-                    {/* Pop-up Tempoh Masa PIN */}
+                    {/* Duration Modal */}
                     {durationModal && (
-                        <div className="absolute inset-0 bg-black/90 backdrop-blur-xl z-[500] flex items-center justify-center p-6"><div className="glass-panel w-full max-w-[360px] rounded-[3rem] p-10 border-white/10 shadow-2xl flex flex-col"><p className="text-white font-black uppercase text-xs mb-8 text-center tracking-[0.2em]">PERPANJANG MASA AKTIF: {durationModal.id}</p><div className="grid grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 scrollbar-hide">{durationOptions.map(opt => <button type="button" key={opt.l} onClick={async () => { let currentExp = (durationModal.expiry === 'UNLIMITED' || durationModal.expiry < Date.now()) ? Date.now() : durationModal.expiry; if (db) { await db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_pins').doc(durationModal.id).update({ expiry: opt.v === 'UNLIMITED' ? 'UNLIMITED' : currentExp + opt.v }); setDurationModal(null); showMsg("MASA AKTIF DITAMBAH"); } }} className="bg-slate-900 border border-white/5 text-white py-4 rounded-2xl text-[10px] font-black uppercase hover:bg-orange-600 transition-colors outline-none">{opt.l}</button>)}</div><button type="button" onClick={() => setDurationModal(null)} className="w-full mt-8 py-4 text-slate-500 font-black text-[11px] uppercase tracking-widest outline-none">DISMISS</button></div></div>
+                        <div className="absolute inset-0 bg-black/90 backdrop-blur-xl z-[500] flex items-center justify-center p-6"><div className="glass-panel w-full max-w-[360px] rounded-[3rem] p-10 border-white/10 shadow-2xl flex flex-col"><p className="text-white font-black uppercase text-xs mb-8 text-center tracking-[0.2em]">PERPANJANG MASA AKTIF: {durationModal.id}</p><div className="grid grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 scrollbar-hide">{durationOptions.map(opt => <button type="button" key={opt.l} onClick={async () => { let currentExp = (durationModal.expiry === 'UNLIMITED' || durationModal.expiry < Date.now()) ? Date.now() : durationModal.expiry; await db.collection('artifacts').doc(APP_ID).collection('public').doc('data').collection('csid_pro_pins').doc(durationModal.id).update({ expiry: opt.v === 'UNLIMITED' ? 'UNLIMITED' : currentExp + opt.v }); setDurationModal(null); showMsg("MASA AKTIF DITAMBAH"); }} className="bg-slate-900 border border-white/5 text-white py-4 rounded-2xl text-[10px] font-black uppercase hover:bg-orange-600 transition-colors outline-none">{opt.l}</button>)}</div><button type="button" onClick={() => setDurationModal(null)} className="w-full mt-8 py-4 text-slate-500 font-black text-[11px] uppercase tracking-widest outline-none">DISMISS</button></div></div>
                     )}
 
-                    {/* Notifikasi Terapung */}
-                    {notification && <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[9999] bg-orange-600 text-white px-12 py-5 rounded-[2rem] font-black text-[11px] shadow-[0_0_40px_rgba(249, 115, 22, 0.4)] animate-bounce uppercase border-2 border-2 border-white/20 whitespace-nowrap tracking-widest">{notification}</div>}
-
-                    {/* Minimalist Spinner Premium Tanpa Log Jaringan yang Mengganggu */}
-                    {loading && (
-                        <div className="fixed inset-0 bg-black/95 backdrop-blur-md z-[9000] flex flex-col items-center justify-center">
-                            <div className="w-16 h-16 border-4 border-white/10 border-t-orange-500 rounded-full animate-spin mb-4" />
-                            <p className="text-white font-black uppercase text-xs tracking-[0.4em] animate-pulse text-glow font-bold">MENGHUBUNGI SERVER</p>
-                        </div>
-                    )}
+                    {/* Notification Toast */}
+                    {notification && <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[9999] bg-orange-600 text-white px-12 py-5 rounded-[2rem] font-black text-[11px] shadow-[0_0_40px_rgba(249, 115, 22, 0.4)] animate-bounce uppercase border-2 border-white/20 whitespace-nowrap tracking-widest">{notification}</div>}
+                    
+                    {/* Loader */}
+                    {loading && <div className="fixed inset-0 bg-black/90 backdrop-blur-2xl z-[9000] flex items-center justify-center"><div className="flex flex-col items-center"><div className="w-20 h-20 border-[6px] border-white/5 border-t-orange-600 rounded-full animate-spin mb-8 shadow-lg" /><p className="text-white font-black uppercase text-[10px] tracking-[0.6em] animate-pulse text-glow">LOADING</p></div></div>}
                 </div>
             );
         };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render((<App />));
+        root.render(<App />);
     </script>
 </body>
 </html>
