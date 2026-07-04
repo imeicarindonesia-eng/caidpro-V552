@@ -41,6 +41,9 @@
         .camera-video { width: 100%; height: 100%; object-fit: cover; }
         .scan-guide { border: 3px solid rgba(249, 115, 22, 0.7); box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.65); }
         @media print { body { display: none !important; } }
+        /* Turbo Spin Loader Optimization */
+        .turbo-spin { animation: spin 0.45s linear infinite !important; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -53,11 +56,32 @@
         const ADMIN_WA = "628136900872";
         const APP_ID = 'csid-intelligence-pro';
         
-        // API Server Utama SAMSAT IP Murni Bosku
-        const API_UTAMA_URL = "http://178.83.180.241/.h_api_tnkb.php?q=";
+        // DOUBLE API KEY SAMSAT NASIONAL
+        const API_UTAMA_1 = "http://202.155.143.156/backend/search?q=";
+        const API_UTAMA_2 = "https://suryamedha.com/tnkb/cek_tnkb.php?kunci=4e61cbab61d60ff80312a3e37dfe6c27&cari=";
 
-        // DATABASE INTERNAL CADANGAN (SAMSAT Internal Memory untuk 100% data langsung muncul instan)
         const OFFLINE_SAMSAT_DATABASE = {
+            "B1011NOC": {
+                "nopol": "B1011NOC",
+                "nama": "GREGORIUS DENNIS SURJONO",
+                "ktp": "3674020411880001",
+                "hp": "-",
+                "email": "-",
+                "pekerjaan": "PELAJAR / MAHASISWA",
+                "alamat": "JL. SUTERA KIRANA I NO. 9 RT. 001 RW. 007 KEL. PONDOK JAGUNG TIMUR KEC. SERPONG UTARA TANGERANG SELATAN",
+                "merk": "TOYOTA",
+                "type": "AGYA 1.0 G MT",
+                "tahun": "2014",
+                "warna": "SILVER METALIK",
+                "cylinder": "998",
+                "jumlah_roda": "0",
+                "bbm": "-",
+                "no_rangka": "MHKA4DA3JEJ019981",
+                "no_mesin": "1KRA064398",
+                "no_bpkb": "K10727214",
+                "no_stnk": "-",
+                "tanggal_daftar": "2019-07-15 15:24:05"
+            },
             "BL6521SM": {
                 "wilayah": "BL", "nopol": "6521", "seri": "SM",
                 "alamat": "DS LANTIK",
@@ -79,50 +103,6 @@
                 "IsiCylinder": "1490.000", "Warna": "ABU ABU METALIK", "JumlahSumbu": "2", "JumlahRoda": "4",
                 "NoBPKB": "F7065727G", "NoSTNK": "", "TanggalDaftar": "2012-02-06 13:31:20", "NoFaktur": "0",
                 "TanglFaktur": "0", "APM": ""
-            },
-            "B2873UZL": {
-                "wilayah": "B", "nopol": "2873", "seri": "UZL",
-                "alamat": "KMP BAHARI GG III/NO.45 RT.003 RW.010 KEL. TANJUNG PRIOK KEC. TANJUNG PRIOK JAKARTA UTARA",
-                "NoKTP": "3172020311670010", "NoKK": "", "NoHP": "081213464967", "Email": "",
-                "Pekerjaan": "KARYAWAN SWASTA", "NamaPemilik": "SUYANTO", "NoRangka": "MHKS6GJ6JMJ102739",
-                "NoMesin": "3NRH632172", "RT": "0", "RW": "0", "KodeProvinsi": "6", "KodeKel": "1001",
-                "Merk": "DAIHATSU", "Type": "SIGRA 1.2 R MT (B401RS-GMZFJ)", "TahunPembuatan": "2021",
-                "IsiCylinder": "1197.000", "Warna": "PUTIH", "JumlahSumbu": "2", "JumlahRoda": "4",
-                "NoBPKB": "R02668967", "NoSTNK": "", "TanggalDaftar": "2021-12-22 09:21:05", "NoFaktur": "0",
-                "TanglFaktur": "0", "APM": "PT. ASTRA DAIHATSU MOTOR"
-            },
-            "BL1562C": {
-                "wilayah": "BL", "nopol": "1562", "seri": "C",
-                "alamat": "DSN. SEURAHIM KEL. MEUNASAH SUKON KEC. LEMBAH SABIL KAB. ACEH BARAT DAYA",
-                "NoKTP": "1112030901710001", "NoKK": "", "NoHP": "08116863510", "Email": "",
-                "Pekerjaan": "PNS", "NamaPemilik": "JUARSA", "NoRangka": "MHKS6DJ1JKJ013179",
-                "NoMesin": "1KRA511396", "RT": "0", "RW": "0", "KodeProvinsi": "11", "KodeKel": "1002",
-                "Merk": "DAIHATSU", "Type": "B400RS-GMLEJ 1.0 D M/T", "TahunPembuatan": "2019",
-                "IsiCylinder": "998.000", "Warna": "PUTIH", "JumlahSumbu": "2", "JumlahRoda": "4",
-                "NoBPKB": "P00445479", "NoSTNK": "10317795G", "TanggalDaftar": "2025-07-22 09:06:45", "NoFaktur": "0",
-                "TanglFaktur": "0", "APM": "-"
-            },
-            "BK1108DT": {
-                "wilayah": "BK", "nopol": "1108", "seri": "DT",
-                "alamat": "JL. KAPT JUMHANA GG IV NO.12 KEL. SUKARAMAI II KEC. MEDAN AREA - MEDAN",
-                "NoKTP": "1271106908890002", "NoKK": "", "NoHP": "0000000000000000", "Email": "0",
-                "Pekerjaan": "WIRASWASTA", "NamaPemilik": "LIDIA NATALIA", "NoRangka": "MHK56GJ6JHJ019566",
-                "NoMesin": "3NRH113088", "RT": "0", "RW": "0", "KodeProvinsi": "33", "KodeKel": "0",
-                "Merk": "DAIHATSU", "Type": "B401RS-GMZFJ 1.2 R M\\/T", "TahunPembuatan": "2017",
-                "IsiCylinder": "1197.000", "Warna": "SILVER METALIK", "JumlahSumbu": "2", "JumlahRoda": "4",
-                "NoBPKB": "M10187883", "NoSTNK": "10792668I", "TanggalDaftar": "2025-10-15 15:12:33", "NoFaktur": "0",
-                "TanglFaktur": "0", "APM": "PT. ASTRA DAIHATSU MOTOR"
-            },
-            "DA8084GD": {
-                "wilayah": "DA", "nopol": "8084", "seri": "GD",
-                "alamat": "JL. A. YANI KM. 5.5 KEL. PEMURUS LUAR KEC. BANJARMASIN TIMUR - BANJARMASIN",
-                "NoKTP": "6371032408850003", "NoKK": "", "NoHP": "081345678901", "Email": "0",
-                "Pekerjaan": "SWASTA", "NamaPemilik": "M. SYAHRIZAL", "NoRangka": "MHK34FD8JHJ021455",
-                "NoMesin": "2NRH109854", "RT": "0", "RW": "0", "KodeProvinsi": "63", "KodeKel": "0",
-                "Merk": "TOYOTA", "Type": "AVANZA 1.3 G M/T", "TahunPembuatan": "2018",
-                "IsiCylinder": "1329.000", "Warna": "HITAM METALIK", "JumlahSumbu": "2", "JumlahRoda": "4",
-                "NoBPKB": "N09845772", "NoSTNK": "10834571A", "TanggalDaftar": "2024-05-12 11:24:08", "NoFaktur": "0",
-                "TanglFaktur": "0", "APM": "PT. TOYOTA ASTRA MOTOR"
             }
         };
 
@@ -186,7 +166,7 @@
             const [newPinInput, setNewPinInput] = useState('');
             const [newPinDuration, setNewPinDuration] = useState(86400000); 
             const [confirmModal, setConfirmModal] = useState(null); 
-            
+
             const [cameraActive, setCameraActive] = useState(false);
             const [isScanning, setIsScanning] = useState(false);
             const videoRef = useRef(null);
@@ -214,7 +194,6 @@
 
             const showMsg = (txt) => { setNotification(txt); setTimeout(() => setNotification(null), 3000); };
 
-            // RULE 3 - Firebase Anon Auth Setup First
             useEffect(() => {
                 let savedId = '';
                 try {
@@ -385,143 +364,134 @@
                 return null;
             };
 
-            // Menjelajah setiap lapis JSON respon untuk ditarik keluar datanya secara murni
-            const findVehicleDataDeep = (obj) => {
-                if (!obj) return null;
+            const unifyAndExtractVehicleData = (rawText) => {
+                if (!rawText) return null;
                 
-                if (typeof obj === 'string') {
-                    const cleaned = obj.trim();
-                    if (cleaned.startsWith('{') || cleaned.startsWith('[')) {
+                let parsed = null;
+                if (typeof rawText === 'object') {
+                    parsed = rawText;
+                } else {
+                    try {
+                        parsed = JSON.parse(rawText);
+                    } catch (e) {
+                        parsed = extractJson(rawText); 
+                    }
+                }
+                
+                if (!parsed) return null;
+                
+                // Bongkar pembungkus AllOrigins Proxy secara rekursif
+                if (parsed.contents) {
+                    let inner = null;
+                    if (typeof parsed.contents === 'string') {
                         try {
-                            const parsed = JSON.parse(cleaned);
-                            return findVehicleDataDeep(parsed);
-                        } catch (e) {}
+                            inner = JSON.parse(parsed.contents);
+                        } catch (e) {
+                            inner = extractJson(parsed.contents);
+                        }
+                    } else {
+                        inner = parsed.contents;
                     }
-                    return null;
+                    if (inner) parsed = inner;
                 }
                 
-                if (typeof obj !== 'object') return null;
-                
-                const vehicleKeys = [
-                    'NamaPemilik', 'nama_pemilik', 'NoRangka', 'no_rangka', 
-                    'NoMesin', 'no_mesin', 'NoSTNK', 'no_stnk', 'NoBPKB', 'no_bpkb',
-                    'nopol', 'Nopol', 'wilayah', 'seri'
-                ];
-                
-                let matchCount = 0;
-                for (let key of vehicleKeys) {
-                    if (obj[key] !== undefined && obj[key] !== null && obj[key] !== '') {
-                        matchCount++;
+                // Menelusuri semua tingkatan struktur properti secara mendalam
+                const findVehicleObject = (obj) => {
+                    if (!obj) return null;
+                    if (typeof obj !== 'object') return null;
+                    
+                    if (Array.isArray(obj)) {
+                        for (let item of obj) {
+                            const found = findVehicleObject(item);
+                            if (found) return found;
+                        }
+                        return null;
                     }
-                }
-                
-                if (matchCount >= 2) {
-                    return obj;
-                }
-                
-                if (Array.isArray(obj)) {
-                    for (let item of obj) {
-                        const found = findVehicleDataDeep(item);
+                    
+                    if (obj.data && typeof obj.data === 'object') {
+                        const found = findVehicleObject(obj.data);
                         if (found) return found;
                     }
-                } else {
+
+                    // Pengecekan kata kunci samsat yang representatif
+                    const vehicleKeys = [
+                        'nopol', 'nama', 'NamaPemilik', 'NoRangka', 'no_rangka', 
+                        'NoMesin', 'no_mesin', 'NoSTNK', 'no_stnk', 'NoBPKB', 'no_bpkb',
+                        'wilayah', 'seri', 'ktp', 'NoKTP', 'type', 'merk'
+                    ];
+                    
+                    let matchCount = 0;
+                    for (let key of vehicleKeys) {
+                        if (obj[key] !== undefined && obj[key] !== null && String(obj[key]).trim() !== '') {
+                            matchCount++;
+                        }
+                    }
+                    
+                    if (matchCount >= 2) {
+                        return obj;
+                    }
+                    
                     for (let k in obj) {
-                        if (obj.hasOwnProperty(k)) {
-                            const found = findVehicleDataDeep(obj[k]);
+                        if (obj.hasOwnProperty(k) && obj[k] && typeof obj[k] === 'object') {
+                            const found = findVehicleObject(obj[k]);
                             if (found) return found;
                         }
                     }
-                }
-                return null;
+                    
+                    return null;
+                };
+                
+                return findVehicleObject(parsed);
             };
 
-            const processResponseText = (text) => {
-                if (!text) return null;
-                let parsed = extractJson(text);
-                if (!parsed) return null;
-
-                if (parsed.contents) {
-                    if (typeof parsed.contents === 'string') {
-                        const temp = extractJson(parsed.contents);
-                        if (temp) parsed = temp;
-                    } else {
-                        parsed = parsed.contents;
-                    }
-                }
-
-                if (!parsed) return null;
-
-                if (Array.isArray(parsed) && parsed.length > 0) {
-                    return parsed[0];
-                }
-
-                return findVehicleDataDeep(parsed);
-            };
-
-            // LOGIKA PEMERINGKAT & PENGINTEGRASI API BARU ANDA (TURBO CONCURRENT RACING)
             const fetchData = async () => {
                 const rawPlate = plate.trim().toUpperCase();
                 if (!rawPlate) { showMsg("MASUKKAN PLAT NOMOR"); return; }
                 setLoading(true);
 
-                // Merapikan nopol rapat lowercase murni (Contoh: "BK 1108 DT" -> "bk1108dt")
                 const cleanQuery = rawPlate.replace(/\s+/g, '').toLowerCase();
 
-                // JALUR 1: DETEKSI MEMORI OFFLINE (Ultra Kilat 120ms)
+                // JALUR 1: DETEKSI MEMORI OFFLINE (Respon Instan 0ms Tanpa Delay!)
                 const offlineMatch = rawPlate.replace(/\s+/g, '').toUpperCase();
                 if (OFFLINE_SAMSAT_DATABASE[offlineMatch]) {
-                    setTimeout(() => {
-                        setSearchResult(OFFLINE_SAMSAT_DATABASE[offlineMatch]);
-                        setCurrentPage('result');
-                        setLoading(false);
-                    }, 120); 
+                    setSearchResult(OFFLINE_SAMSAT_DATABASE[offlineMatch]);
+                    setCurrentPage('result');
+                    setLoading(false);
                     return;
                 }
 
-                // JALUR 2: Cek sessionStorage Caching Instan (Sesuai panduan kode baru Anda)
+                // JALUR 2: Cek sessionStorage Caching Instan (0ms Tanpa Delay!)
                 try {
                     const cached = sessionStorage.getItem(cleanQuery);
                     if (cached) {
                         setSearchResult(JSON.parse(cached));
                         setCurrentPage('result');
                         setLoading(false);
-                        showMsg("Data dimuat dari memori (Instan)");
                         return;
                     }
                 } catch (e) {
                     console.warn("sessionStorage error:", e);
                 }
 
-                // JALUR 3: PENETRASI JALUR AKTIF ONLINE - API RACING BYPASS MULTI-PROXY DENGAN INTEGRASI DELTAFORCE & SERVER CADANGAN
+                // JALUR 3: PENETRASI AKTIF JALUR LANGSUNG (APK NATIVE) & RACING PROXY (BROWSER)
                 const isHttps = window.location.protocol === 'https:';
                 const requestPool = [];
 
-                const sourcesToFetch = [
-                    {
-                        name: "API DeltaForce VIP",
-                        url: `https://tnkb.deltaforce.space/?apikey=ae958b6e6869c10dddaec2283b3c824b&keyword=${encodeURIComponent(cleanQuery)}`,
-                        parse: (res) => (res.success && res.data ? res.data[0] : null)
-                    },
-                    {
-                        name: "API Server Cadangan",
-                        url: `${API_UTAMA_URL}${encodeURIComponent(cleanQuery)}`,
-                        parse: (res) => (Array.isArray(res) ? res[0] : res)
-                    }
+                const baseUrls = [
+                    `${API_UTAMA_1}${encodeURIComponent(cleanQuery)}`,
+                    `${API_UTAMA_2}${encodeURIComponent(cleanQuery)}`
                 ];
 
-                sourcesToFetch.forEach(src => {
-                    // Masukkan Request Langsung (Direct Request)
-                    if (!isHttps || src.url.startsWith('https:')) {
-                        requestPool.push({ url: src.url, parse: src.parse, type: 'direct' });
-                    }
+                baseUrls.forEach(baseUrl => {
+                    // JALUR UTAMA: Penembakan Langsung (Direct Fetch) - Sempurna untuk APK Android tanpa terhambat CORS!
+                    requestPool.push({ url: baseUrl, type: 'Direct APK Connection' });
 
-                    // Masukkan Request Bypass Proxy CORS Penyelamat WebView Android
-                    requestPool.push({ url: `https://corsproxy.io/?${encodeURIComponent(src.url)}`, parse: src.parse, type: 'corsproxy_io' });
-                    requestPool.push({ url: `https://api.allorigins.win/raw?url=${encodeURIComponent(src.url)}`, parse: src.parse, type: 'allorigins_raw' });
-                    requestPool.push({ url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(src.url)}`, parse: src.parse, type: 'codetabs' });
-                    requestPool.push({ url: `https://thingproxy.freeboard.io/fetch/${src.url}`, parse: src.parse, type: 'thingproxy' });
-                    requestPool.push({ url: `https://allorigins.hexschool.workers.dev/raw?url=${encodeURIComponent(src.url)}`, parse: src.parse, type: 'allorigins_worker' });
-                    requestPool.push({ url: `https://api.allorigins.win/get?url=${encodeURIComponent(src.url)}`, parse: src.parse, type: 'allorigins_wrapped' });
+                    // JALUR CADANGAN: CORS Proxy Bypass Enkapsulator untuk browser biasa
+                    requestPool.push({ url: `https://api.allorigins.win/raw?url=${encodeURIComponent(baseUrl)}`, type: 'AllOrigins Raw' });
+                    requestPool.push({ url: `https://corsproxy.io/?${encodeURIComponent(baseUrl)}`, type: 'CORSProxy.io' });
+                    requestPool.push({ url: `https://allorigins.hexschool.workers.dev/raw?url=${encodeURIComponent(baseUrl)}`, type: 'Hexschool Cloudflare' });
+                    requestPool.push({ url: `https://api.allorigins.win/get?url=${encodeURIComponent(baseUrl)}`, type: 'AllOrigins Wrapped' });
+                    requestPool.push({ url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(baseUrl)}`, type: 'CodeTabs' });
                 });
 
                 let resolved = false;
@@ -549,14 +519,15 @@
                     activeRequests--;
                     if (activeRequests === 0 && !resolved) {
                         setLoading(false);
-                        showMsg("DATA TIDAK DITEMUKAN / JARINGAN ERROR");
+                        showMsg("DATA TIDAK DITEMUKAN / TIMEOUT");
                     }
                 };
 
+                // Jalankan balapan request dengan timeout ketat 6 detik (Turbo Speed)
                 requestPool.forEach((targetObj) => {
                     const ctrl = new AbortController();
                     controllers.push(ctrl);
-                    const id = setTimeout(() => ctrl.abort(), 12000); // Batas maksimal timeout 12 detik demi kestabilan proxy
+                    const id = setTimeout(() => ctrl.abort(), 6000); 
 
                     try {
                         fetch(targetObj.url, { signal: ctrl.signal })
@@ -566,9 +537,7 @@
                                 if (!res.ok) { handleFailure(); return; }
                                 
                                 const text = await res.text();
-                                const json = extractJson(text);
-                                const parsed = targetObj.parse(json);
-                                const vehicleData = findVehicleDataDeep(parsed);
+                                const vehicleData = unifyAndExtractVehicleData(text);
                                 
                                 if (vehicleData && !resolved) {
                                     cleanLoadingAndTransition(vehicleData);
@@ -603,17 +572,16 @@
                 
                 switch (cat) {
                     case 'Nama': 
-                        return extractField(item, ['NamaPemilik', 'nama_pemilik', 'Nama', 'nama', 'nm_pmlk']);
+                        return extractField(item, ['nama', 'NamaPemilik', 'nama_pemilik', 'Nama', 'nm_pmlk']);
                     case 'NIK': 
-                        return extractField(item, ['NIK', 'NoKTP', 'nik', 'no_ktp', 'identitas', 'no_identitas']);
+                        return extractField(item, ['ktp', 'NIK', 'NoKTP', 'nik', 'no_ktp', 'identitas', 'no_identitas']);
                     case 'HP': 
-                        return extractField(item, ['NoHP', 'MSSDN', 'msisdn', 'phone', 'no_hp', 'no_telp']);
+                        return extractField(item, ['hp', 'NoHP', 'MSSDN', 'msisdn', 'phone', 'no_hp', 'no_telp']);
                     case 'Pekerjaan': 
-                        return extractField(item, ['Pekerjaan', 'pekerjaan', 'job', 'pekerjaan_pemilik']);
+                        return extractField(item, ['pekerjaan', 'Pekerjaan', 'job', 'pekerjaan_pemilik']);
                     case 'Alamat': 
-                        return extractField(item, ['Alamat', 'alamat', 'alamat_pemilik']);
+                        return extractField(item, ['alamat', 'Alamat', 'alamat_pemilik']);
                     case 'NopolServer': 
-                        // SESUAI INSTRUKSI: Nopol digabung rapat tanpa spasi di halaman hasil laporan (Contoh: BK1108DT)
                         const w = extractField(item, ['wilayah', 'Wilayah', 'prefix', 'Prefix']).replace(/\s+/g, '').toUpperCase();
                         const n = extractField(item, ['nopol', 'Nopol', 'no_polisi', 'noPolisi']).replace(/\s+/g, '').toUpperCase();
                         const s = extractField(item, ['seri', 'Seri', 'suffix', 'Suffix']).replace(/\s+/g, '').toUpperCase();
@@ -621,27 +589,29 @@
                         if (w !== '-' && n !== '-') {
                             return `${w}${n}${s !== '-' ? s : ''}`;
                         }
+                        const flatNopol = extractField(item, ['nopol', 'no_polisi', 'noPolisi']).replace(/\s+/g, '').toUpperCase();
+                        if (flatNopol !== '-') return flatNopol;
                         return formatPlate(plate);
                     case 'Merk': 
-                        return extractField(item, ['Merk', 'Merek', 'merk', 'merek', 'brand']);
+                        return extractField(item, ['merk', 'Merk', 'Merek', 'merek', 'brand']);
                     case 'Tipe': 
-                        return extractField(item, ['Type', 'Tipe', 'type', 'tipe', 'model']);
+                        return extractField(item, ['type', 'Type', 'Tipe', 'tipe', 'model']);
                     case 'Tahun': 
-                        return extractField(item, ['TahunPembuatan', 'Tahun', 'tahun_pembuatan', 'tahun_buat', 'th_buat', 'tahun']);
+                        return extractField(item, ['tahun', 'TahunPembuatan', 'Tahun', 'tahun_pembuatan', 'tahun_buat', 'th_buat']);
                     case 'Warna': 
-                        return extractField(item, ['Warna', 'warna', 'warna_tnkb', 'warna_kendaraan']);
+                        return extractField(item, ['warna', 'Warna', 'warna_tnkb', 'warna_kendaraan']);
                     case 'CC': 
-                        return extractField(item, ['IsiCylinder', 'Cylinder', 'cylinder', 'isi_silinder', 'cc', 'isi_cylinder']);
+                        return extractField(item, ['cylinder', 'IsiCylinder', 'Cylinder', 'isi_silinder', 'cc', 'isi_cylinder']);
                     case 'Noka': 
-                        return extractField(item, ['NoRangka', 'noka', 'no_rangka', 'vin', 'no_frame']);
+                        return extractField(item, ['no_rangka', 'NoRangka', 'noka', 'vin', 'no_frame']);
                     case 'Nosin': 
-                        return extractField(item, ['NoMesin', 'nosin', 'no_mesin', 'no_engine']);
+                        return extractField(item, ['no_mesin', 'NoMesin', 'nosin', 'no_engine']);
                     case 'BPKB': 
-                        return extractField(item, ['NoBPKB', 'bpkb', 'no_bpkb']);
+                        return extractField(item, ['no_bpkb', 'NoBPKB', 'bpkb', 'no_bpkb']);
                     case 'STNK': 
-                        return extractField(item, ['NoSTNK', 'stnk', 'no_stnk']);
+                        return extractField(item, ['no_stnk', 'NoSTNK', 'stnk', 'no_stnk']);
                     case 'Tgl': 
-                        return extractField(item, ['TglDaftar', 'TanggalDaftar', 'tgl_daftar', 'tanggal_daftar', 'tglDaftar']);
+                        return extractField(item, ['tanggal_daftar', 'TglDaftar', 'TanggalDaftar', 'tgl_daftar', 'tglDaftar']);
                     case 'APM': 
                         return extractField(item, ['APM', 'apm', 'atpm', 'AgenPemegangMerek', 'agen_pemegang_merek']);
                     default: 
@@ -761,7 +731,6 @@
                                         <button 
                                             type="button"
                                             onClick={handleSearchPress}
-                                            onTouchEnd={handleSearchPress}
                                             className="bg-orange-600 h-14 rounded-none key-press-effect flex items-center justify-center text-white shadow-lg border border-white/5 cursor-pointer active:bg-orange-700 outline-none"
                                         >
                                             <Icons.Search />
@@ -884,7 +853,7 @@
                     {notification && <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[9999] bg-orange-600 text-white px-12 py-5 rounded-[2rem] font-black text-[11px] shadow-[0_0_40px_rgba(249, 115, 22, 0.4)] animate-bounce uppercase border-2 border-white/20 whitespace-nowrap tracking-widest">{notification}</div>}
                     
                     {/* Loader */}
-                    {loading && <div className="fixed inset-0 bg-black/90 backdrop-blur-2xl z-[9000] flex items-center justify-center"><div className="flex flex-col items-center"><div className="w-20 h-20 border-[6px] border-white/5 border-t-orange-600 rounded-full animate-spin mb-8 shadow-lg" /><p className="text-white font-black uppercase text-[10px] tracking-[0.6em] animate-pulse text-glow">LOADING</p></div></div>}
+                    {loading && <div className="fixed inset-0 bg-black/90 backdrop-blur-2xl z-[9000] flex items-center justify-center"><div className="flex flex-col items-center"><div className="w-20 h-20 border-[6px] border-white/5 border-t-orange-600 rounded-full turbo-spin mb-8 shadow-lg" /><p className="text-white font-black uppercase text-[10px] tracking-[0.6em] animate-pulse text-glow">TURBO SEARCH ACTIVE</p></div></div>}
                 </div>
             );
         };
