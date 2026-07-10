@@ -589,8 +589,16 @@
                         if (w !== '-' && n !== '-') {
                             return `${w}${n}${s !== '-' ? s : ''}`;
                         }
+                        
                         const flatNopol = extractField(item, ['nopol', 'no_polisi', 'noPolisi']).replace(/\s+/g, '').toUpperCase();
-                        if (flatNopol !== '-') return flatNopol;
+                        if (flatNopol !== '-') {
+                            // Perbaikan Cerdas: Jika nopol dari server hanya berupa angka murni (seperti "4558"),
+                            // gunakan plat pencarian lengkap yang diketik oleh user (seperti "BL4558SC")
+                            if (/^\d+$/.test(flatNopol)) {
+                                return formatPlate(plate);
+                            }
+                            return flatNopol;
+                        }
                         return formatPlate(plate);
                     case 'Merk': 
                         return extractField(item, ['merk', 'Merk', 'Merek', 'merek', 'brand']);
