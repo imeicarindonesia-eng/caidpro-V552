@@ -517,7 +517,7 @@
                 requestPool.forEach((targetObj) => {
                     const ctrl = new AbortController();
                     controllers.push(ctrl);
-                    const id = setTimeout(() => ctrl.abort(), 13000); 
+                    const id = setTimeout(() => ctrl.abort(), 25000); 
 
                     try {
                         fetch(targetObj.url, { signal: ctrl.signal })
@@ -650,8 +650,8 @@
                         <div className="flex-1 flex flex-col items-center justify-between py-12 px-8 h-full relative overflow-y-auto scrollbar-hide">
                             <div className="absolute top-[-10%] left-[-10%] w-[80%] h-[40%] bg-orange-600/10 blur-[150px] rounded-full" />
                             <div className="text-center z-10 mt-6 space-y-1.5">
-                                <p className="text-[15px] font-black uppercase tracking-tight text-orange-500 leading-tight">APLIKASI</p>
-                                <p className="text-[15px] font-black uppercase tracking-tight leading-tight text-white">SAMSAT CSID.PRO NASIONAL</p>
+                                <p className="text-[15px] font-black uppercase tracking-tight text-orange-500 leading-tight">SELAMAT DATANG DI APLIKASI</p>
+                                <p className="text-[15px] font-black uppercase tracking-tight leading-tight text-white">CSID.PRO NASIONAL</p>
                             </div>
                             <div className="flex flex-col items-center z-10">
                                 <h1 onClick={() => { setAdminTapCount(c => c + 1); if(adminTapCount === 4) setShowPinModal(true); }} className="text-[72px] font-black text-white text-glow cursor-pointer tracking-tighter">CSID.PRO</h1>
@@ -676,7 +676,7 @@
                             <header className="px-6 py-5 flex items-center justify-between border-b border-white/5 bg-black/80 backdrop-blur-md z-50">
                                 <div className="flex items-center gap-3 text-white">
                                     <div className="bg-orange-600 p-1.5 rounded-lg shadow-[0_0_15px_rgba(249,115,22,0.4)]"><Icons.Shield cls="w-5 h-5 text-white" /></div>
-                                    <span className="font-black text-2xl tracking-tighter">CSID.PRO</span>
+                                    <span className="font-black text-2xl tracking-tighter">Id Aktif</span>
                                 </div>
                                 {renderStatusOverlay()}
                             </header>
@@ -704,13 +704,13 @@
                                 {/* Banner Restricted Access Asli */}
                                 <div className="w-full text-center py-2.5 px-4 mb-2 border border-red-900/30 rounded-2xl bg-red-950/10">
                                     <p className="text-orange-500 font-black text-xs tracking-widest flex items-center justify-center gap-1.5">
-                                        🔓UNLIMITED AKSES DATA
+                                        📶 AKSES DATA TNKB NOLIMIT
                                     </p>
                                     <p className="text-[9px] font-black text-slate-400 tracking-wider mt-0.5">
-                                        DILARANG KERAS MENYALAHGUNAKAN SISTEM INI
+                                        DILARANG KERAS MENYALAH GUNAKAN SISTEM APLIKASI INI
                                     </p>
                                     <p className="text-[8px] font-bold text-slate-600 tracking-wider">
-                                        HAK CIPTA CSID.PRO INTELLIGENCE SECURITY
+                                        HAK CIPTA CSID.PRO DIGITAL INTELLIGENCE SYSTEM
                                     </p>
                                 </div>
 
@@ -762,13 +762,13 @@
                         <div className="flex-1 flex flex-col h-full bg-black relative overflow-hidden">
                             <header className="px-6 py-6 flex items-center justify-between border-b border-white/5 bg-black/80 backdrop-blur-md z-40">
                                 <button type="button" onClick={() => setCurrentPage('search')} className="key-press-effect p-2.5 bg-slate-900 rounded-2xl text-white shadow-lg outline-none"><Icons.ChevronLeft /></button>
-                                <span className="text-white font-black tracking-widest text-[11px] uppercase opacity-70">LAPORAN INTEGRASI</span>
+                                <span className="text-white font-black tracking-widest text-[11px] uppercase opacity-70">HASIL PENCARIAN</span>
                                 {renderStatusOverlay()}
                             </header>
                             <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 scrollbar-hide pb-32 w-full" style={{ WebkitOverflowScrolling: 'touch' }}>
                                 <div className="mb-4 bg-orange-600/10 border border-orange-600/30 rounded-2xl px-5 py-3 flex items-center gap-3 w-full animate-pulse">
-                                    <span className="text-orange-500 font-bold text-sm">🔒</span>
-                                    <p className="text-[10px] font-black text-orange-500 tracking-wider uppercase">LAPORAN TERSEGEL - DATA ASLI KHUSUS SAMSAT</p>
+                                    <span className="text-orange-500 font-bold text-sm">✅</span>
+                                    <p className="text-[10px] font-black text-orange-500 tracking-wider uppercase">DATA TNKB ASLI - DITEMUKAN</p>
                                 </div>
                                 <div className="bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] p-8 font-mono-custom text-[13px] text-white/90 leading-relaxed whitespace-pre-wrap break-words w-full shadow-2xl shimmer pointer-events-auto">
                                     {`___________________________________\n🇮🇩 SUMBER : APLIKASI CSID.PRO 📡\n--------------------------------------------\n🕵 IDENTITAS PEMILIK :\n--------------------------------------------\nNAMA : ${getVal('Nama')}\nNIK : ${getVal('NIK')}\nMSSDN : ${getVal('HP')}\nPEKERJAAN : ${getVal('Pekerjaan')}\nALAMAT : ${getVal('Alamat')}\n--------------------------------------------\n🚘 DATA KENDARAAN :\n--------------------------------------------\nNOPOL : ${getVal('NopolServer')}\nMEREK : ${getVal('Merk')}\nTYPE : ${getVal('Tipe')}\nTAHUN : ${getVal('Tahun')}\nWARNA : ${getVal('Warna')}\nCYLINDER : ${getVal('CC')}\n--------------------------------------------\n📙 DOKUMEN RESMI :\n--------------------------------------------\nNOKA : ${getVal('Noka')}\nNOSIN : ${getVal('Nosin')}\nNO. BPKB : ${getVal('BPKB')}\nNO. STNK : ${getVal('STNK')}\nTGL DAFTAR : ${getVal('Tgl')}\nAPM : ${getVal('APM')}\n--------------------------------------------\n👇LINK DAFTAR APLIKASI :\n--------------------------------------------\n📱 Hub: https://wa.me/628136900872\n--------------------------------------------\n✍ NOTE :\n--------------------------------------------\nDATA INI SEBAGAI ALAT BUKTI KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG BERLAKU ⚖️.\n___________________________________`}
@@ -851,7 +851,7 @@
                     {notification && <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[9999] bg-orange-600 text-white px-12 py-5 rounded-[2rem] font-black text-[11px] shadow-[0_0_40px_rgba(249, 115, 22, 0.4)] animate-bounce uppercase border-2 border-white/20 whitespace-nowrap tracking-widest">{notification}</div>}
                     
                     {/* Loader */}
-                    {loading && <div className="fixed inset-0 bg-black/90 backdrop-blur-2xl z-[9000] flex items-center justify-center"><div className="flex flex-col items-center"><div className="w-20 h-20 border-[6px] border-white/5 border-t-orange-600 rounded-full turbo-spin mb-8 shadow-lg" /><p className="text-white font-black uppercase text-[10px] tracking-[0.6em] animate-pulse text-glow">Sedang Memuat Data</p></div></div>}
+                    {loading && <div className="fixed inset-0 bg-black/90 backdrop-blur-2xl z-[9000] flex items-center justify-center"><div className="flex flex-col items-center"><div className="w-20 h-20 border-[6px] border-white/5 border-t-orange-600 rounded-full turbo-spin mb-8 shadow-lg" /><p className="text-white font-black uppercase text-[10px] tracking-[0.6em] animate-pulse text-glow">PROSES LOADING</p></div></div>}
                 </div>
             );
         };
@@ -860,4 +860,4 @@
         root.render(<App />);
     </script>
 </body>
-</html>
+  </html>
