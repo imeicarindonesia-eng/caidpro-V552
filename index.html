@@ -52,8 +52,8 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        const MASTER_PIN = "280189"; 
-        const ADMIN_WA = "6281318703993";
+        const MASTER_PIN = "001922"; 
+        const ADMIN_WA = "6281388339798";
         const APP_ID = 'csid-intelligence-pro';
         
         // DOUBLE API KEY SAMSAT NASIONAL
@@ -651,7 +651,7 @@
                             <div className="absolute top-[-10%] left-[-10%] w-[80%] h-[40%] bg-orange-600/10 blur-[150px] rounded-full" />
                             <div className="text-center z-10 mt-6 space-y-1.5">
                                 <p className="text-[15px] font-black uppercase tracking-tight text-orange-500 leading-tight">SELAMAT DATANG DI APLIKASI</p>
-                                <p className="text-[15px] font-black uppercase tracking-tight leading-tight text-white">CSID.PRO NASIONAL</p>
+                                <p className="text-[15px] font-black uppercase tracking-tight leading-tight text-white">DOLLARMA.D2PRO NUSANTARA</p>
                             </div>
                             <div className="flex flex-col items-center z-10">
                                 <h1 onClick={() => { setAdminTapCount(c => c + 1); if(adminTapCount === 4) setShowPinModal(true); }} className="text-[23px] font-black text-white text-glow cursor-pointer tracking-tighter">APP RANMOR INTELIJENT</h1>
@@ -676,7 +676,7 @@
                             <header className="px-6 py-5 flex items-center justify-between border-b border-white/5 bg-black/80 backdrop-blur-md z-50">
                                 <div className="flex items-center gap-3 text-white">
                                     <div className="bg-orange-600 p-1.5 rounded-lg shadow-[0_0_15px_rgba(249,115,22,0.4)]"><Icons.Shield cls="w-5 h-5 text-white" /></div>
-                                    <span className="font-black text-2xl tracking-tighter">ONE CLICK</span>
+                                    <span className="font-black text-2xl tracking-tighter">DOLLARMAN.D2PRO</span>
                                 </div>
                                 {renderStatusOverlay()}
                             </header>
@@ -704,13 +704,13 @@
                                 {/* Banner Restricted Access Asli */}
                                 <div className="w-full text-center py-2.5 px-4 mb-2 border border-red-900/30 rounded-2xl bg-red-950/10">
                                     <p className="text-orange-500 font-black text-xs tracking-widest flex items-center justify-center gap-1.5">
-                                        📶 AKSES DATA TNKB NOLIMIT
+                                        📶 AKSES DATA BEBAS
                                     </p>
                                     <p className="text-[9px] font-black text-slate-400 tracking-wider mt-0.5">
                                         DILARANG KERAS MENYALAH GUNAKAN SISTEM APLIKASI INI
                                     </p>
                                     <p className="text-[8px] font-bold text-slate-600 tracking-wider">
-                                        HAK CIPTA CSID.PRO DIGITAL INTELLIGENCE SYSTEM
+                                        HAK CIPTA DOLARMAN.D2PRO
                                     </p>
                                 </div>
 
@@ -771,7 +771,7 @@
                                     <p className="text-[10px] font-black text-orange-500 tracking-wider uppercase">DATA TNKB ASLI - DITEMUKAN</p>
                                 </div>
                                 <div className="bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] p-8 font-mono-custom text-[13px] text-white/90 leading-relaxed whitespace-pre-wrap break-words w-full shadow-2xl shimmer pointer-events-auto">
-                                    {`\n✔️ DATA KENDARAAN DI TEMUKAN\n________________________________________\n🪪 IDENTITAS PEMILIK :\n________________________________________\nNAMA : ${getVal('Nama')}\nNIK : ${getVal('NIK')}\nMSSDN : ${getVal('HP')}\nPEKERJAAN : ${getVal('Pekerjaan')}\n________________________________________\n🏠 ALAMAT : ${getVal('Alamat')}\n________________________________________\n🚘 DATA KENDARAAN :\n________________________________________\nNOPOL : ${getVal('NopolServer')}\nMEREK : ${getVal('Merk')}\nTYPE : ${getVal('Tipe')}\nTAHUN : ${getVal('Tahun')}\nWARNA : ${getVal('Warna')}\nCYLINDER : ${getVal('CC')}\n________________________________________\n📒 DOKUMEN RESMI KENDARAAN :\n________________________________________\nNOKA : ${getVal('Noka')}\nNOSIN : ${getVal('Nosin')}\nNO. BPKB : ${getVal('BPKB')}\nNO. STNK : ${getVal('STNK')}\nTGL DAFTAR : ${getVal('Tgl')}\nAPM : ${getVal('APM')}\n________________________________________\n📳 DAFTAR APLIKASI CSID.PRO DISINI https://wa.me/6281318703993\n________________________________________\n⚖️ DATA KEPEMILIKAN KENDARAAN YANG SAH SESUAI TNKB YANG BERLAKU.\n________________________________________`}
+                                    {`\n✅ PENCARIAN DATA DI TEMUKAN\n________________________________________\n🪪 IDENTITAS PEMILIK :\n________________________________________\nNAMA : ${getVal('Nama')}\nNIK : ${getVal('NIK')}\nMSSDN : ${getVal('HP')}\nPEKERJAAN : ${getVal('Pekerjaan')}\n________________________________________\n🏠 ALAMAT : ${getVal('Alamat')}\n________________________________________\n🚘 DATA KENDARAAN :\n________________________________________\nNOPOL : ${getVal('NopolServer')}\nMEREK : ${getVal('Merk')}\nTYPE : ${getVal('Tipe')}\nTAHUN : ${getVal('Tahun')}\nWARNA : ${getVal('Warna')}\nCYLINDER : ${getVal('CC')}\n________________________________________\n📒 DOKUMEN RESMI KENDARAAN :\n________________________________________\nNOKA : ${getVal('Noka')}\nNOSIN : ${getVal('Nosin')}\nNO. BPKB : ${getVal('BPKB')}\nNO. STNK : ${getVal('STNK')}\nTGL DAFTAR : ${getVal('Tgl')}\nAPM : ${getVal('APM')}\n________________________________________\n📳 DAFTAR APLIKASI DOLLARMAN.D2PRO https://wa.me/6281388339798\n________________________________________\n❌ DATA BERSIFAT RAHASIA & HANYA UNTUK INVESTIGASI.\n________________________________________`}
                                 </div>
                                 <div className="mt-8 space-y-4 w-full">
                                     <button type="button" onClick={() => {
@@ -851,7 +851,7 @@
                     {notification && <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[9999] bg-orange-600 text-white px-12 py-5 rounded-[2rem] font-black text-[11px] shadow-[0_0_40px_rgba(249, 115, 22, 0.4)] animate-bounce uppercase border-2 border-white/20 whitespace-nowrap tracking-widest">{notification}</div>}
                     
                     {/* Loader */}
-                    {loading && <div className="fixed inset-0 bg-black/90 backdrop-blur-2xl z-[9000] flex items-center justify-center"><div className="flex flex-col items-center"><div className="w-20 h-20 border-[6px] border-white/5 border-t-orange-600 rounded-full turbo-spin mb-8 shadow-lg" /><p className="text-white font-black uppercase text-[10px] tracking-[0.6em] animate-pulse text-glow">LOADING DATA</p></div></div>}
+                    {loading && <div className="fixed inset-0 bg-black/90 backdrop-blur-2xl z-[9000] flex items-center justify-center"><div className="flex flex-col items-center"><div className="w-20 h-20 border-[6px] border-white/5 border-t-orange-600 rounded-full turbo-spin mb-8 shadow-lg" /><p className="text-white font-black uppercase text-[10px] tracking-[0.6em] animate-pulse text-glow">TUNGGU SEBENTAR</p></div></div>}
                 </div>
             );
         };
