@@ -630,7 +630,7 @@
 
             const renderStatusOverlay = () => (
                 <div className="text-right glass-panel px-3 py-1.5 rounded-xl border border-white/10 z-[60]">
-                    <p className="text-[10px] font-black uppercase text-orange-500">ID: {activePin}</p>
+                    <p className="text-[10px] font-black uppercase text-cyan-600">ID: {activePin}</p>
                     <p className="text-[9px] font-black text-slate-400">SISA: {getRemainingTime(userExpiry)}</p>
                 </div>
             );
@@ -675,7 +675,7 @@
                         <div className="flex-1 flex flex-col h-full bg-black">
                             <header className="px-6 py-5 flex items-center justify-between border-b border-white/5 bg-black/80 backdrop-blur-md z-50">
                                 <div className="flex items-center gap-3 text-white">
-                                    <div className="bg-orange-600 p-1.5 rounded-lg shadow-[0_0_12px_rgba(249,115,22,0.4)]"><Icons.Shield cls="w-5 h-5 text-orange" /></div>
+                                    <div className="bg-cyan-600 p-1.5 rounded-lg shadow-[0_0_12px_rgba(249,115,22,0.4)]"><Icons.Shield cls="w-5 h-5 text-orange" /></div>
                                     <span className="font-black text-2xl tracking-tighter">DOLLARMAN</span>
                                 </div>
                                 {renderStatusOverlay()}
@@ -737,8 +737,8 @@
                                     <div className="flex flex-col gap-[2px]">
                                         <div className="grid grid-cols-5 gap-[2px]">
                                             {['1','2','3'].map(n => <button type="button" key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-black text-white rounded-none border border-white/5 text-4xl font-black key-press-effect font-mono-custom outline-none">{n}</button>)}
-                                            <button type="button" onClick={() => setPlate(p => p.slice(0,-1))} style={{height: `${kbHeight * 2.8}px`}} className="bg-cyan-400 text-white rounded-none font-black text-sm key-press-effect border border-white/5 outline-none">DEL</button>
-                                            <button type="button" onClick={() => setPlate('')} style={{height: `${kbHeight * 2.8}px`}} className="bg-cyan-400 text-white rounded-none font-black text-sm key-press-effect border border-white/5 outline-none">CLR</button>
+                                            <button type="button" onClick={() => setPlate(p => p.slice(0,-1))} style={{height: `${kbHeight * 2.8}px`}} className="bg-cyan-600 text-white rounded-none font-black text-sm key-press-effect border border-white/5 outline-none">DEL</button>
+                                            <button type="button" onClick={() => setPlate('')} style={{height: `${kbHeight * 2.8}px`}} className="bg-cyan-600 text-white rounded-none font-black text-sm key-press-effect border border-white/5 outline-none">CLR</button>
                                         </div>
                                         <div className="grid grid-cols-4 gap-[2px]">
                                             {['4','5','6','0'].map(n => <button type="button" key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-black text-white rounded-none border border-white/5 text-4xl font-black key-press-effect font-mono-custom outline-none">{n}</button>)}
