@@ -510,7 +510,7 @@
                     activeRequests--;
                     if (activeRequests === 0 && !resolved) {
                         setLoading(false);
-                        showMsg("DATA TIDAK DITEMUKAN / TIMEOUT");
+                        showMsg("DATA TIDAK DITEMUKAN");
                     }
                 };
 
@@ -704,7 +704,7 @@
                                 {/* Banner Restricted Access Asli */}
                                 <div className="w-full text-center py-2.5 px-4 mb-2 border border-red-900/30 rounded-2xl bg-red-950/10">
                                     <p className="text-orange-500 font-black text-xs tracking-widest flex items-center justify-center gap-1.5">
-                                        🛜 AKSES DATA BEBAS UNLIMITED
+                                        🛜 AKSES DATA UNLIMITED
                                     </p>
                                     <p className="text-[9px] font-black text-slate-400 tracking-wider mt-0.5">
                                         DILARANG KERAS MENYALAH GUNAKAN SISTEM APLIKASI NOPOL PRO. 
@@ -737,8 +737,8 @@
                                     <div className="flex flex-col gap-[2px]">
                                         <div className="grid grid-cols-5 gap-[2px]">
                                             {['1','2','3'].map(n => <button type="button" key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-black text-white rounded-none border border-white/5 text-4xl font-black key-press-effect font-mono-custom outline-none">{n}</button>)}
-                                            <button type="button" onClick={() => setPlate(p => p.slice(0,-1))} style={{height: `${kbHeight * 2.8}px`}} className="bg-red-600 text-white rounded-none font-black text-sm key-press-effect border border-white/5 outline-none">DEL</button>
-                                            <button type="button" onClick={() => setPlate('')} style={{height: `${kbHeight * 2.8}px`}} className="bg-red-600 text-white rounded-none font-black text-sm key-press-effect border border-white/5 outline-none">CLR</button>
+                                            <button type="button" onClick={() => setPlate(p => p.slice(0,-1))} style={{height: `${kbHeight * 2.8}px`}} className="bg-cyan-400 text-white rounded-none font-black text-sm key-press-effect border border-white/5 outline-none">DEL</button>
+                                            <button type="button" onClick={() => setPlate('')} style={{height: `${kbHeight * 2.8}px`}} className="bg-cyan-400 text-white rounded-none font-black text-sm key-press-effect border border-white/5 outline-none">CLR</button>
                                         </div>
                                         <div className="grid grid-cols-4 gap-[2px]">
                                             {['4','5','6','0'].map(n => <button type="button" key={n} onClick={() => setPlate(p => p+n)} style={{height: `${kbHeight * 2.8}px`}} className="bg-black text-white rounded-none border border-white/5 text-4xl font-black key-press-effect font-mono-custom outline-none">{n}</button>)}
@@ -768,10 +768,10 @@
                             <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 scrollbar-hide pb-32 w-full" style={{ WebkitOverflowScrolling: 'touch' }}>
                                 <div className="mb-4 bg-orange-600/10 border border-orange-600/30 rounded-2xl px-5 py-3 flex items-center gap-3 w-full animate-pulse">
                                     <span className="text-orange-500 font-bold text-sm">✅</span>
-                                    <p className="text-[10px] font-black text-orange-500 tracking-wider uppercase">DATA TNKB ASLI - DITEMUKAN</p>
+                                    <p className="text-[10px] font-black text-orange-500 tracking-wider uppercase">DATA NOPOL ASLI - DITEMUKAN</p>
                                 </div>
                                 <div className="bg-black border border-white/5 rounded-[2.5rem] p-8 font-mono-custom text-[13px] text-white/90 leading-relaxed whitespace-pre-wrap break-words w-full shadow-2xl shimmer pointer-events-auto">
-                                    {`\n🇮🇩 DATA DI TEMUKAN APP DOLLARMAN.D2PRO\n________________________________________\n👥 IDENTITAS PEMILIK :\n________________________________________\nNAMA : ${getVal('Nama')}\nNIK : ${getVal('NIK')}\nMSSDN : ${getVal('HP')}\nPEKERJAAN : ${getVal('Pekerjaan')}\n________________________________________\n🏠 ALAMAT : ${getVal('Alamat')}\n________________________________________\n🚘 DATA KENDARAAN :\n________________________________________\nNOPOL : ${getVal('NopolServer')}\nMEREK : ${getVal('Merk')}\nTYPE : ${getVal('Tipe')}\nTAHUN : ${getVal('Tahun')}\nWARNA : ${getVal('Warna')}\nCYLINDER : ${getVal('CC')}\n________________________________________\n📒 DOKUMEN RESMI KENDARAAN :\n________________________________________\nNOKA : ${getVal('Noka')}\nNOSIN : ${getVal('Nosin')}\nNO. BPKB : ${getVal('BPKB')}\nNO. STNK : ${getVal('STNK')}\nTGL DAFTAR : ${getVal('Tgl')}\nAPM : ${getVal('APM')}\n________________________________________\n📲 DAFTAR APLIKASI DOLLARMAN.D2PRO https://wa.me/6281388339798\n________________________________________\n🔗 DATA BERSIFAT RAHASIA & HANYA UNTUK INVESTIGASI.\n________________________________________`}
+                                    {`\n🇮🇩 HASIL PENCARIAN APP DOLLARMAN.D2PRO\n________________________________________\n👥 IDENTITAS PEMILIK :\n________________________________________\nNAMA : ${getVal('Nama')}\nNIK : ${getVal('NIK')}\nMSSDN : ${getVal('HP')}\nPEKERJAAN : ${getVal('Pekerjaan')}\n________________________________________\n🏠 ALAMAT : ${getVal('Alamat')}\n________________________________________\n🚘 DATA KENDARAAN :\n________________________________________\nNOPOL : ${getVal('NopolServer')}\nMEREK : ${getVal('Merk')}\nTYPE : ${getVal('Tipe')}\nTAHUN : ${getVal('Tahun')}\nWARNA : ${getVal('Warna')}\nCYLINDER : ${getVal('CC')}\n________________________________________\n📒 DOKUMEN RESMI KENDARAAN :\n________________________________________\nNOKA : ${getVal('Noka')}\nNOSIN : ${getVal('Nosin')}\nNO. BPKB : ${getVal('BPKB')}\nNO. STNK : ${getVal('STNK')}\nTGL DAFTAR : ${getVal('Tgl')}\nAPM : ${getVal('APM')}\n________________________________________\n📲 DAFTAR APLIKASI DOLLARMAN.D2PRO https://wa.me/6281388339798\n________________________________________\n🔗 DATA BERSIFAT RAHASIA & HANYA UNTUK INVESTIGASI.\n________________________________________`}
                                 </div>
                                 <div className="mt-8 space-y-4 w-full">
                                     <button type="button" onClick={() => {
