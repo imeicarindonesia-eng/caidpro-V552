@@ -42,7 +42,7 @@
         .scan-guide { border: 3px solid rgba(6, 182, 212, 0.7); box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.65); }
         @media print { body { display: none !important; } }
         @keyframes lineSlide { 0% { left: -40%; width: 40%; } 100% { left: 100%; width: 40%; } }
-        .animate-line-bar { position: absolute; top: 0; bottom: 0; animation: lineSlide 0.3s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+        .animate-line-bar { position: absolute; top: 0; bottom: 0; animation: lineSlide 0.2s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
     </style>
 </head>
 <body>
@@ -143,6 +143,51 @@
             Minus: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><line x1="5" y1="12" x2="19" y2="12"/></svg>,
             Plus: ({cls}) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className={cls || "w-6 h-6"}><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
             Database: ({cls}) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={cls || "w-6 h-6"}><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        };
+
+        const cariDataFirebaseMultiField = async (dbInstance, searchQuery) => {
+            if (!dbInstance || !searchQuery) return null;
+
+            const queryClean = searchQuery.replace(/\s+/g, '').toUpperCase();
+            const queryRaw = searchQuery.trim().toUpperCase();
+
+            try {
+                // STEP 1: Direct Doc ID lookup (Instant for Nopol)
+                const docDirect = await dbInstance.collection('pencarian').doc(queryClean).get();
+                if (docDirect.exists) {
+                    return docDirect.data();
+                }
+
+                // STEP 2: Parallel execution across all potential vehicle database fields
+                const collectionRef = dbInstance.collection('pencarian');
+                const targetFields = [
+                    'nopol', 'Nopol', 'no_polisi', 'NopolServer',
+                    'no_rangka', 'NoRangka', 'noka', 'vin', 'no_frame',
+                    'no_mesin', 'NoMesin', 'nosin', 'no_engine',
+                    'ktp', 'nik', 'NIK', 'NoKTP', 'no_ktp', 'identitas', 'no_identitas',
+                    'nama', 'NamaPemilik', 'nama_pemilik', 'Nama', 'nm_pmlk'
+                ];
+
+                const queryPromises = [];
+                for (const fieldName of targetFields) {
+                    queryPromises.push(collectionRef.where(fieldName, "==", queryClean).limit(1).get());
+                    if (queryRaw !== queryClean) {
+                        queryPromises.push(collectionRef.where(fieldName, "==", queryRaw).limit(1).get());
+                    }
+                }
+
+                const snapshots = await Promise.all(queryPromises);
+                for (const snapshot of snapshots) {
+                    if (!snapshot.empty) {
+                        return snapshot.docs[0].data();
+                    }
+                }
+
+                return null;
+            } catch (error) {
+                console.warn("Firebase multi-field query error:", error);
+                return null;
+            }
         };
 
         const App = () => {
@@ -557,7 +602,7 @@
 
             const fetchData = async () => {
                 const rawPlate = plate.trim().toUpperCase();
-                if (!rawPlate) { showMsg("MASUKKAN PLAT NOMOR"); return; }
+                if (!rawPlate) { showMsg("MASUKKAN NOPOL / NOKA / NOSIN / NIK / NAMA"); return; }
                 
                 if (isMaintenance && activePin !== 'MASTER') {
                     showMsg("SISTEM SEDANG PEMELIHARAAN (MAINTENANCE)");
@@ -586,23 +631,27 @@
 
                 setLoading(true);
 
+                // 1. CARI MULTI-FIELD FIREBASE SECARA INSTAN
+                if (db) {
+                    try {
+                        const firebaseResult = await cariDataFirebaseMultiField(db, rawPlate);
+                        if (firebaseResult) {
+                            incrementDailyCount();
+                            setSearchResult(firebaseResult);
+                            setCurrentPage('result');
+                            setLoading(false);
+                            showMsg("DATA DI TEMUKAN");
+                            return;
+                        }
+                    } catch (e) {
+                        console.warn("Firebase Search Error, switching to API/Offline:", e);
+                    }
+                }
+
                 const cleanQuery = rawPlate.replace(/\s+/g, '').toLowerCase();
                 const offlineMatch = rawPlate.replace(/\s+/g, '').toUpperCase();
 
-                if (db) {
-                    try {
-                        const docSnap = await db.collection('pencarian').doc(cleanQuery.toUpperCase()).get();
-                        if (docSnap.exists) {
-                            incrementDailyCount();
-                            setSearchResult(docSnap.data());
-                            setCurrentPage('result');
-                            setLoading(false);
-                            showMsg("DATA DITEMUKAN");
-                            return;
-                        }
-                    } catch (e) {}
-                }
-
+                // 2. CEK DATABASE OFFLINE SAMSAT
                 if (OFFLINE_SAMSAT_DATABASE[offlineMatch]) {
                     incrementDailyCount();
                     setSearchResult(OFFLINE_SAMSAT_DATABASE[offlineMatch]);
@@ -611,6 +660,7 @@
                     return;
                 }
 
+                // 3. CEK SESSION CACHE
                 try {
                     const cached = sessionStorage.getItem(cleanQuery);
                     if (cached) {
@@ -622,6 +672,7 @@
                     }
                 } catch (e) {}
 
+                // 4. PENCARIAN KE SERVER API UTAMA
                 const baseUrls = [
                   `${customApi1 || API_UTAMA_1}${encodeURIComponent(cleanQuery)}`,
                   `${customApi2 || API_UTAMA_2}${encodeURIComponent(cleanQuery)}`,
@@ -863,9 +914,10 @@
                                 </div>
 
                                 <div className="mt-auto space-y-1">
-                                    <div className={`grid ${isAdminRole(userRole) ? 'grid-cols-6' : 'grid-cols-5'} gap-[2px]`}>
+                                    <div className={`grid ${isAdminRole(userRole) ? 'grid-cols-7' : 'grid-cols-6'} gap-[2px]`}>
                                         <button type="button" onClick={() => setKbHeight(h => Math.max(15, h-2))} className="bg-black h-14 rounded-none key-press-effect flex items-center justify-center text-slate-400 border border-white/5 font-black text-xl outline-none"><Icons.Minus /></button>
                                         <button type="button" onClick={() => setKbHeight(h => Math.min(35, h+2))} className="bg-black h-14 rounded-none key-press-effect flex items-center justify-center text-slate-400 border border-white/5 font-black text-xl outline-none"><Icons.Plus /></button>
+                                        <button type="button" onClick={startCamera} className="bg-black h-14 rounded-none key-press-effect flex items-center justify-center text-slate-400 border border-white/5 outline-none"><Icons.Camera /></button>
                                         <button type="button" onClick={async () => { try { const t = await navigator.clipboard.readText(); setPlate(t.toUpperCase().replace(/\s/g, '')); } catch(e){} }} className="bg-black h-14 rounded-none key-press-effect flex items-center justify-center text-slate-400 border border-white/5 outline-none"><Icons.Paste /></button>
                                         {isAdminRole(userRole) && <button type="button" onClick={() => setCurrentPage('admin')} className="bg-cyan-600/20 h-14 rounded-none key-press-effect flex items-center justify-center text-cyan-400 border border-white/5 outline-none"><Icons.Shield /></button>}
                                         <button type="button" onClick={() => window.location.reload()} className="bg-red-600/20 h-14 rounded-none key-press-effect flex items-center justify-center text-red-500 border border-white/5 outline-none"><Icons.Power /></button>
@@ -902,6 +954,7 @@
                         </div>
                     )}
 
+                    {}
                     {currentPage === 'result' && (
                         <div className="flex-1 flex flex-col h-full bg-black relative overflow-hidden">
                             <header className="px-6 py-6 flex items-center justify-between border-b border-white/5 bg-black/80 backdrop-blur-md z-40">
@@ -931,6 +984,7 @@
                         </div>
                     )}
 
+                    {}
                     {currentPage === 'admin' && (
                         <div className="flex-1 flex flex-col h-full bg-[#050505] overflow-hidden">
                             <header className="px-6 py-6 flex items-center justify-between border-b border-white/5 bg-black z-[100]">
@@ -942,7 +996,7 @@
                             </header>
                             <div className="flex-1 overflow-y-auto px-5 py-6 space-y-6 pb-20 scrollbar-hide">
                                 
-                                {/* FITUR KHUSUS MASTER ADMIN UTAMA (STRICTLY RESTRICTED TO MASTER) */}
+                                {/* FITUR KHUSUS MASTER ADMIN UTAMA */}
                                 {userRole === 'master' && (
                                     <>
                                         <div className="grid grid-cols-3 gap-2">
@@ -960,7 +1014,7 @@
                                             </div>
                                         </div>
 
-                                        {/* LOG AKTIVASI ADMIN & PETUGAS (HANYA UNTUK MASTER ADMIN) */}
+                                        {/* LOG AKTIVASI ADMIN & PETUGAS */}
                                         {(() => {
                                             const todayActivations = managedPins.filter(p => {
                                                 const ts = p.activated_at || p.created_at;
@@ -1248,7 +1302,7 @@
                                     </>
                                 )}
 
-                                {/* PENCARIAN & MANAJEMEN PIN USER (ACCESSIBLE TO ALL ADMINS/PETUGAS) */}
+                                {/* PENCARIAN & MANAJEMEN PIN USER */}
                                 <div className="flex gap-3">
                                     <input 
                                         type="text" 
@@ -1411,6 +1465,27 @@
                         </div>
                     )}
 
+                    {}
+                    {cameraActive && (
+                        <div className="absolute inset-0 bg-black z-[2000] flex flex-col overflow-hidden">
+                            <video ref={videoRef} autoPlay playsInline className="absolute inset-0 w-full h-full object-cover z-0" />
+                            <canvas ref={canvasRef} className="hidden" />
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                                <div className="w-80 h-40 scan-guide rounded-3xl" />
+                                <div className="absolute top-[18%] text-center text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400 bg-black/75 px-5 py-2.5 rounded-full border border-cyan-500/20 shadow-lg">
+                                    POSISIKAN PLAT NOMOR DI DALAM KOTAK
+                                </div>
+                            </div>
+                            <div className="absolute bottom-8 left-6 right-6 z-20 flex items-center justify-between gap-4 bg-black/45 backdrop-blur-md p-5 rounded-[2rem] border border-white/10 shadow-2xl">
+                                <button type="button" onClick={stopCamera} className="p-5 bg-slate-900/80 rounded-2xl text-white outline-none"><Icons.X /></button>
+                                <button type="button" onClick={captureAndProcess} disabled={isScanning} className="flex-1 bg-cyan-600 text-white font-black py-5 rounded-2xl uppercase flex items-center justify-center gap-3 active:scale-95 transition-all shadow-xl shadow-cyan-600/20 outline-none">
+                                    {isScanning ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <Icons.Camera cls="w-5 h-5 text-white" />}
+                                    {isScanning ? 'MENDETEKSI...' : 'AMBIL FOTO PLAT'}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
                     {/* MODAL INPUT PIN MASTER */}
                     {showPinModal && (
                         <div className="absolute inset-0 bg-black/95 backdrop-blur-3xl z-[2000] flex items-center justify-center p-8">
@@ -1521,7 +1596,7 @@
                                 <div className="w-full h-2 bg-slate-900 rounded-full overflow-hidden relative mb-6 border border-cyan-500/30 shadow-inner">
                                     <div className="absolute h-full bg-cyan-500 rounded-full animate-line-bar shadow-[0_0_12px_rgba(6,182,212,0.8)]" />
                                 </div>
-                                <p className="text-white font-black uppercase text-[10px] tracking-[0.5em] animate-pulse">PROCESING DATA</p>
+                                <p className="text-white font-black uppercase text-[10px] tracking-[0.5em] animate-pulse">LOADING DATA...</p>
                             </div>
                         </div>
                     )}
